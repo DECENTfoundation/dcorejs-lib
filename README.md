@@ -3,27 +3,28 @@
 > This library is combined forks of [graphenejs-lib](https://github.com/svk31/graphenejs-lib) 
 and [graphenejs-ws](https://github.com/svk31/graphenejs-ws). 
 
-
-Pure JavaScript library for node.js and browsers. Can be used to construct, sign and broadcast transactions in 
-JavaScript, and to easily obtain data from the DCore blockchain via public APIs.
+The library was created as a combination of forks of graphenejs-lib and graphenejs-ws with necessary corrections.
+Can be used to construct, sign and broadcast transactions in JavaScript, and to easily obtain data from the blockchain 
+via public APIs.
 
 [![npm version](https://img.shields.io/npm/v/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/dcorejs-lib)
 [![npm downloads](https://img.shields.io/npm/dm/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/graphenejs-lib)
 
 ## Setup
 
-This library can be obtained through npm:
+To obtain the library use npm:
 ```
 npm install dcorejs-lib
 ```
 
 ## Usage
 
-Next examples showing basic usage of dorejs-lib library for manipulation and fetching of DCore blockchain objects.
+The following examples will provide you basics of dcorejs-lib library usage, like is manipulation and doing fetches of 
+DCore blockchain objects.
 
 ### Initialization
 
-Example shows how to initialize library and connect to DCore deamon Apis.
+Moreover, it includes connection to DCore daemon APIs.
 
 ```javascript
     var {Apis, ChainConfig} = require('dcorejs-lib');
@@ -44,7 +45,7 @@ Example shows how to initialize library and connect to DCore deamon Apis.
 
 ### Chain
 
-This library provides utility functions to handle blockchain objects.
+The module provides utility methods which handles DCore blockchain objects.
 
 ```javascript
     var {Apis, ChainStore, FetchChain} = require('dcorejs-lib');
@@ -72,7 +73,7 @@ This library provides utility functions to handle blockchain objects.
 
 #### Private keys
 
-As a example, here's how to generate a new private key from a seed (a brainkey for example):
+Generate a new private key from a seed (e.g. a brainkey).
 
 ```javascript
     var {PrivateKey, key} = require("dcorejs-lib");
@@ -85,6 +86,8 @@ As a example, here's how to generate a new private key from a seed (a brainkey f
 ```
 
 #### Transactions
+
+Following example show the way of broadcasting `transfer` operation transaction into DCore network. 
 
 ```javascript
     var {Apis, TransactionHelper, ChainStore, FetchChain, Aes, TransactionBuilder} = require('dcorejs-lib');
