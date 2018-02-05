@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DECENTfoundation/decentjs-lib"
+    "url": "https://github.com/DECENTfoundation/dcorejs-lib"
   },
   "author": "DECENT Foundation <info@decent.ch>",
   "license": "MIT",
