@@ -466,12 +466,35 @@ export const asset_update = new Serializer(
         fee: asset,
         issuer: protocol_id_type("account"),
         asset_to_update: protocol_id_type("asset"),
+        new_description: string,
         new_issuer: optional(protocol_id_type("account")),
+        max_supply: int64,
+        core_exchange_rate: price,
+        is_exchangeable: bool,
+        extensions: set(future_extensions)
+    }
+);
+
+export const update_monitored_asset_operation = new Serializer(
+    "update_monitored_asset_operation", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        asset_to_update: protocol_id_type("asset"),
         new_description: string,
         new_feed_lifetime_sec: uint32,
         new_minimum_feeds: uint8,
-        max_supply: int64,
-        extensions: set(future_extensions)
+        extensions: optional(future_extensions)
+    }
+);
+
+export const issue_asset = new Serializer(
+    "issue_asset", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        asset_to_issue: asset,
+        issue_to_account: protocol_id_type("account"),
+        memo: optional(string),
+        extensions: set(extensions)
     }
 );
 
@@ -948,6 +971,8 @@ operation.st_operations = [
     asset_create,
     asset_update,
     asset_publish_feed,
+    update_monitored_asset_operation,
+    issue_asset,
     witness_create,
     witness_update,
     witness_update_global_parameters,
