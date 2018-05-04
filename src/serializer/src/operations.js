@@ -433,12 +433,18 @@ export const account_update = new Serializer(
     }
 );
 
+export const asset_extension = new Serializer(
+    "asset_extension", {
+        is_fixed_max_supply: bool
+    }
+)
+
 export const asset_options = new Serializer(
     "asset_options", {
         max_supply: int64,
         core_exchange_rate: price,
         is_exchangeable: bool,
-        extensions: set(future_extensions)
+        extensions: map((uint8), (asset_extension))
     }
 );
 
@@ -457,7 +463,8 @@ export const asset_create = new Serializer(
         precision: uint8,
         description: string,
         options: asset_options,
-        monitored_asset_opts: optional(monitored_asset_options)
+        monitored_asset_opts: optional(monitored_asset_options),
+        extensions: set(future_extensions)
     }
 );
 
@@ -467,11 +474,21 @@ export const asset_update = new Serializer(
         issuer: protocol_id_type("account"),
         asset_to_update: protocol_id_type("asset"),
         new_description: string,
-        new_issuer: optional(protocol_id_type("account")),
+        new_issuer: optional(protocol_id_type("account")), 
         max_supply: int64,
         core_exchange_rate: price,
         is_exchangeable: bool,
         extensions: set(future_extensions)
+    }
+);
+
+export const asset_fund_pools_operation = new Serializer(
+    "asset_fund_pools_operation", {
+        fee: asset,
+        from_account: protocol_id_type("account"),
+        uia_asset: asset,
+        dct_asset: asset,
+        extensions: optional(future_extensions)
     }
 );
 
@@ -494,7 +511,26 @@ export const issue_asset = new Serializer(
         asset_to_issue: asset,
         issue_to_account: protocol_id_type("account"),
         memo: optional(string),
-        extensions: set(extensions)
+        extensions: set(future_extensions)
+    }
+);
+
+export const asset_reserve_operation = new Serializer(
+    "asset_reserve_operation", {
+        fee: asset,
+        payer: protocol_id_type("account"),
+        amount_to_reserve: asset,
+        extensions: set(future_extensions)
+    }
+);
+
+export const asset_claim_fees_operation = new Serializer(
+    "asset_claim_fees_operation", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        uia_asset: asset,
+        dct_asset: asset,
+        extensions: set(future_extensions)
     }
 );
 
@@ -971,6 +1007,8 @@ operation.st_operations = [
     asset_create,
     asset_update,
     asset_publish_feed,
+    asset_fund_pools_operation,
+    asset_reserve_operation,
     update_monitored_asset_operation,
     issue_asset,
     witness_create,
