@@ -463,8 +463,9 @@ export const asset_create = new Serializer(
         precision: uint8,
         description: string,
         options: asset_options,
+        is_exchangeable: bool,
+        extensions: map(future_extensions),
         monitored_asset_opts: optional(monitored_asset_options),
-        extensions: set(future_extensions)
     }
 );
 
