@@ -394,7 +394,7 @@ export const account_options = new Serializer(
     "account_options", {
     memo_key: public_key,
     voting_account: protocol_id_type("account"),
-    num_witness: uint16,
+    num_miner: uint16,
     votes: set(vote_id),
     extensions: set(future_extensions),
     allow_subscription: bool,
