@@ -258,7 +258,7 @@ let fee_parameters = static_variant([
     asset_update_operation_fee_parameters,    
     asset_publish_feed_operation_fee_parameters,    
     miner_create_operation_fee_parameters,    
-    witness_update_operation_fee_parameters,    
+    miner_update_operation_fee_parameters,    
     witness_update_global_parameters_operation_fee_parameters,    
     proposal_create_operation_fee_parameters,    
     proposal_update_operation_fee_parameters,    
