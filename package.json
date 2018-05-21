@@ -1,6 +1,6 @@
 {
   "name": "dcorejs-lib",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Low level javascript library for Decent blockchain",
   "browser": {
     "ws": false,
