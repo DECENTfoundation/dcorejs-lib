@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["dcore"] = factory();
+		exports["dcorejs-lib"] = factory();
 	else
-		root["dcore"] = factory();
+		root["dcorejs-lib"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -7845,7 +7845,7 @@ ChainTypes.object_type = {
   base: 1,
   account: 2,
   asset: 3,
-  witness: 4,
+  miner: 4,
   custom: 7,
   proposal: 8,
   operation_history: 7,
@@ -7880,7 +7880,7 @@ ChainTypes.impl_object_type = {
 
 ChainTypes.vote_type = {
   committee: 0,
-  witness: 1,
+  miner: 1,
   worker: 2
 };
 
@@ -7891,8 +7891,8 @@ ChainTypes.operations= {
     asset_create: 3,
     asset_update: 4,
     asset_publish_feed: 5,
-    witness_create: 6,
-    witness_update: 7,
+    miner_create: 6,
+    miner_update: 7,
     witness_update_global_parameters: 8,
     proposal_create: 9,
     proposal_update: 10,
@@ -16764,18 +16764,18 @@ const asset_publish_feed_operation_fee_parameters = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["asset_publish_feed_operation_fee_parameters"] = asset_publish_feed_operation_fee_parameters;
 
 
-const witness_create_operation_fee_parameters = new Serializer( 
-    "witness_create_operation_fee_parameters",
+const miner_create_operation_fee_parameters = new Serializer( 
+    "miner_create_operation_fee_parameters",
     {fee: uint64}
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_create_operation_fee_parameters"] = witness_create_operation_fee_parameters;
+/* harmony export (immutable) */ __webpack_exports__["miner_create_operation_fee_parameters"] = miner_create_operation_fee_parameters;
 
 
-const witness_update_operation_fee_parameters = new Serializer( 
-    "witness_update_operation_fee_parameters",
+const miner_update_operation_fee_parameters = new Serializer( 
+    "miner_update_operation_fee_parameters",
     {fee: int64}
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_update_operation_fee_parameters"] = witness_update_operation_fee_parameters;
+/* harmony export (immutable) */ __webpack_exports__["miner_update_operation_fee_parameters"] = miner_update_operation_fee_parameters;
 
 
 const witness_update_global_parameters_operation_fee_parameters = new Serializer( 
@@ -17010,8 +17010,8 @@ let fee_parameters = static_variant([
     asset_create_operation_fee_parameters,    
     asset_update_operation_fee_parameters,    
     asset_publish_feed_operation_fee_parameters,    
-    witness_create_operation_fee_parameters,    
-    witness_update_operation_fee_parameters,    
+    miner_create_operation_fee_parameters,    
+    miner_update_operation_fee_parameters,    
     witness_update_global_parameters_operation_fee_parameters,    
     proposal_create_operation_fee_parameters,    
     proposal_update_operation_fee_parameters,    
@@ -17167,7 +17167,7 @@ const account_options = new Serializer(
     "account_options", {
     memo_key: public_key,
     voting_account: protocol_id_type("account"),
-    num_witness: uint16,
+    num_miner: uint16,
     votes: set(vote_id),
     extensions: set(future_extensions),
     allow_subscription: bool,
@@ -17212,9 +17212,6 @@ const asset_create = new Serializer(
     symbol: string,
     precision: uint8,
     description: string,
-    max_supply: int64,
-    feed_lifetime_sec: uint32,
-    minimum_feeds: uint8,
     extensions: set(future_extensions)
 }
 );
@@ -17265,27 +17262,27 @@ const asset_publish_feed = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["asset_publish_feed"] = asset_publish_feed;
 
 
-const witness_create = new Serializer( 
-    "witness_create", {
+const miner_create = new Serializer( 
+    "miner_create", {
     fee: asset,
-    witness_account: protocol_id_type("account"),
+    miner_account: protocol_id_type("account"),
     url: string,
     block_signing_key: public_key
 }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_create"] = witness_create;
+/* harmony export (immutable) */ __webpack_exports__["miner_create"] = miner_create;
 
 
-const witness_update = new Serializer( 
-    "witness_update", {
+const miner_update = new Serializer( 
+    "miner_update", {
     fee: asset,
-    witness: protocol_id_type("witness"),
-    witness_account: protocol_id_type("account"),
+    miner: protocol_id_type("miner"),
+    miner_account: protocol_id_type("account"),
     new_url: optional(string),
     new_signing_key: optional(public_key)
 }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_update"] = witness_update;
+/* harmony export (immutable) */ __webpack_exports__["miner_update"] = miner_update;
 
 
 const chain_parameters = new Serializer( 
@@ -17815,8 +17812,8 @@ operation.st_operations = [
     asset_create,    
     asset_update,    
     asset_publish_feed,    
-    witness_create,    
-    witness_update,    
+    miner_create,    
+    miner_update,    
     witness_update_global_parameters,    
     proposal_create,    
     proposal_update,    
@@ -19663,7 +19660,7 @@ class ErrorWithCause {
 /* 68 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["bigi@1.4.2","/Users/duski/Documents/touch4it/dev/decentGo/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/duski/Documents/touch4it/dev/decentGo/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
+module.exports = {"_args":[["bigi@1.4.2","/Users/duskis/Documents/touch4it/dev/decent/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/duskis/Documents/touch4it/dev/decent/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
 
 /***/ }),
 /* 69 */
@@ -21674,7 +21671,9 @@ var _ChainConfig = __webpack_require__(50);
 var _ChainConfig2 = _interopRequireDefault(_ChainConfig);
 
 function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {default: obj};
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
 }
 
 function _classCallCheck(instance, Constructor) {
@@ -21774,39 +21773,51 @@ var ApisInstance = function () {
 
         this.ws_rpc = new _ChainWebSocket2.default(cs, this.statusCb);
 
-        this.init_promise = this.ws_rpc.login(rpc_user, rpc_password)
-            .then(function () {
-                // console.log("Login done");
-                _this._db = new _GrapheneApi2.default(_this.ws_rpc, "database");
-                _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
-                _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
-                _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
-                var db_promise = _this._db.init().then(function () {
-                    //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
-                    return _this._db.exec("get_chain_id", []).then(function (_chain_id) {
-                        _this.chain_id = _chain_id;
-                        return _ChainConfig2.default.setChainId(_chain_id);
-                        //DEBUG console.log("chain_id1",this.chain_id)
+        this.init_promise = new Promise(function (resolve, reject) {
+            _this.ws_rpc.login(rpc_user, rpc_password)
+                .then(function () {
+                    // console.log("Login done");
+                    _this._db = new _GrapheneApi2.default(_this.ws_rpc, "database");
+                    _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
+                    _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
+                    _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
+                    _this._msg = new _GrapheneApi2.default(_this.ws_rpc, "messaging");
+                    var db_promise = _this._db.init().then(function () {
+                        //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
+                        return _this._db.exec("get_chain_id", [])
+                            .then(function (_chain_id) {
+                                _this.chain_id = _chain_id;
+                                return _ChainConfig2.default.setChainId(_chain_id);
+                                //DEBUG console.log("chain_id1",this.chain_id)
+                            });
                     });
-                });
-                _this.ws_rpc.on_reconnect = function () {
-                    _this.ws_rpc.login("", "").then(function () {
-                        _this._db.init().then(function () {
-                            if (_this.statusCb) _this.statusCb("reconnect");
+                    _this.ws_rpc.on_reconnect = function () {
+                        _this.ws_rpc.login("", "")
+                            .then(function () {
+                                _this._db.init()
+                                    .then(function () {
+                                        if (_this.statusCb) _this.statusCb("reconnect");
+                                    });
+                                _this._net.init();
+                                _this._hist.init();
+                                _this._crypt.init();
+                                _this._msg.init();
+                            });
+                    };
+                    Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init(), _this._msg.init()
+                            // Temporary squash crypto API error until the API is upgraded everywhere
+                            .catch(function (e) {
+                                return console.error("ApiInstance\tCrypto API Error", e);
+                            })
+                        ])
+                        .then(res => {
+                            resolve(res);
                         });
-                        _this._net.init();
-                        _this._hist.init();
-                        _this._crypt.init();
-                    });
-                };
-                return Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init()
-                // Temporary squash crypto API error until the API is upgraded everywhere
-                    .catch(function (e) {
-                        return console.error("ApiInstance\tCrypto API Error", e);
-                    })]);
-            })
-            .catch(er => {
-            });
+                })
+                .catch(er => {
+                    reject(er);
+                });
+        });
     };
 
     ApisInstance.prototype.close = function close() {
@@ -21828,6 +21839,10 @@ var ApisInstance = function () {
 
     ApisInstance.prototype.crypto_api = function crypto_api() {
         return this._crypt;
+    };
+    
+    ApisInstance.prototype.msg_api = function msg_api() {
+        return this._msg;
     };
 
     ApisInstance.prototype.setRpcConnectionStatusCallback = function setRpcConnectionStatusCallback(callback) {
