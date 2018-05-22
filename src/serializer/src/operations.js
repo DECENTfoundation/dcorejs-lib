@@ -463,9 +463,9 @@ export const asset_create = new Serializer(
         precision: uint8,
         description: string,
         options: asset_options,
+        monitored_asset_opts: optional(monitored_asset_options),
         is_exchangeable: bool,
         extensions: map(future_extensions),
-        monitored_asset_opts: optional(monitored_asset_options),
     }
 );
 
@@ -506,7 +506,7 @@ export const update_monitored_asset_operation = new Serializer(
 );
 
 export const issue_asset = new Serializer(
-    "issue_asset", {
+    "asset_issue", {
         fee: asset,
         issuer: protocol_id_type("account"),
         asset_to_issue: asset,
