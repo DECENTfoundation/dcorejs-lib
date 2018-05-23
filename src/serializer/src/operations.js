@@ -469,8 +469,8 @@ export const asset_create = new Serializer(
     }
 );
 
-export const asset_update = new Serializer(
-    "asset_update", {
+export const update_user_issued_asset = new Serializer(
+    "update_user_issued_asset", {
         fee: asset,
         issuer: protocol_id_type("account"),
         asset_to_update: protocol_id_type("asset"),
@@ -505,13 +505,13 @@ export const update_monitored_asset_operation = new Serializer(
     }
 );
 
-export const issue_asset = new Serializer(
+export const asset_issue = new Serializer(
     "asset_issue", {
         fee: asset,
         issuer: protocol_id_type("account"),
         asset_to_issue: asset,
         issue_to_account: protocol_id_type("account"),
-        memo: optional(string),
+        memo: optional(memo_data),
         extensions: set(future_extensions)
     }
 );
@@ -1006,12 +1006,12 @@ operation.st_operations = [
     account_create,
     account_update,
     asset_create,
-    asset_update,
+    asset_issue,
     asset_publish_feed,
     asset_fund_pools_operation,
     asset_reserve_operation,
     update_monitored_asset_operation,
-    issue_asset,
+    asset_issue,
     witness_create,
     witness_update,
     witness_update_global_parameters,
@@ -1038,7 +1038,7 @@ operation.st_operations = [
     report_stats,
     set_publishing_manager,
     set_publishing_right,
-    content_cancellation,
+    update_user_issued_asset,
     disallow_automatic_renewal_of_subscription,
     return_escrow_submission,
     return_escrow_buying,
