@@ -55,7 +55,7 @@ ChainTypes.operations= {
     account_create: 1,
     account_update: 2,
     asset_create: 3,
-    asset_update: 4,
+    asset_issue: 4,
     asset_publish_feed: 5,
     witness_create: 6,
     witness_update: 7,
@@ -87,7 +87,7 @@ ChainTypes.operations= {
     disallow_automatic_renewal_of_subscription: 33,
     return_escrow_submission: 34,
     return_escrow_buying: 35,
-    pay_seeder: 36,
+    update_user_issued_asset: 36,
     finish_buying: 37,
     renewal_of_subscription: 38
 };
