@@ -1034,7 +1034,7 @@ operation.st_operations = [
     subscribe,
     subscribe_by_author,
     automatic_renewal_of_subscription,
-    report_stats,
+    content_cancellation,
     asset_fund_pools_operation,
     asset_reserve_operation,
     asset_claim_fees_operation,
