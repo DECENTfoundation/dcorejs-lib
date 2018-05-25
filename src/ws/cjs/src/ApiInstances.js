@@ -125,6 +125,7 @@ var ApisInstance = function () {
                     _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
                     _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
                     _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
+                    _this._msg = new _GrapheneApi2.default(_this.ws_rpc, "messaging");
                     var db_promise = _this._db.init().then(function () {
                         //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
                         return _this._db.exec("get_chain_id", [])
@@ -144,9 +145,10 @@ var ApisInstance = function () {
                                 _this._net.init();
                                 _this._hist.init();
                                 _this._crypt.init();
+                                _this._msg.init();
                             });
                     };
-                    Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init()
+                    Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init(), _this._msg.init()
                             // Temporary squash crypto API error until the API is upgraded everywhere
                             .catch(function (e) {
                                 return console.error("ApiInstance\tCrypto API Error", e);
@@ -181,6 +183,10 @@ var ApisInstance = function () {
 
     ApisInstance.prototype.crypto_api = function crypto_api() {
         return this._crypt;
+    };
+    
+    ApisInstance.prototype.msg_api = function msg_api() {
+        return this._msg;
     };
 
     ApisInstance.prototype.setRpcConnectionStatusCallback = function setRpcConnectionStatusCallback(callback) {
