@@ -77,13 +77,13 @@ export const asset_publish_feed_operation_fee_parameters = new Serializer(
     { fee: uint64 }
 );
 
-export const witness_create_operation_fee_parameters = new Serializer(
-    "witness_create_operation_fee_parameters",
+export const miner_create_operation_fee_parameters = new Serializer(
+    "miner_create_operation_fee_parameters",
     { fee: uint64 }
 );
 
-export const witness_update_operation_fee_parameters = new Serializer(
-    "witness_update_operation_fee_parameters",
+export const miner_update_operation_fee_parameters = new Serializer(
+    "miner_update_operation_fee_parameters",
     { fee: int64 }
 );
 
@@ -550,8 +550,8 @@ export const asset_publish_feed = new Serializer(
     }
 );
 
-export const witness_create = new Serializer(
-    "witness_create", {
+export const miner_create = new Serializer(
+    "miner_create", {
         fee: asset,
         witness_account: protocol_id_type("account"),
         url: string,
@@ -559,8 +559,8 @@ export const witness_create = new Serializer(
     }
 );
 
-export const witness_update = new Serializer(
-    "witness_update", {
+export const miner_update = new Serializer(
+    "miner_update", {
         fee: asset,
         witness: protocol_id_type("witness"),
         witness_account: protocol_id_type("account"),
@@ -1011,8 +1011,8 @@ operation.st_operations = [
     set_publishing_right,
     update_monitored_asset_operation,
     asset_issue,
-    witness_create,
-    witness_update,
+    miner_create,
+    miner_update,
     witness_update_global_parameters,
     proposal_create,
     proposal_update,
