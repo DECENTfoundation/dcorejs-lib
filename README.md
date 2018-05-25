@@ -1,102 +1,158 @@
-# GrapheneJS (graphenejs-lib)
+# dcorejs-lib
 
-## ATTN: If you're looking to use this with Bitshares, please [bitsharesjs](https://github.com/bitshares/bitsharesjs) instead.
+> This library is combined forks of [graphenejs-lib](https://github.com/svk31/graphenejs-lib) 
+and [graphenejs-ws](https://github.com/svk31/graphenejs-ws). 
 
-Pure JavaScript Bitshares/Graphene library for node.js and browsers. Can be used to construct, sign and broadcast transactions in JavaScript, and to easily obtain data from the blockchain via public apis.
+The library was created as a combination of forks of graphenejs-lib and graphenejs-ws with necessary corrections.
+Can be used to construct, sign and broadcast transactions in JavaScript, and to easily obtain data from the blockchain 
+via public APIs.
 
-Most of this code was written by [jcalfeee](https://github.com/jcalfee), my work was mostly just repackaging to a discrete npm package.
-
-[![npm version](https://img.shields.io/npm/v/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/graphenejs-lib)
+[![npm version](https://img.shields.io/npm/v/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/dcorejs-lib)
 [![npm downloads](https://img.shields.io/npm/dm/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/graphenejs-lib)
-
 
 ## Setup
 
-This library can be obtained through npm:
+To obtain the library use npm:
 ```
-npm install graphenejs-lib
+npm install dcorejs-lib
 ```
 
 ## Usage
 
-Three sub-libraries are included: `ECC`, `Chain` and `Serializer`. Generally only the `ECC` and `Chain` libraries need to be used directly.
+The following examples will provide you basics of dcorejs-lib library usage, like is manipulation and doing fetches of 
+DCore blockchain objects.
+
+### Initialization
+
+Moreover, it includes connection to DCore daemon APIs.
+
+```javascript
+    var {Apis, ChainConfig} = require('dcorejs-lib');
+    var dcoreWsAddress = 'wss://dcore.address.com';
+    
+    ChainConfig.networks.decent = {
+        chainId: 'your_dcore_chain_id'
+    };
+    
+    Apis.instance(dcoreWsAddress, true).init_promise
+        .then(result => {
+            // now connected to DCore daemon, can run some commands
+        })
+        .catch(err => {
+            // error connecting to DCore daemon ws interface
+        });
+```
 
 ### Chain
-This library provides utility functions to handle blockchain state as well as a login class that can be used for simple login functionality using a specific key seed.
 
-#### Login
-The login class uses the following format for keys:
+The module provides utility methods which handles DCore blockchain objects.
 
+```javascript
+    var {Apis, ChainStore, FetchChain} = require('dcorejs-lib');
+    
+    Apis.instance().init_promise
+        .then(res => {
+            ChainStore.init()
+                .then(() => {
+                    FetchChain('getAccount', '1.2.30')
+                        .then(res => {
+                            // object successfully fetched, process DCore network object
+                        })
+                        .catch(err => {
+                            // error fetching object from DCore blockchain
+                        });
+                })
+                .catch(err => {
+                    // error initializing chain store
+                });
+        })
+        .catch(err => {
+            // error connecting to DCore daemon ws interface
+        });
 ```
-keySeed = accountName + role + password
-```
-
-Using this seed, private keys are generated for either the default roles `active, owner, memo`, or as specified. A minimum password length of 12 characters is enforced, but an even longer password is recommended. Three methods are provided:
-
-```
-generateKeys(account, password, [roles])
-checkKeys(account, password, auths)
-signTransaction(tr)
-```
-
-The auths object should contain the auth arrays from the account object. An example is this:
-
-```
-{
-    active: [
-        ["GPH5Abm5dCdy3hJ1C5ckXkqUH2Me7dXqi9Y7yjn9ACaiSJ9h8r8mL", 1]
-    ]
-}
-```
-
-If checkKeys is successful, you can use signTransaction to sign a TransactionBuilder transaction using the private keys for that account.
-
-#### State container
-The Chain library contains a complete state container called the ChainStore. The ChainStore will automatically configure the `set_subscribe_callback` and handle any incoming state changes appropriately. It uses Immutable.js for storing the state, so all objects are return as immutable objects. It has its own `subscribe` method that can be used to register a callback that will be called whenever a state change happens.
-
-The ChainStore has several useful methods to retrieve, among other things, objects, assets and accounts using either object ids or asset/account names. These methods are synchronous and will return `undefined` to indicate fetching in progress, and `null` to indicate that the object does not exist.
-
-```
-import {Apis} from "graphenejs-ws";
-var {ChainStore} = require("graphenejs-lib");
-
-Apis.instance("wss://bitshares.openledger.info/ws", true).init_promise.then((res) => {
-    console.log("connected to:", res[0].network);
-    ChainStore.init().then(() => {
-        ChainStore.subscribe(updateState);
-    });
-});
-
-let dynamicGlobal = null;
-function updateState(object) {
-    dynamicGlobal = ChainStore.getObject("2.1.0");
-    console.log("ChainStore object update\n", dynamicGlobal ? dynamicGlobal.toJS() : dynamicGlobal);
-}
-
-```
-
-### ECC
-The ECC library contains all the crypto functions for private and public keys as well as transaction creation/signing.
 
 #### Private keys
-As a quick example, here's how to generate a new private key from a seed (a brainkey for example):
 
-```
-var {PrivateKey, key} = require("graphenejs-lib");
+Generate a new private key from a seed (e.g. a brainkey).
 
-let seed = "THIS IS A TERRIBLE BRAINKEY SEED WORD SEQUENCE";
-let pkey = PrivateKey.fromSeed( key.normalize_brainKey(seed) );
-
-console.log("\nPrivate key:", pkey.toWif());
-console.log("Public key :", pkey.toPublicKey().toString(), "\n");
+```javascript
+    var {PrivateKey, key} = require("dcorejs-lib");
+    
+    let seed = "THIS IS A TERRIBLE BRAINKEY SEED WORD SEQUENCE";
+    let pkey = PrivateKey.fromSeed( key.normalize_brainKey(seed) );
+    
+    console.log("\nPrivate key:", pkey.toWif());
+    console.log("Public key :", pkey.toPublicKey().toString(), "\n");
 ```
 
 #### Transactions
-TODO transaction signing example
 
-## ESDoc (beta)
-```bash
-npm i -g esdoc esdoc-es7-plugin
-esdoc -c ./esdoc.json
-open out/esdoc/index.html
+Following example show the way of broadcasting `transfer` operation transaction into DCore network. 
+
+```javascript
+    var {Apis, TransactionHelper, ChainStore, FetchChain, Aes, TransactionBuilder} = require('dcorejs-lib');
+
+    var amount = 0.11;
+    var fromAccountId = 'sender_account_name';
+    var toAccountId = 'receiver_account_name';
+    var memoMessage = 'some memo for receiver';
+    
+    Apis.instance().init_promise
+        .then(res => {
+            ChainStore.init()
+                .then(() => {
+                   Promise.all([
+                       FetchChain('getAccount', fromAccountId),
+                       FetchChain('getAccount', toAccountId),
+                       FetchChain('getAsset', 'DCT'),
+                   ])
+                   .then(result => {
+                       var [fromAccount, toAccount, amountAsset] = result;
+                       
+                       var privateKey = fromAccount.get('owner').get('key_auths').get(0).get(0);
+                       var senderMemoKey = fromAccount.get('options').get('memo_key');
+                       var receiverMemoKey = toAccount.get('options').get('memo_key');
+                       var nonce = TransactionHelper.unique_nonce_uint64();
+                       
+                       var memo = {
+                           from: senderMemoKey,
+                           to: receiverMemoKey,
+                           nonce: nonce,
+                           message: Aes.encrypt_with_checksum(privateKey, receiverMemoKey, nonce, memoMessage),
+                       };
+                       
+                       var tb = new TransactionBuilder();
+                       tb.add_type_operation('transfer', {
+                           fee: {
+                               amount: 0,
+                               asset_id: amountAsset.get('id')
+                           },
+                           from: fromAccount.get('id'),
+                           to: toAccount.get('id'),
+                           amount: {
+                               amount: amount, 
+                               asset_id: amountAsset.get('id')
+                           },
+                           memo: memo
+                       });
+                       tb.set_required_fees()
+                        .then(() => {
+                            tr.add_signer(privateKey, privateKey.toPublicKey().toPublicKeyString());
+                            tr.broadcast()
+                                .then(() => {
+                                    // transaction successfully broadcasted to DCore network
+                                })
+                                .catch(err => {
+                                    // error broadcasting transaction
+                                });
+                        })
+                        .catch(err => {
+                            // error setting transaction fees
+                        });
+                   });
+                });
+        })
+        .catch(err => {
+            // error connecting to DCore daemon ws interface
+        });
 ```
