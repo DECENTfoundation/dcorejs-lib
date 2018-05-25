@@ -439,17 +439,6 @@ export const asset_extension = new Serializer(
     }
 )
 
-export const asset_create = new Serializer( 
-    "asset_create", {
-    fee: asset,
-    issuer: protocol_id_type("account"),
-    symbol: string,
-    precision: uint8,
-    description: string,
-    extensions: set(future_extensions)
-}
-);
-
 export const asset_options = new Serializer(
     "asset_options", {
         max_supply: int64,
