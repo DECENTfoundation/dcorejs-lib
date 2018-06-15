@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["dcore"] = factory();
+		exports["dcorejs-lib"] = factory();
 	else
-		root["dcore"] = factory();
+		root["dcorejs-lib"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -7835,27 +7835,27 @@ function objectToString(o) {
 let ChainTypes = {};
 
 ChainTypes.reserved_spaces = {
-  relative_protocol_ids: 0,
-  protocol_ids: 1,
-  implementation_ids: 2
+    relative_protocol_ids: 0,
+    protocol_ids: 1,
+    implementation_ids: 2
 };
 
 ChainTypes.object_type = {
-  "null": 0,
-  base: 1,
-  account: 2,
-  asset: 3,
-  witness: 4,
-  custom: 7,
-  proposal: 8,
-  operation_history: 7,
-  withdraw_permission: 8,
-  vesting_balance: 9
+    "null": 0,
+    base: 1,
+    account: 2,
+    asset: 3,
+    miner: 4,
+    custom: 7,
+    proposal: 8,
+    operation_history: 7,
+    withdraw_permission: 8,
+    vesting_balance: 9
 };
 
 ChainTypes.impl_object_type = {
-  global_property: 0,
-  dynamic_global_property: 1,
+    global_property: 0,
+    dynamic_global_property: 1,
     reserved0: 2,      // formerly index_meta, TODO: delete me
     asset_dynamic_data_type: 3,
     account_balance: 4,
@@ -7879,9 +7879,9 @@ ChainTypes.impl_object_type = {
 
 
 ChainTypes.vote_type = {
-  committee: 0,
-  witness: 1,
-  worker: 2
+    committee: 0,
+    miner: 1,
+    worker: 2
 };
 
 ChainTypes.operations= {
@@ -7889,11 +7889,11 @@ ChainTypes.operations= {
     account_create: 1,
     account_update: 2,
     asset_create: 3,
-    asset_update: 4,
+    asset_issue: 4,
     asset_publish_feed: 5,
-    witness_create: 6,
-    witness_update: 7,
-    witness_update_global_parameters: 8,
+    miner_create: 6,
+    miner_update: 7,
+    miner_update_global_parameters: 8,
     proposal_create: 9,
     proposal_update: 10,
     proposal_delete: 11,
@@ -7918,12 +7918,19 @@ ChainTypes.operations= {
     set_publishing_manager: 30,
     set_publishing_right: 31,
     content_cancellation: 32,
-    disallow_automatic_renewal_of_subscription: 33,
-    return_escrow_submission: 34,
-    return_escrow_buying: 35,
-    pay_seeder: 36,
-    finish_buying: 37,
-    renewal_of_subscription: 38
+    asset_fund_pools_operation: 33,
+    asset_reserve_operation: 34,
+    asset_claim_fees_operation: 35,
+    update_user_issued_asset: 36,
+    update_monitored_asset: 37,
+    ready_to_publish2: 38,
+    transfer2: 39,
+    disallow_automatic_renewal_of_subscription: 40,
+    return_escrow_submission: 41,
+    return_escrow_buying: 42,
+    pay_seeder: 43,
+    finish_buying: 44,
+    renewal_of_subscription: 45
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (ChainTypes);
@@ -16711,7 +16718,7 @@ var operation = static_variant();
 
 
 // For module.exports
-var Serializer = function(operation_name, serilization_types_object){
+var Serializer = function (operation_name, serilization_types_object) {
     return new __WEBPACK_IMPORTED_MODULE_1__serializer__["a" /* default */](operation_name, serilization_types_object);
     // return module.exports[operation_name] = s;
 }
@@ -16722,1155 +16729,1278 @@ var Serializer = function(operation_name, serilization_types_object){
 // # programs/js_operation_serializer > npm i -g decaffeinate
 // ## -------------------------------
 
-const transfer_operation_fee_parameters = new Serializer( 
+const transfer_operation_fee_parameters = new Serializer(
     "transfer_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["transfer_operation_fee_parameters"] = transfer_operation_fee_parameters;
 
 
-const account_create_operation_fee_parameters = new Serializer( 
+const account_create_operation_fee_parameters = new Serializer(
     "account_create_operation_fee_parameters",
-    {basic_fee: uint64}
+    { basic_fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["account_create_operation_fee_parameters"] = account_create_operation_fee_parameters;
 
 
-const account_update_operation_fee_parameters = new Serializer( 
+const account_update_operation_fee_parameters = new Serializer(
     "account_update_operation_fee_parameters",
-    {fee: int64}
+    { fee: int64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["account_update_operation_fee_parameters"] = account_update_operation_fee_parameters;
 
 
-const asset_create_operation_fee_parameters = new Serializer( 
+const asset_create_operation_fee_parameters = new Serializer(
     "asset_create_operation_fee_parameters",
-    {basic_fee: uint64}
+    { basic_fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset_create_operation_fee_parameters"] = asset_create_operation_fee_parameters;
 
 
-const asset_update_operation_fee_parameters = new Serializer( 
+const asset_update_operation_fee_parameters = new Serializer(
     "asset_update_operation_fee_parameters",
-    {basic_fee: uint64}
+    { basic_fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset_update_operation_fee_parameters"] = asset_update_operation_fee_parameters;
 
 
-const asset_publish_feed_operation_fee_parameters = new Serializer( 
+const asset_publish_feed_operation_fee_parameters = new Serializer(
     "asset_publish_feed_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset_publish_feed_operation_fee_parameters"] = asset_publish_feed_operation_fee_parameters;
 
 
-const witness_create_operation_fee_parameters = new Serializer( 
-    "witness_create_operation_fee_parameters",
-    {fee: uint64}
+const miner_create_operation_fee_parameters = new Serializer(
+    "miner_create_operation_fee_parameters",
+    { fee: uint64 }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_create_operation_fee_parameters"] = witness_create_operation_fee_parameters;
+/* harmony export (immutable) */ __webpack_exports__["miner_create_operation_fee_parameters"] = miner_create_operation_fee_parameters;
 
 
-const witness_update_operation_fee_parameters = new Serializer( 
-    "witness_update_operation_fee_parameters",
-    {fee: int64}
+const miner_update_operation_fee_parameters = new Serializer(
+    "miner_update_operation_fee_parameters",
+    { fee: int64 }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_update_operation_fee_parameters"] = witness_update_operation_fee_parameters;
+/* harmony export (immutable) */ __webpack_exports__["miner_update_operation_fee_parameters"] = miner_update_operation_fee_parameters;
 
 
-const witness_update_global_parameters_operation_fee_parameters = new Serializer( 
+const witness_update_global_parameters_operation_fee_parameters = new Serializer(
     "witness_update_global_parameters_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["witness_update_global_parameters_operation_fee_parameters"] = witness_update_global_parameters_operation_fee_parameters;
 
 
-const proposal_create_operation_fee_parameters = new Serializer( 
+const proposal_create_operation_fee_parameters = new Serializer(
     "proposal_create_operation_fee_parameters", {
-    fee: uint64,
-    price_per_kbyte: uint32
-}
+        fee: uint64,
+        price_per_kbyte: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_create_operation_fee_parameters"] = proposal_create_operation_fee_parameters;
 
 
-const proposal_update_operation_fee_parameters = new Serializer( 
+const proposal_update_operation_fee_parameters = new Serializer(
     "proposal_update_operation_fee_parameters", {
-    fee: uint64,
-    price_per_kbyte: uint32
-}
+        fee: uint64,
+        price_per_kbyte: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_update_operation_fee_parameters"] = proposal_update_operation_fee_parameters;
 
 
-const proposal_delete_operation_fee_parameters = new Serializer( 
+const proposal_delete_operation_fee_parameters = new Serializer(
     "proposal_delete_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_delete_operation_fee_parameters"] = proposal_delete_operation_fee_parameters;
 
 
-const withdraw_permission_create_operation_fee_parameters = new Serializer( 
+const withdraw_permission_create_operation_fee_parameters = new Serializer(
     "withdraw_permission_create_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_create_operation_fee_parameters"] = withdraw_permission_create_operation_fee_parameters;
 
 
-const withdraw_permission_update_operation_fee_parameters = new Serializer( 
+const withdraw_permission_update_operation_fee_parameters = new Serializer(
     "withdraw_permission_update_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_update_operation_fee_parameters"] = withdraw_permission_update_operation_fee_parameters;
 
 
-const withdraw_permission_claim_operation_fee_parameters = new Serializer( 
+const withdraw_permission_claim_operation_fee_parameters = new Serializer(
     "withdraw_permission_claim_operation_fee_parameters", {
-    fee: uint64,
-    price_per_kbyte: uint32
-}
+        fee: uint64,
+        price_per_kbyte: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_claim_operation_fee_parameters"] = withdraw_permission_claim_operation_fee_parameters;
 
 
-const withdraw_permission_delete_operation_fee_parameters = new Serializer( 
+const withdraw_permission_delete_operation_fee_parameters = new Serializer(
     "withdraw_permission_delete_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_delete_operation_fee_parameters"] = withdraw_permission_delete_operation_fee_parameters;
 
 
-const vesting_balance_create_operation_fee_parameters = new Serializer( 
+const vesting_balance_create_operation_fee_parameters = new Serializer(
     "vesting_balance_create_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["vesting_balance_create_operation_fee_parameters"] = vesting_balance_create_operation_fee_parameters;
 
 
-const vesting_balance_withdraw_operation_fee_parameters = new Serializer( 
+const vesting_balance_withdraw_operation_fee_parameters = new Serializer(
     "vesting_balance_withdraw_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["vesting_balance_withdraw_operation_fee_parameters"] = vesting_balance_withdraw_operation_fee_parameters;
 
 
-const custom_operation_fee_parameters = new Serializer( 
+const custom_operation_fee_parameters = new Serializer(
     "custom_operation_fee_parameters", {
-    fee: uint64,
-    price_per_kbyte: uint32
-}
+        fee: uint64,
+        price_per_kbyte: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["custom_operation_fee_parameters"] = custom_operation_fee_parameters;
 
 
-const assert_operation_fee_parameters = new Serializer( 
+const assert_operation_fee_parameters = new Serializer(
     "assert_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["assert_operation_fee_parameters"] = assert_operation_fee_parameters;
 
 
-const content_submit_operation_fee_parameters = new Serializer( 
+const content_submit_operation_fee_parameters = new Serializer(
     "content_submit_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["content_submit_operation_fee_parameters"] = content_submit_operation_fee_parameters;
 
 
-const request_to_buy_operation_fee_parameters = new Serializer( 
+const request_to_buy_operation_fee_parameters = new Serializer(
     "request_to_buy_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["request_to_buy_operation_fee_parameters"] = request_to_buy_operation_fee_parameters;
 
 
-const leave_rating_and_comment_operation_fee_parameters = new Serializer( 
+const leave_rating_and_comment_operation_fee_parameters = new Serializer(
     "leave_rating_and_comment_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["leave_rating_and_comment_operation_fee_parameters"] = leave_rating_and_comment_operation_fee_parameters;
 
 
-const ready_to_publish_operation_fee_parameters = new Serializer( 
+const ready_to_publish_operation_fee_parameters = new Serializer(
     "ready_to_publish_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["ready_to_publish_operation_fee_parameters"] = ready_to_publish_operation_fee_parameters;
 
 
-const proof_of_custody_operation_fee_parameters = new Serializer( 
+const proof_of_custody_operation_fee_parameters = new Serializer(
     "proof_of_custody_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["proof_of_custody_operation_fee_parameters"] = proof_of_custody_operation_fee_parameters;
 
 
-const deliver_keys_operation_fee_parameters = new Serializer( 
+const deliver_keys_operation_fee_parameters = new Serializer(
     "deliver_keys_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["deliver_keys_operation_fee_parameters"] = deliver_keys_operation_fee_parameters;
 
 
-const subscribe_operation_fee_parameters = new Serializer( 
+const subscribe_operation_fee_parameters = new Serializer(
     "subscribe_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["subscribe_operation_fee_parameters"] = subscribe_operation_fee_parameters;
 
 
-const subscribe_by_author_operation_fee_parameters = new Serializer( 
+const subscribe_by_author_operation_fee_parameters = new Serializer(
     "subscribe_by_author_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["subscribe_by_author_operation_fee_parameters"] = subscribe_by_author_operation_fee_parameters;
 
 
-const automatic_renewal_of_subscription_operation_fee_parameters = new Serializer( 
+const automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "automatic_renewal_of_subscription_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["automatic_renewal_of_subscription_operation_fee_parameters"] = automatic_renewal_of_subscription_operation_fee_parameters;
 
 
-const report_stats_operation_fee_parameters = new Serializer( 
+const report_stats_operation_fee_parameters = new Serializer(
     "report_stats_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["report_stats_operation_fee_parameters"] = report_stats_operation_fee_parameters;
 
 
-const set_publishing_manager_operation_fee_parameters = new Serializer( 
+const set_publishing_manager_operation_fee_parameters = new Serializer(
     "set_publishing_manager_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["set_publishing_manager_operation_fee_parameters"] = set_publishing_manager_operation_fee_parameters;
 
 
-const set_publishing_right_operation_fee_parameters = new Serializer( 
+const set_publishing_right_operation_fee_parameters = new Serializer(
     "set_publishing_right_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["set_publishing_right_operation_fee_parameters"] = set_publishing_right_operation_fee_parameters;
 
 
-const content_cancellation_operation_fee_parameters = new Serializer( 
+const content_cancellation_operation_fee_parameters = new Serializer(
     "content_cancellation_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["content_cancellation_operation_fee_parameters"] = content_cancellation_operation_fee_parameters;
 
 
-const disallow_automatic_renewal_of_subscription_operation_fee_parameters = new Serializer( 
+const disallow_automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "disallow_automatic_renewal_of_subscription_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["disallow_automatic_renewal_of_subscription_operation_fee_parameters"] = disallow_automatic_renewal_of_subscription_operation_fee_parameters;
 
 
-const return_escrow_submission_operation_fee_parameters = new Serializer( 
+const return_escrow_submission_operation_fee_parameters = new Serializer(
     "return_escrow_submission_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["return_escrow_submission_operation_fee_parameters"] = return_escrow_submission_operation_fee_parameters;
 
 
-const return_escrow_buying_operation_fee_parameters = new Serializer( 
+const return_escrow_buying_operation_fee_parameters = new Serializer(
     "return_escrow_buying_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["return_escrow_buying_operation_fee_parameters"] = return_escrow_buying_operation_fee_parameters;
 
 
-const pay_seeder_operation_fee_parameters = new Serializer( 
+const pay_seeder_operation_fee_parameters = new Serializer(
     "pay_seeder_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["pay_seeder_operation_fee_parameters"] = pay_seeder_operation_fee_parameters;
 
 
-const finish_buying_operation_fee_parameters = new Serializer( 
+const finish_buying_operation_fee_parameters = new Serializer(
     "finish_buying_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["finish_buying_operation_fee_parameters"] = finish_buying_operation_fee_parameters;
 
 
-const renewal_of_subscription_operation_fee_parameters = new Serializer( 
+const renewal_of_subscription_operation_fee_parameters = new Serializer(
     "renewal_of_subscription_operation_fee_parameters",
-    {fee: uint64}
+    { fee: uint64 }
 );
 /* harmony export (immutable) */ __webpack_exports__["renewal_of_subscription_operation_fee_parameters"] = renewal_of_subscription_operation_fee_parameters;
 
 
 let fee_parameters = static_variant([
-    transfer_operation_fee_parameters,    
-    account_create_operation_fee_parameters,    
-    account_update_operation_fee_parameters,    
-    asset_create_operation_fee_parameters,    
-    asset_update_operation_fee_parameters,    
-    asset_publish_feed_operation_fee_parameters,    
-    witness_create_operation_fee_parameters,    
-    witness_update_operation_fee_parameters,    
-    witness_update_global_parameters_operation_fee_parameters,    
-    proposal_create_operation_fee_parameters,    
-    proposal_update_operation_fee_parameters,    
-    proposal_delete_operation_fee_parameters,    
-    withdraw_permission_create_operation_fee_parameters,    
-    withdraw_permission_update_operation_fee_parameters,    
-    withdraw_permission_claim_operation_fee_parameters,    
-    withdraw_permission_delete_operation_fee_parameters,    
-    vesting_balance_create_operation_fee_parameters,    
-    vesting_balance_withdraw_operation_fee_parameters,    
-    custom_operation_fee_parameters,    
-    assert_operation_fee_parameters,    
-    content_submit_operation_fee_parameters,    
-    request_to_buy_operation_fee_parameters,    
-    leave_rating_and_comment_operation_fee_parameters,    
-    ready_to_publish_operation_fee_parameters,    
-    proof_of_custody_operation_fee_parameters,    
-    deliver_keys_operation_fee_parameters,    
-    subscribe_operation_fee_parameters,    
-    subscribe_by_author_operation_fee_parameters,    
-    automatic_renewal_of_subscription_operation_fee_parameters,    
-    report_stats_operation_fee_parameters,    
-    set_publishing_manager_operation_fee_parameters,    
-    set_publishing_right_operation_fee_parameters,    
-    content_cancellation_operation_fee_parameters,    
-    disallow_automatic_renewal_of_subscription_operation_fee_parameters,    
-    return_escrow_submission_operation_fee_parameters,    
-    return_escrow_buying_operation_fee_parameters,    
-    pay_seeder_operation_fee_parameters,    
-    finish_buying_operation_fee_parameters,    
+    transfer_operation_fee_parameters,
+    account_create_operation_fee_parameters,
+    account_update_operation_fee_parameters,
+    asset_create_operation_fee_parameters,
+    asset_update_operation_fee_parameters,
+    asset_publish_feed_operation_fee_parameters,
+    miner_create_operation_fee_parameters,
+    miner_update_operation_fee_parameters,
+    witness_update_global_parameters_operation_fee_parameters,
+    proposal_create_operation_fee_parameters,
+    proposal_update_operation_fee_parameters,
+    proposal_delete_operation_fee_parameters,
+    withdraw_permission_create_operation_fee_parameters,
+    withdraw_permission_update_operation_fee_parameters,
+    withdraw_permission_claim_operation_fee_parameters,
+    withdraw_permission_delete_operation_fee_parameters,
+    vesting_balance_create_operation_fee_parameters,
+    vesting_balance_withdraw_operation_fee_parameters,
+    custom_operation_fee_parameters,
+    assert_operation_fee_parameters,
+    content_submit_operation_fee_parameters,
+    request_to_buy_operation_fee_parameters,
+    leave_rating_and_comment_operation_fee_parameters,
+    ready_to_publish_operation_fee_parameters,
+    proof_of_custody_operation_fee_parameters,
+    deliver_keys_operation_fee_parameters,
+    subscribe_operation_fee_parameters,
+    subscribe_by_author_operation_fee_parameters,
+    automatic_renewal_of_subscription_operation_fee_parameters,
+    report_stats_operation_fee_parameters,
+    set_publishing_manager_operation_fee_parameters,
+    set_publishing_right_operation_fee_parameters,
+    content_cancellation_operation_fee_parameters,
+    disallow_automatic_renewal_of_subscription_operation_fee_parameters,
+    return_escrow_submission_operation_fee_parameters,
+    return_escrow_buying_operation_fee_parameters,
+    pay_seeder_operation_fee_parameters,
+    finish_buying_operation_fee_parameters,
     renewal_of_subscription_operation_fee_parameters
 ]);
 
-const fee_schedule = new Serializer( 
+const fee_schedule = new Serializer(
     "fee_schedule", {
-    parameters: set(fee_parameters),
-    scale: uint32
-}
+        parameters: set(fee_parameters),
+        scale: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["fee_schedule"] = fee_schedule;
 
 
-const void_result = new Serializer( 
+const void_result = new Serializer(
     "void_result"
 );
 /* harmony export (immutable) */ __webpack_exports__["void_result"] = void_result;
 
 
-const asset = new Serializer( 
+const asset = new Serializer(
     "asset", {
-    amount: int64,
-    asset_id: protocol_id_type("asset")
-}
+        amount: int64,
+        asset_id: protocol_id_type("asset")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset"] = asset;
 
 
 let operation_result = static_variant([
-    void_result,    
-    object_id_type,    
+    void_result,
+    object_id_type,
     asset
 ]);
 
-const processed_transaction = new Serializer( 
+const processed_transaction = new Serializer(
     "processed_transaction", {
-    ref_block_num: uint16,
-    ref_block_prefix: uint32,
-    expiration: time_point_sec,
-    operations: array(operation),
-    extensions: set(future_extensions),
-    signatures: array(bytes(65)),
-    operation_results: array(operation_result)
-}
+        ref_block_num: uint16,
+        ref_block_prefix: uint32,
+        expiration: time_point_sec,
+        operations: array(operation),
+        extensions: set(future_extensions),
+        signatures: array(bytes(65)),
+        operation_results: array(operation_result)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["processed_transaction"] = processed_transaction;
 
 
-const signed_block = new Serializer( 
+const signed_block = new Serializer(
     "signed_block", {
-    previous: bytes(20),
-    timestamp: time_point_sec,
-    witness: protocol_id_type("witness"),
-    transaction_merkle_root: bytes(20),
-    extensions: set(future_extensions),
-    witness_signature: bytes(65),
-    transactions: array(processed_transaction)
-}
+        previous: bytes(20),
+        timestamp: time_point_sec,
+        witness: protocol_id_type("witness"),
+        transaction_merkle_root: bytes(20),
+        extensions: set(future_extensions),
+        witness_signature: bytes(65),
+        transactions: array(processed_transaction)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["signed_block"] = signed_block;
 
 
-const block_header = new Serializer( 
+const block_header = new Serializer(
     "block_header", {
-    previous: bytes(20),
-    timestamp: time_point_sec,
-    witness: protocol_id_type("witness"),
-    transaction_merkle_root: bytes(20),
-    extensions: set(future_extensions)
-}
+        previous: bytes(20),
+        timestamp: time_point_sec,
+        witness: protocol_id_type("witness"),
+        transaction_merkle_root: bytes(20),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["block_header"] = block_header;
 
 
-const signed_block_header = new Serializer( 
+const signed_block_header = new Serializer(
     "signed_block_header", {
-    previous: bytes(20),
-    timestamp: time_point_sec,
-    witness: protocol_id_type("witness"),
-    transaction_merkle_root: bytes(20),
-    extensions: set(future_extensions),
-    witness_signature: bytes(65)
-}
+        previous: bytes(20),
+        timestamp: time_point_sec,
+        witness: protocol_id_type("witness"),
+        transaction_merkle_root: bytes(20),
+        extensions: set(future_extensions),
+        witness_signature: bytes(65)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["signed_block_header"] = signed_block_header;
 
 
 
-const memo_data = new Serializer( 
+const memo_data = new Serializer(
     "memo_data", {
-    from: public_key,
-    to: public_key,
-    nonce: uint64,
-    message: bytes()
-}
+        from: public_key,
+        to: public_key,
+        nonce: uint64,
+        message: bytes()
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["memo_data"] = memo_data;
 
 
-const transfer = new Serializer( 
+const transfer = new Serializer(
     "transfer", {
-    fee: asset,
-    from: protocol_id_type("account"),
-    to: protocol_id_type("account"),
-    amount: asset,
-    memo: optional(memo_data),
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: protocol_id_type("account"),
+        amount: asset,
+        memo: optional(memo_data),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["transfer"] = transfer;
 
 
-const authority = new Serializer( 
+const transfer2 = new Serializer(
+    "transfer2", {
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: protocol_id_type("account"),
+        amount: asset,
+        memo: optional(memo_data),
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["transfer2"] = transfer2;
+
+
+const authority = new Serializer(
     "authority", {
-    weight_threshold: uint32,
-    account_auths: map((protocol_id_type("account")), (uint16)),
-    key_auths: map((public_key), (uint16))
-}
+        weight_threshold: uint32,
+        account_auths: map((protocol_id_type("account")), (uint16)),
+        key_auths: map((public_key), (uint16))
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["authority"] = authority;
 
 
-const account_options = new Serializer( 
+const account_options = new Serializer(
     "account_options", {
-    memo_key: public_key,
-    voting_account: protocol_id_type("account"),
-    num_witness: uint16,
-    votes: set(vote_id),
-    extensions: set(future_extensions),
-    allow_subscription: bool,
-    price_per_subscribe: asset,
-    subscription_period: uint32
-}
+        memo_key: public_key,
+        voting_account: protocol_id_type("account"),
+        num_miner: uint16,
+        votes: set(vote_id),
+        extensions: set(future_extensions),
+        allow_subscription: bool,
+        price_per_subscribe: asset,
+        subscription_period: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["account_options"] = account_options;
 
 
-const account_create = new Serializer( 
+const account_create = new Serializer(
     "account_create", {
-    fee: asset,
-    registrar: protocol_id_type("account"),
-    name: string,
-    owner: authority,
-    active: authority,
-    options: account_options,
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        registrar: protocol_id_type("account"),
+        name: string,
+        owner: authority,
+        active: authority,
+        options: account_options,
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["account_create"] = account_create;
 
 
-const account_update = new Serializer( 
-    "account_update", {
-    fee: asset,
-    account: protocol_id_type("account"),
-    owner: optional(authority),
-    active: optional(authority),
-    new_options: optional(account_options),
-    extensions: set(future_extensions)
-}
-);
-/* harmony export (immutable) */ __webpack_exports__["account_update"] = account_update;
-
-
-const asset_create = new Serializer( 
-    "asset_create", {
-    fee: asset,
-    issuer: protocol_id_type("account"),
-    symbol: string,
-    precision: uint8,
-    description: string,
-    max_supply: int64,
-    feed_lifetime_sec: uint32,
-    minimum_feeds: uint8,
-    extensions: set(future_extensions)
-}
-);
-/* harmony export (immutable) */ __webpack_exports__["asset_create"] = asset_create;
-
-
-const asset_update = new Serializer( 
-    "asset_update", {
-    fee: asset,
-    issuer: protocol_id_type("account"),
-    asset_to_update: protocol_id_type("asset"),
-    new_issuer: optional(protocol_id_type("account")),
-    new_description: string,
-    new_feed_lifetime_sec: uint32,
-    new_minimum_feeds: uint8,
-    max_supply: int64,
-    extensions: set(future_extensions)
-}
-);
-/* harmony export (immutable) */ __webpack_exports__["asset_update"] = asset_update;
-
-
-const price = new Serializer( 
+const price = new Serializer(
     "price", {
-    base: asset,
-    quote: asset
-}
+        base: asset,
+        quote: asset
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["price"] = price;
 
 
-const price_feed = new Serializer( 
+const account_update = new Serializer(
+    "account_update", {
+        fee: asset,
+        account: protocol_id_type("account"),
+        owner: optional(authority),
+        active: optional(authority),
+        new_options: optional(account_options),
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["account_update"] = account_update;
+
+
+const asset_extension = new Serializer(
+    "asset_extension", {
+        is_fixed_max_supply: bool
+    }
+)
+/* harmony export (immutable) */ __webpack_exports__["asset_extension"] = asset_extension;
+
+
+const asset_options = new Serializer(
+    "asset_options", {
+        max_supply: int64,
+        core_exchange_rate: price,
+        is_exchangeable: bool,
+        extensions: map((uint8), (asset_extension))
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_options"] = asset_options;
+
+
+const monitored_asset_options = new Serializer(
+    "monitored_asset_options", {
+        feed_lifetime_sec: uint32,
+        minimum_feeds: uint8,
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["monitored_asset_options"] = monitored_asset_options;
+
+
+const asset_create = new Serializer(
+    "asset_create", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        symbol: string,
+        precision: uint8,
+        description: string,
+        options: asset_options,
+        monitored_asset_opts: optional(monitored_asset_options),
+        is_exchangeable: bool,
+        extensions: map(future_extensions),
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_create"] = asset_create;
+
+
+const update_user_issued_asset = new Serializer(
+    "update_user_issued_asset", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        asset_to_update: protocol_id_type("asset"),
+        new_description: string,
+        new_issuer: optional(protocol_id_type("account")),
+        max_supply: int64,
+        core_exchange_rate: price,
+        is_exchangeable: bool,
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["update_user_issued_asset"] = update_user_issued_asset;
+
+
+const asset_fund_pools_operation = new Serializer(
+    "asset_fund_pools_operation", {
+        fee: asset,
+        from_account: protocol_id_type("account"),
+        uia_asset: asset,
+        dct_asset: asset,
+        extensions: optional(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_fund_pools_operation"] = asset_fund_pools_operation;
+
+
+const update_monitored_asset_operation = new Serializer(
+    "update_monitored_asset_operation", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        asset_to_update: protocol_id_type("asset"),
+        new_description: string,
+        new_feed_lifetime_sec: uint32,
+        new_minimum_feeds: uint8,
+        extensions: optional(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["update_monitored_asset_operation"] = update_monitored_asset_operation;
+
+
+const asset_issue = new Serializer(
+    "asset_issue", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        asset_to_issue: asset,
+        issue_to_account: protocol_id_type("account"),
+        memo: optional(memo_data),
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_issue"] = asset_issue;
+
+
+const asset_reserve_operation = new Serializer(
+    "asset_reserve_operation", {
+        fee: asset,
+        payer: protocol_id_type("account"),
+        amount_to_reserve: asset,
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_reserve_operation"] = asset_reserve_operation;
+
+
+const asset_claim_fees_operation = new Serializer(
+    "asset_claim_fees_operation", {
+        fee: asset,
+        issuer: protocol_id_type("account"),
+        uia_asset: asset,
+        dct_asset: asset,
+        extensions: set(future_extensions)
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["asset_claim_fees_operation"] = asset_claim_fees_operation;
+
+
+const price_feed = new Serializer(
     "price_feed",
-    {core_exchange_rate: price}
+    { core_exchange_rate: price }
 );
 /* harmony export (immutable) */ __webpack_exports__["price_feed"] = price_feed;
 
 
-const asset_publish_feed = new Serializer( 
+const asset_publish_feed = new Serializer(
     "asset_publish_feed", {
-    fee: asset,
-    publisher: protocol_id_type("account"),
-    asset_id: protocol_id_type("asset"),
-    feed: price_feed,
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        publisher: protocol_id_type("account"),
+        asset_id: protocol_id_type("asset"),
+        feed: price_feed,
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset_publish_feed"] = asset_publish_feed;
 
 
-const witness_create = new Serializer( 
-    "witness_create", {
-    fee: asset,
-    witness_account: protocol_id_type("account"),
-    url: string,
-    block_signing_key: public_key
-}
+const miner_create = new Serializer(
+    "miner_create", {
+        fee: asset,
+        miner_account: protocol_id_type("account"),
+        url: string,
+        block_signing_key: public_key
+    }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_create"] = witness_create;
+/* harmony export (immutable) */ __webpack_exports__["miner_create"] = miner_create;
 
 
-const witness_update = new Serializer( 
-    "witness_update", {
-    fee: asset,
-    witness: protocol_id_type("witness"),
-    witness_account: protocol_id_type("account"),
-    new_url: optional(string),
-    new_signing_key: optional(public_key)
-}
+const miner_update = new Serializer(
+    "miner_update", {
+        fee: asset,
+        miner: protocol_id_type("miner"),
+        miner_account: protocol_id_type("account"),
+        new_url: optional(string),
+        new_signing_key: optional(public_key)
+    }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_update"] = witness_update;
+/* harmony export (immutable) */ __webpack_exports__["miner_update"] = miner_update;
 
 
-const chain_parameters = new Serializer( 
+const chain_parameters = new Serializer(
     "chain_parameters", {
-    current_fees: fee_schedule,
-    block_interval: uint8,
-    maintenance_interval: uint32,
-    maintenance_skip_slots: uint8,
-    witness_proposal_review_period: uint32,
-    maximum_transaction_size: uint32,
-    maximum_block_size: uint32,
-    maximum_time_until_expiration: uint32,
-    maximum_proposal_lifetime: uint32,
-    maximum_asset_feed_publishers: uint8,
-    maximum_witness_count: uint16,
-    maximum_authority_membership: uint16,
-    cashback_vesting_period_seconds: uint32,
-    cashback_vesting_threshold: int64,
-    max_predicate_opcode: uint16,
-    fee_liquidation_threshold: int64,
-    accounts_per_fee_scale: uint16,
-    account_fee_scale_bitshifts: uint8,
-    max_authority_depth: uint8,
-    extensions: set(future_extensions)
-}
+        current_fees: fee_schedule,
+        block_interval: uint8,
+        maintenance_interval: uint32,
+        maintenance_skip_slots: uint8,
+        witness_proposal_review_period: uint32,
+        maximum_transaction_size: uint32,
+        maximum_block_size: uint32,
+        maximum_time_until_expiration: uint32,
+        maximum_proposal_lifetime: uint32,
+        maximum_asset_feed_publishers: uint8,
+        maximum_witness_count: uint16,
+        maximum_authority_membership: uint16,
+        cashback_vesting_period_seconds: uint32,
+        cashback_vesting_threshold: int64,
+        max_predicate_opcode: uint16,
+        fee_liquidation_threshold: int64,
+        accounts_per_fee_scale: uint16,
+        account_fee_scale_bitshifts: uint8,
+        max_authority_depth: uint8,
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["chain_parameters"] = chain_parameters;
 
 
-const witness_update_global_parameters = new Serializer( 
-    "witness_update_global_parameters", {
-    fee: asset,
-    new_parameters: chain_parameters
-}
+const miner_update_global_parameters = new Serializer(
+    "miner_update_global_parameters", {
+        fee: asset,
+        new_parameters: chain_parameters
+    }
 );
-/* harmony export (immutable) */ __webpack_exports__["witness_update_global_parameters"] = witness_update_global_parameters;
+/* harmony export (immutable) */ __webpack_exports__["miner_update_global_parameters"] = miner_update_global_parameters;
 
 
-const op_wrapper = new Serializer( 
+const op_wrapper = new Serializer(
     "op_wrapper",
-    {op: operation}
+    { op: operation }
 );
 /* harmony export (immutable) */ __webpack_exports__["op_wrapper"] = op_wrapper;
 
 
-const proposal_create = new Serializer( 
+const proposal_create = new Serializer(
     "proposal_create", {
-    fee: asset,
-    fee_paying_account: protocol_id_type("account"),
-    expiration_time: time_point_sec,
-    proposed_ops: array(op_wrapper),
-    review_period_seconds: optional(uint32),
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        fee_paying_account: protocol_id_type("account"),
+        expiration_time: time_point_sec,
+        proposed_ops: array(op_wrapper),
+        review_period_seconds: optional(uint32),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_create"] = proposal_create;
 
 
-const proposal_update = new Serializer( 
+const proposal_update = new Serializer(
     "proposal_update", {
-    fee: asset,
-    fee_paying_account: protocol_id_type("account"),
-    proposal: protocol_id_type("proposal"),
-    active_approvals_to_add: set(protocol_id_type("account")),
-    active_approvals_to_remove: set(protocol_id_type("account")),
-    owner_approvals_to_add: set(protocol_id_type("account")),
-    owner_approvals_to_remove: set(protocol_id_type("account")),
-    key_approvals_to_add: set(public_key),
-    key_approvals_to_remove: set(public_key),
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        fee_paying_account: protocol_id_type("account"),
+        proposal: protocol_id_type("proposal"),
+        active_approvals_to_add: set(protocol_id_type("account")),
+        active_approvals_to_remove: set(protocol_id_type("account")),
+        owner_approvals_to_add: set(protocol_id_type("account")),
+        owner_approvals_to_remove: set(protocol_id_type("account")),
+        key_approvals_to_add: set(public_key),
+        key_approvals_to_remove: set(public_key),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_update"] = proposal_update;
 
 
-const proposal_delete = new Serializer( 
+const proposal_delete = new Serializer(
     "proposal_delete", {
-    fee: asset,
-    fee_paying_account: protocol_id_type("account"),
-    using_owner_authority: bool,
-    proposal: protocol_id_type("proposal"),
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        fee_paying_account: protocol_id_type("account"),
+        using_owner_authority: bool,
+        proposal: protocol_id_type("proposal"),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proposal_delete"] = proposal_delete;
 
 
-const withdraw_permission_create = new Serializer( 
+const withdraw_permission_create = new Serializer(
     "withdraw_permission_create", {
-    fee: asset,
-    withdraw_from_account: protocol_id_type("account"),
-    authorized_account: protocol_id_type("account"),
-    withdrawal_limit: asset,
-    withdrawal_period_sec: uint32,
-    periods_until_expiration: uint32,
-    period_start_time: time_point_sec
-}
+        fee: asset,
+        withdraw_from_account: protocol_id_type("account"),
+        authorized_account: protocol_id_type("account"),
+        withdrawal_limit: asset,
+        withdrawal_period_sec: uint32,
+        periods_until_expiration: uint32,
+        period_start_time: time_point_sec
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_create"] = withdraw_permission_create;
 
 
-const withdraw_permission_update = new Serializer( 
+const withdraw_permission_update = new Serializer(
     "withdraw_permission_update", {
-    fee: asset,
-    withdraw_from_account: protocol_id_type("account"),
-    authorized_account: protocol_id_type("account"),
-    permission_to_update: protocol_id_type("withdraw_permission"),
-    withdrawal_limit: asset,
-    withdrawal_period_sec: uint32,
-    period_start_time: time_point_sec,
-    periods_until_expiration: uint32
-}
+        fee: asset,
+        withdraw_from_account: protocol_id_type("account"),
+        authorized_account: protocol_id_type("account"),
+        permission_to_update: protocol_id_type("withdraw_permission"),
+        withdrawal_limit: asset,
+        withdrawal_period_sec: uint32,
+        period_start_time: time_point_sec,
+        periods_until_expiration: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_update"] = withdraw_permission_update;
 
 
-const withdraw_permission_claim = new Serializer( 
+const withdraw_permission_claim = new Serializer(
     "withdraw_permission_claim", {
-    fee: asset,
-    withdraw_permission: protocol_id_type("withdraw_permission"),
-    withdraw_from_account: protocol_id_type("account"),
-    withdraw_to_account: protocol_id_type("account"),
-    amount_to_withdraw: asset,
-    memo: optional(memo_data)
-}
+        fee: asset,
+        withdraw_permission: protocol_id_type("withdraw_permission"),
+        withdraw_from_account: protocol_id_type("account"),
+        withdraw_to_account: protocol_id_type("account"),
+        amount_to_withdraw: asset,
+        memo: optional(memo_data)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_claim"] = withdraw_permission_claim;
 
 
-const withdraw_permission_delete = new Serializer( 
+const withdraw_permission_delete = new Serializer(
     "withdraw_permission_delete", {
-    fee: asset,
-    withdraw_from_account: protocol_id_type("account"),
-    authorized_account: protocol_id_type("account"),
-    withdrawal_permission: protocol_id_type("withdraw_permission")
-}
+        fee: asset,
+        withdraw_from_account: protocol_id_type("account"),
+        authorized_account: protocol_id_type("account"),
+        withdrawal_permission: protocol_id_type("withdraw_permission")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["withdraw_permission_delete"] = withdraw_permission_delete;
 
 
-const linear_vesting_policy_initializer = new Serializer( 
+const linear_vesting_policy_initializer = new Serializer(
     "linear_vesting_policy_initializer", {
-    begin_timestamp: time_point_sec,
-    vesting_cliff_seconds: uint32,
-    vesting_duration_seconds: uint32
-}
+        begin_timestamp: time_point_sec,
+        vesting_cliff_seconds: uint32,
+        vesting_duration_seconds: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["linear_vesting_policy_initializer"] = linear_vesting_policy_initializer;
 
 
-const cdd_vesting_policy_initializer = new Serializer( 
+const cdd_vesting_policy_initializer = new Serializer(
     "cdd_vesting_policy_initializer", {
-    start_claim: time_point_sec,
-    vesting_seconds: uint32
-}
+        start_claim: time_point_sec,
+        vesting_seconds: uint32
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["cdd_vesting_policy_initializer"] = cdd_vesting_policy_initializer;
 
 
 let vesting_policy_initializer = static_variant([
-    linear_vesting_policy_initializer,    
+    linear_vesting_policy_initializer,
     cdd_vesting_policy_initializer
 ]);
 
-const vesting_balance_create = new Serializer( 
+const vesting_balance_create = new Serializer(
     "vesting_balance_create", {
-    fee: asset,
-    creator: protocol_id_type("account"),
-    owner: protocol_id_type("account"),
-    amount: asset,
-    policy: vesting_policy_initializer
-}
+        fee: asset,
+        creator: protocol_id_type("account"),
+        owner: protocol_id_type("account"),
+        amount: asset,
+        policy: vesting_policy_initializer
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["vesting_balance_create"] = vesting_balance_create;
 
 
-const vesting_balance_withdraw = new Serializer( 
+const vesting_balance_withdraw = new Serializer(
     "vesting_balance_withdraw", {
-    fee: asset,
-    vesting_balance: protocol_id_type("vesting_balance"),
-    owner: protocol_id_type("account"),
-    amount: asset
-}
+        fee: asset,
+        vesting_balance: protocol_id_type("vesting_balance"),
+        owner: protocol_id_type("account"),
+        amount: asset
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["vesting_balance_withdraw"] = vesting_balance_withdraw;
 
 
-const custom = new Serializer( 
+const custom = new Serializer(
     "custom", {
-    fee: asset,
-    payer: protocol_id_type("account"),
-    required_auths: set(protocol_id_type("account")),
-    id: uint16,
-    data: bytes()
-}
+        fee: asset,
+        payer: protocol_id_type("account"),
+        required_auths: set(protocol_id_type("account")),
+        id: uint16,
+        data: bytes()
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["custom"] = custom;
 
 
-const account_name_eq_lit_predicate = new Serializer( 
+const account_name_eq_lit_predicate = new Serializer(
     "account_name_eq_lit_predicate", {
-    account_id: protocol_id_type("account"),
-    name: string
-}
+        account_id: protocol_id_type("account"),
+        name: string
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["account_name_eq_lit_predicate"] = account_name_eq_lit_predicate;
 
 
-const asset_symbol_eq_lit_predicate = new Serializer( 
+const asset_symbol_eq_lit_predicate = new Serializer(
     "asset_symbol_eq_lit_predicate", {
-    asset_id: protocol_id_type("asset"),
-    symbol: string
-}
+        asset_id: protocol_id_type("asset"),
+        symbol: string
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["asset_symbol_eq_lit_predicate"] = asset_symbol_eq_lit_predicate;
 
 
-const block_id_predicate = new Serializer( 
+const block_id_predicate = new Serializer(
     "block_id_predicate",
-    {id: bytes(20)}
+    { id: bytes(20) }
 );
 /* harmony export (immutable) */ __webpack_exports__["block_id_predicate"] = block_id_predicate;
 
 
 let predicate = static_variant([
-    account_name_eq_lit_predicate,    
-    asset_symbol_eq_lit_predicate,    
+    account_name_eq_lit_predicate,
+    asset_symbol_eq_lit_predicate,
     block_id_predicate
 ]);
 
-const assert = new Serializer( 
+const assert = new Serializer(
     "assert", {
-    fee: asset,
-    fee_paying_account: protocol_id_type("account"),
-    predicates: array(predicate),
-    required_auths: set(protocol_id_type("account")),
-    extensions: set(future_extensions)
-}
+        fee: asset,
+        fee_paying_account: protocol_id_type("account"),
+        predicates: array(predicate),
+        required_auths: set(protocol_id_type("account")),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["assert"] = assert;
 
 
-const regional_price = new Serializer( 
+const regional_price = new Serializer(
     "regional_price", {
-    region: uint32,
-    price: asset
-}
+        region: uint32,
+        price: asset
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["regional_price"] = regional_price;
 
 
-const DIntegerString = new Serializer( 
+const DIntegerString = new Serializer(
     "DIntegerString",
-    {s: string}
+    { s: string }
 );
 /* harmony export (immutable) */ __webpack_exports__["DIntegerString"] = DIntegerString;
 
 
-const CiphertextString = new Serializer( 
+const CiphertextString = new Serializer(
     "CiphertextString", {
-    C1: DIntegerString,
-    D1: DIntegerString
-}
+        C1: DIntegerString,
+        D1: DIntegerString
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["CiphertextString"] = CiphertextString;
 
 
-const CustodyData = new Serializer( 
+const CustodyData = new Serializer(
     "CustodyData", {
-    n: uint32,
-    u_seed: fixed_array(16, int8),
-    pubKey: bytes(33)
-}
+        n: uint32,
+        u_seed: fixed_array(16, int8),
+        pubKey: bytes(33)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["CustodyData"] = CustodyData;
 
 
-const content_submit = new Serializer( 
+const content_submit = new Serializer(
     "content_submit", {
-    fee: asset,
-    size: uint64,
-    author: protocol_id_type("account"),
-    co_authors: map((protocol_id_type("account")), (uint32)),
-    URI: string,
-    quorum: uint32,
-    price: array(regional_price),
-    hash: bytes(20),
-    seeders: array(protocol_id_type("account")),
-    key_parts: array(CiphertextString),
-    expiration: time_point_sec,
-    publishing_fee: asset,
-    synopsis: string,
-    cd: optional(CustodyData)
-}
+        fee: asset,
+        size: uint64,
+        author: protocol_id_type("account"),
+        co_authors: map((protocol_id_type("account")), (uint32)),
+        URI: string,
+        quorum: uint32,
+        price: array(regional_price),
+        hash: bytes(20),
+        seeders: array(protocol_id_type("account")),
+        key_parts: array(CiphertextString),
+        expiration: time_point_sec,
+        publishing_fee: asset,
+        synopsis: string,
+        cd: optional(CustodyData)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["content_submit"] = content_submit;
 
 
-const request_to_buy = new Serializer( 
+const request_to_buy = new Serializer(
     "request_to_buy", {
-    fee: asset,
-    URI: string,
-    consumer: protocol_id_type("account"),
-    price: asset,
-    region_code_from: uint32,
-    pubKey: DIntegerString
-}
+        fee: asset,
+        URI: string,
+        consumer: protocol_id_type("account"),
+        price: asset,
+        region_code_from: uint32,
+        pubKey: DIntegerString
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["request_to_buy"] = request_to_buy;
 
 
-const leave_rating_and_comment = new Serializer( 
+const leave_rating_and_comment = new Serializer(
     "leave_rating_and_comment", {
-    fee: asset,
-    URI: string,
-    consumer: protocol_id_type("account"),
-    comment: string,
-    rating: uint64
-}
+        fee: asset,
+        URI: string,
+        consumer: protocol_id_type("account"),
+        comment: string,
+        rating: uint64
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["leave_rating_and_comment"] = leave_rating_and_comment;
 
 
-const ready_to_publish = new Serializer( 
+const ready_to_publish = new Serializer(
     "ready_to_publish", {
-    fee: asset,
-    seeder: protocol_id_type("account"),
-    space: uint64,
-    pubKey: DIntegerString,
-    price_per_MByte: uint32,
-    ipfs_ID: string
-}
+        fee: asset,
+        seeder: protocol_id_type("account"),
+        space: uint64,
+        pubKey: DIntegerString,
+        price_per_MByte: uint32,
+        ipfs_ID: string
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["ready_to_publish"] = ready_to_publish;
 
 
-const CustodyProof = new Serializer( 
+const ready_to_publish2 = new Serializer(
+    "ready_to_publish2", {
+        fee: asset,
+        seeder: protocol_id_type("account"),
+        space: uint64,
+        pubKey: DIntegerString,
+        price_per_MByte: uint32,
+        ipfs_ID: string
+    }
+);
+/* harmony export (immutable) */ __webpack_exports__["ready_to_publish2"] = ready_to_publish2;
+
+
+const CustodyProof = new Serializer(
     "CustodyProof", {
-    reference_block: uint32,
-    seed: fixed_array(5, uint32),
-    mus: array(string),
-    sigma: bytes(33)
-}
+        reference_block: uint32,
+        seed: fixed_array(5, uint32),
+        mus: array(string),
+        sigma: bytes(33)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["CustodyProof"] = CustodyProof;
 
 
-const proof_of_custody = new Serializer( 
+const proof_of_custody = new Serializer(
     "proof_of_custody", {
-    fee: asset,
-    seeder: protocol_id_type("account"),
-    URI: string,
-    proof: optional(CustodyProof)
-}
+        fee: asset,
+        seeder: protocol_id_type("account"),
+        URI: string,
+        proof: optional(CustodyProof)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["proof_of_custody"] = proof_of_custody;
 
 
-const DeliveryProofString = new Serializer( 
+const DeliveryProofString = new Serializer(
     "DeliveryProofString", {
-    G1: DIntegerString,
-    G2: DIntegerString,
-    G3: DIntegerString,
-    s: DIntegerString,
-    r: DIntegerString
-}
+        G1: DIntegerString,
+        G2: DIntegerString,
+        G3: DIntegerString,
+        s: DIntegerString,
+        r: DIntegerString
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["DeliveryProofString"] = DeliveryProofString;
 
 
-const deliver_keys = new Serializer( 
+const deliver_keys = new Serializer(
     "deliver_keys", {
-    fee: asset,
-    seeder: protocol_id_type("account"),
-    proof: DeliveryProofString,
-    key: CiphertextString,
-    buying: protocol_id_type("buying")
-}
+        fee: asset,
+        seeder: protocol_id_type("account"),
+        proof: DeliveryProofString,
+        key: CiphertextString,
+        buying: protocol_id_type("buying")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["deliver_keys"] = deliver_keys;
 
 
-const subscribe = new Serializer( 
+const subscribe = new Serializer(
     "subscribe", {
-    fee: asset,
-    from: protocol_id_type("account"),
-    to: protocol_id_type("account"),
-    price: asset
-}
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: protocol_id_type("account"),
+        price: asset
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["subscribe"] = subscribe;
 
 
-const subscribe_by_author = new Serializer( 
+const subscribe_by_author = new Serializer(
     "subscribe_by_author", {
-    fee: asset,
-    from: protocol_id_type("account"),
-    to: protocol_id_type("account")
-}
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: protocol_id_type("account")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["subscribe_by_author"] = subscribe_by_author;
 
 
-const automatic_renewal_of_subscription = new Serializer( 
+const automatic_renewal_of_subscription = new Serializer(
     "automatic_renewal_of_subscription", {
-    fee: asset,
-    consumer: protocol_id_type("account"),
-    subscription: protocol_id_type("subscription"),
-    automatic_renewal: bool
-}
+        fee: asset,
+        consumer: protocol_id_type("account"),
+        subscription: protocol_id_type("subscription"),
+        automatic_renewal: bool
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["automatic_renewal_of_subscription"] = automatic_renewal_of_subscription;
 
 
-const report_stats = new Serializer( 
+const report_stats = new Serializer(
     "report_stats", {
-    fee: asset,
-    consumer: protocol_id_type("account"),
-    stats: map((protocol_id_type("account")), (uint64))
-}
+        fee: asset,
+        consumer: protocol_id_type("account"),
+        stats: map((protocol_id_type("account")), (uint64))
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["report_stats"] = report_stats;
 
 
-const set_publishing_manager = new Serializer( 
+const set_publishing_manager = new Serializer(
     "set_publishing_manager", {
-    fee: asset,
-    from: protocol_id_type("account"),
-    to: array(protocol_id_type("account")),
-    can_create_publishers: bool
-}
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: array(protocol_id_type("account")),
+        can_create_publishers: bool
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["set_publishing_manager"] = set_publishing_manager;
 
 
-const set_publishing_right = new Serializer( 
+const set_publishing_right = new Serializer(
     "set_publishing_right", {
-    fee: asset,
-    from: protocol_id_type("account"),
-    to: array(protocol_id_type("account")),
-    is_publisher: bool
-}
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: array(protocol_id_type("account")),
+        is_publisher: bool
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["set_publishing_right"] = set_publishing_right;
 
 
-const content_cancellation = new Serializer( 
+const content_cancellation = new Serializer(
     "content_cancellation", {
-    fee: asset,
-    author: protocol_id_type("account"),
-    URI: string
-}
+        fee: asset,
+        author: protocol_id_type("account"),
+        URI: string
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["content_cancellation"] = content_cancellation;
 
 
-const disallow_automatic_renewal_of_subscription = new Serializer( 
+const disallow_automatic_renewal_of_subscription = new Serializer(
     "disallow_automatic_renewal_of_subscription", {
-    fee: asset,
-    consumer: protocol_id_type("account"),
-    subscription: protocol_id_type("subscription")
-}
+        fee: asset,
+        consumer: protocol_id_type("account"),
+        subscription: protocol_id_type("subscription")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["disallow_automatic_renewal_of_subscription"] = disallow_automatic_renewal_of_subscription;
 
 
-const return_escrow_submission = new Serializer( 
+const return_escrow_submission = new Serializer(
     "return_escrow_submission", {
-    fee: asset,
-    author: protocol_id_type("account"),
-    escrow: asset,
-    content: protocol_id_type("content")
-}
+        fee: asset,
+        author: protocol_id_type("account"),
+        escrow: asset,
+        content: protocol_id_type("content")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["return_escrow_submission"] = return_escrow_submission;
 
 
-const return_escrow_buying = new Serializer( 
+const return_escrow_buying = new Serializer(
     "return_escrow_buying", {
-    fee: asset,
-    consumer: protocol_id_type("account"),
-    escrow: asset,
-    buying: protocol_id_type("buying")
-}
+        fee: asset,
+        consumer: protocol_id_type("account"),
+        escrow: asset,
+        buying: protocol_id_type("buying")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["return_escrow_buying"] = return_escrow_buying;
 
 
-const pay_seeder = new Serializer( 
+const pay_seeder = new Serializer(
     "pay_seeder", {
-    fee: asset,
-    payout: asset,
-    author: protocol_id_type("account"),
-    seeder: protocol_id_type("account")
-}
+        fee: asset,
+        payout: asset,
+        author: protocol_id_type("account"),
+        seeder: protocol_id_type("account")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["pay_seeder"] = pay_seeder;
 
 
-const finish_buying = new Serializer( 
+const finish_buying = new Serializer(
     "finish_buying", {
-    fee: asset,
-    payout: asset,
-    author: protocol_id_type("account"),
-    co_authors: map((protocol_id_type("account")), (uint32)),
-    buying: protocol_id_type("buying"),
-    consumer: protocol_id_type("account")
-}
+        fee: asset,
+        payout: asset,
+        author: protocol_id_type("account"),
+        co_authors: map((protocol_id_type("account")), (uint32)),
+        buying: protocol_id_type("buying"),
+        consumer: protocol_id_type("account")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["finish_buying"] = finish_buying;
 
 
-const renewal_of_subscription = new Serializer( 
+const renewal_of_subscription = new Serializer(
     "renewal_of_subscription", {
-    fee: asset,
-    consumer: protocol_id_type("account"),
-    subscription: protocol_id_type("subscription")
-}
+        fee: asset,
+        consumer: protocol_id_type("account"),
+        subscription: protocol_id_type("subscription")
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["renewal_of_subscription"] = renewal_of_subscription;
 
 
 operation.st_operations = [
-    transfer,    
-    account_create,    
-    account_update,    
-    asset_create,    
-    asset_update,    
-    asset_publish_feed,    
-    witness_create,    
-    witness_update,    
-    witness_update_global_parameters,    
-    proposal_create,    
-    proposal_update,    
-    proposal_delete,    
-    withdraw_permission_create,    
-    withdraw_permission_update,    
-    withdraw_permission_claim,    
-    withdraw_permission_delete,    
-    vesting_balance_create,    
-    vesting_balance_withdraw,    
-    custom,    
-    assert,    
-    content_submit,    
-    request_to_buy,    
-    leave_rating_and_comment,    
-    ready_to_publish,    
-    proof_of_custody,    
-    deliver_keys,    
-    subscribe,    
-    subscribe_by_author,    
-    automatic_renewal_of_subscription,    
-    report_stats,    
-    set_publishing_manager,    
-    set_publishing_right,    
-    content_cancellation,    
-    disallow_automatic_renewal_of_subscription,    
-    return_escrow_submission,    
-    return_escrow_buying,    
-    pay_seeder,    
-    finish_buying,    
-    renewal_of_subscription
+    transfer,
+    account_create,
+    account_update,
+    asset_create,
+    asset_issue,
+    asset_publish_feed,
+    miner_create,
+    miner_update,
+    miner_update_global_parameters,
+    proposal_create,
+    proposal_update,
+    proposal_delete,
+    withdraw_permission_create,
+    withdraw_permission_update,
+    withdraw_permission_claim,
+    withdraw_permission_delete,
+    vesting_balance_create,
+    vesting_balance_withdraw,
+    custom,
+    assert,
+    content_submit,
+    request_to_buy,
+    leave_rating_and_comment,
+    ready_to_publish,
+    proof_of_custody,
+    deliver_keys,
+    subscribe,
+    subscribe_by_author,
+    automatic_renewal_of_subscription,
+    report_stats,
+    set_publishing_manager,
+    set_publishing_right,
+    content_cancellation,
+    asset_fund_pools_operation,
+    asset_reserve_operation,
+    asset_claim_fees_operation,
+    update_user_issued_asset,
+    update_monitored_asset_operation,
+    ready_to_publish2,
+    transfer2,
+    disallow_automatic_renewal_of_subscription,
+    return_escrow_submission,
+    return_escrow_buying,
+    pay_seeder,
+    finish_buying,
+    renewal_of_subscription,
 ];
 
-const transaction = new Serializer( 
+const transaction = new Serializer(
     "transaction", {
-    ref_block_num: uint16,
-    ref_block_prefix: uint32,
-    expiration: time_point_sec,
-    operations: array(operation),
-    extensions: set(future_extensions)
-}
+        ref_block_num: uint16,
+        ref_block_prefix: uint32,
+        expiration: time_point_sec,
+        operations: array(operation),
+        extensions: set(future_extensions)
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["transaction"] = transaction;
 
 
-const signed_transaction = new Serializer( 
+const signed_transaction = new Serializer(
     "signed_transaction", {
-    ref_block_num: uint16,
-    ref_block_prefix: uint32,
-    expiration: time_point_sec,
-    operations: array(operation),
-    extensions: set(future_extensions),
-    signatures: array(bytes(65))
-}
+        ref_block_num: uint16,
+        ref_block_prefix: uint32,
+        expiration: time_point_sec,
+        operations: array(operation),
+        extensions: set(future_extensions),
+        signatures: array(bytes(65))
+    }
 );
 /* harmony export (immutable) */ __webpack_exports__["signed_transaction"] = signed_transaction;
 
@@ -17883,12 +18013,12 @@ const signed_transaction = new Serializer(
 
 const stealth_memo_data = new Serializer(
     "stealth_memo_data", {
-    from: optional( public_key ),
-    amount: asset,
-    blinding_factor: bytes(32),
-    commitment: bytes(33),
-    check: uint32
-})
+        from: optional(public_key),
+        amount: asset,
+        blinding_factor: bytes(32),
+        commitment: bytes(33),
+        check: uint32
+    });
 /* harmony export (immutable) */ __webpack_exports__["stealth_memo_data"] = stealth_memo_data;
 
 // var stealth_confirmation = new Serializer(
@@ -19663,7 +19793,7 @@ class ErrorWithCause {
 /* 68 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["bigi@1.4.2","/Users/duski/Documents/touch4it/dev/decentGo/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/duski/Documents/touch4it/dev/decentGo/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
+module.exports = {"_args":[["bigi@1.4.2","/home/katka/decent/new/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/home/katka/decent/new/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
 
 /***/ }),
 /* 69 */
@@ -21674,7 +21804,9 @@ var _ChainConfig = __webpack_require__(50);
 var _ChainConfig2 = _interopRequireDefault(_ChainConfig);
 
 function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {default: obj};
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
 }
 
 function _classCallCheck(instance, Constructor) {
@@ -21774,39 +21906,51 @@ var ApisInstance = function () {
 
         this.ws_rpc = new _ChainWebSocket2.default(cs, this.statusCb);
 
-        this.init_promise = this.ws_rpc.login(rpc_user, rpc_password)
-            .then(function () {
-                // console.log("Login done");
-                _this._db = new _GrapheneApi2.default(_this.ws_rpc, "database");
-                _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
-                _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
-                _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
-                var db_promise = _this._db.init().then(function () {
-                    //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
-                    return _this._db.exec("get_chain_id", []).then(function (_chain_id) {
-                        _this.chain_id = _chain_id;
-                        return _ChainConfig2.default.setChainId(_chain_id);
-                        //DEBUG console.log("chain_id1",this.chain_id)
+        this.init_promise = new Promise(function (resolve, reject) {
+            _this.ws_rpc.login(rpc_user, rpc_password)
+                .then(function () {
+                    // console.log("Login done");
+                    _this._db = new _GrapheneApi2.default(_this.ws_rpc, "database");
+                    _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
+                    _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
+                    _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
+                    _this._msg = new _GrapheneApi2.default(_this.ws_rpc, "messaging");
+                    var db_promise = _this._db.init().then(function () {
+                        //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
+                        return _this._db.exec("get_chain_id", [])
+                            .then(function (_chain_id) {
+                                _this.chain_id = _chain_id;
+                                return _ChainConfig2.default.setChainId(_chain_id);
+                                //DEBUG console.log("chain_id1",this.chain_id)
+                            });
                     });
-                });
-                _this.ws_rpc.on_reconnect = function () {
-                    _this.ws_rpc.login("", "").then(function () {
-                        _this._db.init().then(function () {
-                            if (_this.statusCb) _this.statusCb("reconnect");
+                    _this.ws_rpc.on_reconnect = function () {
+                        _this.ws_rpc.login("", "")
+                            .then(function () {
+                                _this._db.init()
+                                    .then(function () {
+                                        if (_this.statusCb) _this.statusCb("reconnect");
+                                    });
+                                _this._net.init();
+                                _this._hist.init();
+                                _this._crypt.init();
+                                _this._msg.init();
+                            });
+                    };
+                    Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init(), _this._msg.init()
+                            // Temporary squash crypto API error until the API is upgraded everywhere
+                            .catch(function (e) {
+                                return console.error("ApiInstance\tCrypto API Error", e);
+                            })
+                        ])
+                        .then(res => {
+                            resolve(res);
                         });
-                        _this._net.init();
-                        _this._hist.init();
-                        _this._crypt.init();
-                    });
-                };
-                return Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init()
-                // Temporary squash crypto API error until the API is upgraded everywhere
-                    .catch(function (e) {
-                        return console.error("ApiInstance\tCrypto API Error", e);
-                    })]);
-            })
-            .catch(er => {
-            });
+                })
+                .catch(er => {
+                    reject(er);
+                });
+        });
     };
 
     ApisInstance.prototype.close = function close() {
@@ -21828,6 +21972,10 @@ var ApisInstance = function () {
 
     ApisInstance.prototype.crypto_api = function crypto_api() {
         return this._crypt;
+    };
+    
+    ApisInstance.prototype.msg_api = function msg_api() {
+        return this._msg;
     };
 
     ApisInstance.prototype.setRpcConnectionStatusCallback = function setRpcConnectionStatusCallback(callback) {
@@ -31356,30 +31504,30 @@ class TransactionBuilder {
     process_transaction(cwallet, signer_pubkeys = null, broadcast = false) {
 
         let wallet_object = cwallet.wallet.wallet_object
-        if(__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().chain_id !== wallet_object.get("chain_id"))
+        if (__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().chain_id !== wallet_object.get("chain_id"))
             return Promise.reject("Mismatched chain_id; expecting " +
                 wallet_object.get("chain_id") + ", but got " +
                 __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().chain_id)
 
-        return this.set_required_fees().then(()=> {
+        return this.set_required_fees().then(() => {
             var signer_pubkeys_added = {}
-            if(signer_pubkeys) {
+            if (signer_pubkeys) {
 
                 // Balance claims are by address, only the private
                 // key holder can know about these additional
                 // potential keys.
                 var pubkeys = cwallet.getPubkeys_having_PrivateKey(signer_pubkeys)
-                if( ! pubkeys.length)
+                if (!pubkeys.length)
                     throw new Error("Missing signing key")
 
-                for(let pubkey_string of pubkeys) {
+                for (let pubkey_string of pubkeys) {
                     var private_key = cwallet.getPrivateKey(pubkey_string)
                     this.add_signer(private_key, pubkey_string)
                     signer_pubkeys_added[pubkey_string] = true
                 }
             }
 
-            return this.get_potential_signatures().then( ({pubkeys, addys})=> {
+            return this.get_potential_signatures().then(({ pubkeys, addys }) => {
                 var my_pubkeys = cwallet.getPubkeys_having_PrivateKey(pubkeys, addys)
 
                 //{//Testing only, don't send All public keys!
@@ -31390,11 +31538,11 @@ class TransactionBuilder {
                 //        console.log('get_required_signatures normal\t',required_pubkey_strings.sort(), pubkeys))
                 //}
 
-                return this.get_required_signatures(my_pubkeys).then( required_pubkeys => {
-                    for(let pubkey_string of required_pubkeys) {
-                        if(signer_pubkeys_added[pubkey_string]) continue
+                return this.get_required_signatures(my_pubkeys).then(required_pubkeys => {
+                    for (let pubkey_string of required_pubkeys) {
+                        if (signer_pubkeys_added[pubkey_string]) continue
                         var private_key = cwallet.getPrivateKey(pubkey_string)
-                        if( ! private_key)
+                        if (!private_key)
                             // This should not happen, get_required_signatures will only
                             // returned keys from my_pubkeys
                             throw new Error("Missing signing key for " + pubkey_string)
@@ -31402,22 +31550,22 @@ class TransactionBuilder {
                     }
                 })
             })
-            .then(()=> broadcast ? this.broadcast() : this.serialize())
+                .then(() => broadcast ? this.broadcast() : this.serialize())
         })
     }
 
     /** Typically this is called automatically just prior to signing.  Once finalized this transaction can not be changed. */
-    finalize(){
-        return new Promise((resolve, reject)=> {
+    finalize() {
+        return new Promise((resolve, reject) => {
 
             if (this.tr_buffer) { throw new Error("already finalized"); }
 
             resolve(__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [["2.1.0"]]).then((r) => {
                 head_block_time_string = r[0].time;
-                if( this.expiration === 0 )
+                if (this.expiration === 0)
                     this.expiration = base_expiration_sec() + __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["ChainConfig"].expire_in_secs
                 this.ref_block_num = r[0].head_block_number & 0xFFFF;
-                this.ref_block_prefix =  new Buffer(r[0].head_block_id, 'hex').readUInt32LE(4);
+                this.ref_block_prefix = new Buffer(r[0].head_block_id, 'hex').readUInt32LE(4);
                 //DEBUG console.log("ref_block",@ref_block_num,@ref_block_prefix,r)
 
                 var iterable = this.operations;
@@ -31437,7 +31585,7 @@ class TransactionBuilder {
     /** @return {string} hex transaction ID */
     id() {
         if (!this.tr_buffer) { throw new Error("not finalized"); }
-        return __WEBPACK_IMPORTED_MODULE_1__ecc__["d" /* hash */].sha256(this.tr_buffer).toString( 'hex' ).substring(0,40);
+        return __WEBPACK_IMPORTED_MODULE_1__ecc__["d" /* hash */].sha256(this.tr_buffer).toString('hex').substring(0, 40);
     }
 
     /**
@@ -31465,7 +31613,7 @@ class TransactionBuilder {
             throw new Error(`unknown operation: ${_type.operation_name}`);
         }
         if (!operation.fee) {
-            operation.fee = {amount: 0, asset_id: 0};
+            operation.fee = { amount: 0, asset_id: 0 };
         }
         if (name === 'proposal_create') {
             /*
@@ -31479,13 +31627,13 @@ class TransactionBuilder {
 
                 switch (op.op[0]) {
                     case 0: // transfer
-                    key = "from";
-                    break;
+                        key = "from";
+                        break;
 
                     case 6: //account_update
                     case 17: // asset_settle
-                    key = "account";
-                    break;
+                        key = "account";
+                        break;
 
                     case 10: // asset_create
                     case 11: // asset_update
@@ -31494,27 +31642,27 @@ class TransactionBuilder {
                     case 14: // asset_issue
                     case 18: // asset_global_settle
                     case 43: // asset_claim_fees
-                    key = "issuer";
-                    break;
+                        key = "issuer";
+                        break;
 
                     case 15: // asset_reserve
-                    key = "payer";
-                    break;
+                        key = "payer";
+                        break;
 
                     case 16: // asset_fund_fee_pool
-                    key ="from_account";
-                    break;
+                        key = "from_account";
+                        break;
 
                     case 22: // proposal_create
                     case 23: // proposal_update
                     case 24: // proposal_delete
-                    key ="fee_paying_account";
-                    break;
+                        key = "fee_paying_account";
+                        break;
 
                     case 31: // committee_member_update_global_parameters
-                    requiresReview = true;
-                    extraReview = 60 * 60 * 24 * 13; // Make the review period 2 weeks total
-                    break;
+                        requiresReview = true;
+                        extraReview = 60 * 60 * 24 * 13; // Make the review period 2 weeks total
+                        break;
                 }
                 if (key in op.op[1] && op.op[1][key] === COMMITTE_ACCOUNT) {
                     requiresReview = true;
@@ -31538,17 +31686,17 @@ class TransactionBuilder {
 
     update_head_block() {
         return Promise.all([
-                __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [["2.0.0"]]),
-                __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [["2.1.0"]])
-            ]).then(function (res) {
-                let [g, r] = res;
-                head_block_time_string = r[0].time;
-                committee_min_review = g[0].parameters.committee_proposal_review_period;
+            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [["2.0.0"]]),
+            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [["2.1.0"]])
+        ]).then(function (res) {
+            let [g, r] = res;
+            head_block_time_string = r[0].time;
+            committee_min_review = g[0].parameters.committee_proposal_review_period;
         });
     }
 
     /** optional: there is a deafult expiration */
-    set_expire_seconds(sec){
+    set_expire_seconds(sec) {
         if (this.tr_buffer) { throw new Error("already finalized"); }
         return this.expiration = base_expiration_sec() + sec;
     }
@@ -31566,7 +31714,7 @@ class TransactionBuilder {
         __WEBPACK_IMPORTED_MODULE_0_assert___default()(proposal_create_options.fee_paying_account, "proposal_create_options.fee_paying_account");
 
         let proposed_ops = this.operations.map(op => {
-            return {op: op};
+            return { op: op };
         })
 
         this.operations = []
@@ -31590,7 +31738,7 @@ class TransactionBuilder {
     }
 
     /** optional: the fees can be obtained from the witness node */
-    set_required_fees(asset_id){
+    set_required_fees(asset_id) {
         var fee_pool;
         if (this.tr_buffer) { throw new Error("already finalized"); }
         if (!this.operations.length) { throw new Error("add operations first"); }
@@ -31610,104 +31758,108 @@ class TransactionBuilder {
         }
 
         var promises = [
-            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec( "get_required_fees", [operations, asset_id])
+            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_required_fees", [operations, asset_id])
         ];
 
 
         let feeAssetPromise = null;
         if (asset_id !== "1.3.0") {
             // This handles the fallback to paying fees in BTS if the fee pool is empty.
-            promises.push(__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec( "get_required_fees", [operations, "1.3.0"]));
+            promises.push(__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_required_fees", [operations, "1.3.0"]));
             promises.push(__WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [[asset_id]]));
         }
 
-        return Promise.all(promises).then( (results) => {
+        return Promise.all(promises)
+            .then((results) => {
 
-            let [fees, coreFees, asset] = results;
-            asset = asset ? asset[0] : null;
+                let [fees, coreFees, asset] = results;
+                asset = asset ? asset[0] : null;
 
-            let dynamicPromise = (asset_id !== "1.3.0" && asset) ? __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [[asset.dynamic_asset_data_id]]) : new Promise(function(resolve, reject) {resolve();});
+                let dynamicPromise = (asset_id !== "1.3.0" && asset) ? __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_objects", [[asset.dynamic_asset_data_id]]) : new Promise(function (resolve, reject) { resolve(); });
 
-            dynamicPromise.then((dynamicObject) => {
-                if (asset_id !== "1.3.0") {
-                    fee_pool = dynamicObject ? dynamicObject[0].fee_pool : 0;
-                    let totalFees = 0;
-                    for (let j = 0, fee; j < coreFees.length; j++) {
-                        fee = coreFees[j];
-                        totalFees += fee.amount;
-                    }
-
-                    if (totalFees > parseInt(fee_pool, 10)) {
-                        fees = coreFees;
-                        asset_id = "1.3.0";
-                    }
-                }
-
-                // Proposed transactions need to be flattened
-                var flat_assets = [];
-                var flatten = function(obj) {
-                    if (Array.isArray(obj)) {
-                        for (var k = 0, item; k < obj.length; k++) {
-                            item = obj[k];
-                            flatten(item);
+                dynamicPromise.then((dynamicObject) => {
+                    if (asset_id !== "1.3.0") {
+                        fee_pool = dynamicObject ? dynamicObject[0].fee_pool : 0;
+                        let totalFees = 0;
+                        for (let j = 0, fee; j < coreFees.length; j++) {
+                            fee = coreFees[j];
+                            totalFees += fee.amount;
                         }
-                    } else {
-                        flat_assets.push(obj);
-                    }
-                    return;
-                };
-                flatten(fees);
 
-                var asset_index = 0;
-
-                var set_fee = operation => {
-                    if( ! operation.fee || operation.fee.amount === 0
-                        || (operation.fee.amount.toString && operation.fee.amount.toString() === "0")// Long
-                    ) {
-                        operation.fee = flat_assets[ asset_index ]
-                        // console.log("new operation.fee", operation.fee)
-                    } else {
-                        // console.log("old operation.fee", operation.fee)
+                        if (totalFees > parseInt(fee_pool, 10)) {
+                            fees = coreFees;
+                            asset_id = "1.3.0";
+                        }
                     }
-                    asset_index++
-                    if (operation.proposed_ops) {
-                        var result = [];
-                        for ( var y = 0; y < operation.proposed_ops.length; y++)
-                            result.push(set_fee(operation.proposed_ops[y].op[1]))
 
-                        return result;
+                    // Proposed transactions need to be flattened
+                    var flat_assets = [];
+                    var flatten = function (obj) {
+                        if (Array.isArray(obj)) {
+                            for (var k = 0, item; k < obj.length; k++) {
+                                item = obj[k];
+                                flatten(item);
+                            }
+                        } else {
+                            flat_assets.push(obj);
+                        }
+                        return;
+                    };
+                    flatten(fees);
+
+                    var asset_index = 0;
+
+                    var set_fee = operation => {
+                        if (!operation.fee || operation.fee.amount === 0
+                            || (operation.fee.amount.toString && operation.fee.amount.toString() === "0")// Long
+                        ) {
+                            operation.fee = flat_assets[asset_index]
+                            // console.log("new operation.fee", operation.fee)
+                        } else {
+                            // console.log("old operation.fee", operation.fee)
+                        }
+                        asset_index++
+                        if (operation.proposed_ops) {
+                            var result = [];
+                            for (var y = 0; y < operation.proposed_ops.length; y++)
+                                result.push(set_fee(operation.proposed_ops[y].op[1]))
+
+                            return result;
+                        }
                     }
-                }
-                for( let i = 0; i < this.operations.length; i++) {
-                    set_fee(this.operations[i][1])
-                }
+                    for (let i = 0; i < this.operations.length; i++) {
+                        set_fee(this.operations[i][1])
+                    }
+                });
+                //DEBUG console.log('... get_required_fees',operations,asset_id,flat_assets)
+            })
+            .catch(err => {
+                console.log(err);
             });
-            //DEBUG console.log('... get_required_fees',operations,asset_id,flat_assets)
-        });
     }
 
-    get_potential_signatures(){
+    get_potential_signatures() {
         var tr_object = __WEBPACK_IMPORTED_MODULE_2__serializer__["a" /* ops */].signed_transaction.toObject(this);
         return Promise.all([
-            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec( "get_potential_signatures", [tr_object] ),
-            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec( "get_potential_address_signatures", [tr_object] )
-        ]).then( function(results){
-            return {pubkeys: results[0], addys: results[1]};
+            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_potential_signatures", [tr_object]),
+            __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_potential_address_signatures", [tr_object])
+        ]).then(function (results) {
+            return { pubkeys: results[0], addys: results[1] };
         }
         );
     }
 
-    get_required_signatures(available_keys){
+    get_required_signatures(available_keys) {
         if (!available_keys.length) { return Promise.resolve([]); }
         var tr_object = __WEBPACK_IMPORTED_MODULE_2__serializer__["a" /* ops */].signed_transaction.toObject(this);
         //DEBUG console.log('... tr_object',tr_object)
-        return __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec( "get_required_signatures", [tr_object, available_keys]).then(function(required_public_keys){
+        return __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().db_api().exec("get_required_signatures", [tr_object, available_keys]).then(function (required_public_keys) {
             //DEBUG console.log('... get_required_signatures',required_public_keys)
             return required_public_keys;
         });
     }
 
-    add_signer(private_key, public_key = private_key.toPublicKey()){
+    add_signer(private_key, public_key = private_key.toPublicKey()) {
 
         __WEBPACK_IMPORTED_MODULE_0_assert___default()(private_key.d, "required PrivateKey object")
 
@@ -31717,14 +31869,14 @@ class TransactionBuilder {
         }
         // prevent duplicates
         let spHex = private_key.toHex()
-        for(let sp of this.signer_private_keys) {
-            if(sp[0].toHex() === spHex)
+        for (let sp of this.signer_private_keys) {
+            if (sp[0].toHex() === spHex)
                 return
         }
         this.signer_private_keys.push([private_key, public_key]);
     }
 
-    sign(chain_id = __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().chain_id){
+    sign(chain_id = __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().chain_id) {
         if (!this.tr_buffer) { throw new Error("not finalized"); }
         if (this.signed) { throw new Error("already signed"); }
         if (!this.signer_private_keys.length) {
@@ -31745,15 +31897,15 @@ class TransactionBuilder {
         return;
     }
 
-    serialize(){
+    serialize() {
         return __WEBPACK_IMPORTED_MODULE_2__serializer__["a" /* ops */].signed_transaction.toObject(this);
     }
 
-    toObject(){
+    toObject() {
         return __WEBPACK_IMPORTED_MODULE_2__serializer__["a" /* ops */].signed_transaction.toObject(this);
     }
 
-    broadcast(was_broadcast_callback){
+    broadcast(was_broadcast_callback) {
         if (this.tr_buffer) {
             return this._broadcast(was_broadcast_callback);
         } else {
@@ -31764,7 +31916,7 @@ class TransactionBuilder {
     }
 }
 
-var base_expiration_sec = ()=> {
+var base_expiration_sec = () => {
     var head_block_sec = Math.ceil(getHeadBlockDate().getTime() / 1000);
     var now_sec = Math.ceil(Date.now() / 1000);
     // The head block time should be updated every 3 seconds.  If it isn't
@@ -31774,8 +31926,8 @@ var base_expiration_sec = ()=> {
     return Math.max(now_sec, head_block_sec);
 };
 
-function _broadcast(was_broadcast_callback){
-    return new Promise((resolve, reject)=> {
+function _broadcast(was_broadcast_callback) {
+    return new Promise((resolve, reject) => {
 
         if (!this.signed) { this.sign(); }
         if (!this.tr_buffer) { throw new Error("not finalized"); }
@@ -31784,26 +31936,26 @@ function _broadcast(was_broadcast_callback){
 
         var tr_object = __WEBPACK_IMPORTED_MODULE_2__serializer__["a" /* ops */].signed_transaction.toObject(this);
         // console.log('... broadcast_transaction_with_callback !!!')
-        __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().network_api().exec( "broadcast_transaction_with_callback", [ function(res) { return resolve(res); } ,tr_object]).then(function(){
+        __WEBPACK_IMPORTED_MODULE_3__ws_cjs__["Apis"].instance().network_api().exec("broadcast_transaction_with_callback", [function (res) { return resolve(res); }, tr_object]).then(function () {
             //console.log('... broadcast success, waiting for callback')
-            if(was_broadcast_callback) was_broadcast_callback();
+            if (was_broadcast_callback) was_broadcast_callback();
             return;
         }
-        ).catch( (error)=> {
+        ).catch((error) => {
             // console.log may be redundant for network errors, other errors could occur
             console.log(error);
             var message = error.message;
             if (!message) { message = ""; }
             reject(new Error(message));
-/*
-            reject( new Error((
-                message + "\n" +
-                'graphene-crypto ' +
-                ' digest ' + hash.sha256(this.tr_buffer).toString('hex') +
-                ' transaction ' + this.tr_buffer.toString('hex') +
-                ' ' + JSON.stringify(tr_object) ))
-            );
-*/
+            /*
+                        reject( new Error((
+                            message + "\n" +
+                            'graphene-crypto ' +
+                            ' digest ' + hash.sha256(this.tr_buffer).toString('hex') +
+                            ' transaction ' + this.tr_buffer.toString('hex') +
+                            ' ' + JSON.stringify(tr_object) ))
+                        );
+            */
             return;
         }
         );
@@ -31812,12 +31964,12 @@ function _broadcast(was_broadcast_callback){
 }
 
 function getHeadBlockDate() {
-    return timeStringToDate( head_block_time_string )
+    return timeStringToDate(head_block_time_string)
 }
 
 function timeStringToDate(time_string) {
-    if( ! time_string) return new Date("1970-01-01T00:00:00.000Z")
-    if( ! /Z$/.test(time_string)) //does not end in Z
+    if (!time_string) return new Date("1970-01-01T00:00:00.000Z")
+    if (! /Z$/.test(time_string)) //does not end in Z
         // https://github.com/cryptonomex/graphene/issues/368
         time_string = time_string + "Z"
     return new Date(time_string)
