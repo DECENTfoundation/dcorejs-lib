@@ -619,8 +619,8 @@ export const proposal_create = new Serializer(
     "proposal_create", {
         fee: asset,
         fee_paying_account: protocol_id_type("account"),
-        expiration_time: time_point_sec,
         proposed_ops: array(op_wrapper),
+        expiration_time: time_point_sec,
         review_period_seconds: optional(uint32),
         extensions: set(future_extensions)
     }
