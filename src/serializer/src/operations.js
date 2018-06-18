@@ -220,6 +220,36 @@ export const content_cancellation_operation_fee_parameters = new Serializer(
     { fee: uint64 }
 );
 
+export const asset_fund_pools_operation_fee_parameters = new Serializer(
+    "asset_fund_pools_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const asset_reserve_operation_fee_parameters = new Serializer(
+    "asset_reserve_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const asset_claim_fees_operation_fee_parameters = new Serializer(
+    "asset_claim_fees_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const update_monitored_asset_operation_fee_parameters = new Serializer(
+    "update_monitored_asset_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const ready_to_publish2_operation_fee_parameters = new Serializer(
+    "ready_to_publish2_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const transfer2_operation_fee_parameters = new Serializer(
+    "transfer2_operation_fee_parameters",
+    {fee: uint64}
+);
+
 export const disallow_automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "disallow_automatic_renewal_of_subscription_operation_fee_parameters",
     { fee: uint64 }
