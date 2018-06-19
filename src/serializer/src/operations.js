@@ -235,6 +235,11 @@ export const asset_claim_fees_operation_fee_parameters = new Serializer(
     {fee: uint64}
 );
 
+export const update_user_issued_asset_operation_fee_parameters = new Serializer(
+    "update_user_issued_asset_operation_fee_parameters",
+    {fee: uint64}
+);
+
 export const update_monitored_asset_operation_fee_parameters = new Serializer(
     "update_monitored_asset_operation_fee_parameters",
     {fee: uint64}
@@ -314,6 +319,13 @@ let fee_parameters = static_variant([
     set_publishing_manager_operation_fee_parameters,
     set_publishing_right_operation_fee_parameters,
     content_cancellation_operation_fee_parameters,
+    asset_fund_pools_operation_fee_parameters,
+    asset_reserve_operation_fee_parameters,
+    asset_claim_fees_operation_fee_parameters,
+    update_user_issued_asset_operation_fee_parameters,
+    update_monitored_asset_operation_fee_parameters,
+    ready_to_publish2_operation_fee_parameters,
+    transfer2_operation_fee_parameters,
     disallow_automatic_renewal_of_subscription_operation_fee_parameters,
     return_escrow_submission_operation_fee_parameters,
     return_escrow_buying_operation_fee_parameters,
@@ -658,8 +670,8 @@ export const proposal_create = new Serializer(
 
 export const proposal_update = new Serializer(
     "proposal_update", {
-        fee_paying_account: protocol_id_type("account"),
         fee: asset,
+        fee_paying_account: protocol_id_type("account"),
         proposal: protocol_id_type("proposal"),
         active_approvals_to_add: set(protocol_id_type("account")),
         active_approvals_to_remove: set(protocol_id_type("account")),
