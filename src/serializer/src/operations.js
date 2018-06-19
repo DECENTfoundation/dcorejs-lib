@@ -626,6 +626,7 @@ export const chain_parameters = new Serializer(
         maximum_authority_membership: uint16,
         cashback_vesting_period_seconds: uint32,
         cashback_vesting_threshold: int64,
+        miner_pay_vesting_seconds: uint32,
         max_predicate_opcode: uint16,
         max_authority_depth: uint8,
         extensions: set(future_extensions)
@@ -648,8 +649,8 @@ export const proposal_create = new Serializer(
     "proposal_create", {
         fee: asset,
         fee_paying_account: protocol_id_type("account"),
-        proposed_ops: array(op_wrapper),
         expiration_time: time_point_sec,
+        proposed_ops: array(op_wrapper),
         review_period_seconds: optional(uint32),
         extensions: set(future_extensions)
     }
@@ -657,8 +658,8 @@ export const proposal_create = new Serializer(
 
 export const proposal_update = new Serializer(
     "proposal_update", {
-        fee: asset,
         fee_paying_account: protocol_id_type("account"),
+        fee: asset,
         proposal: protocol_id_type("proposal"),
         active_approvals_to_add: set(protocol_id_type("account")),
         active_approvals_to_remove: set(protocol_id_type("account")),
