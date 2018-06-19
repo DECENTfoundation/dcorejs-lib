@@ -197,17 +197,17 @@ class ChainStore
                this._updateObject( obj )
          }
       }
-      this.notifySubscribers()
+      this.notifySubscribers(updated_objects)
    }
 
-   notifySubscribers()
+   notifySubscribers(updated_objects)
    {
         // Dispatch at most only once every x milliseconds
         if( ! this.dispatched ) {
             this.dispatched = true;
             this.timeout = setTimeout( () => {
                 this.dispatched = false;
-                this.subscribers.forEach( (callback) => { callback() } )
+                this.subscribers.forEach( (callback) => { callback(updated_objects) } )
             }, this.dispatchFrequency );
       }
    }
