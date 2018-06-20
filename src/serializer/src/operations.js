@@ -638,7 +638,6 @@ export const chain_parameters = new Serializer(
         maximum_authority_membership: uint16,
         cashback_vesting_period_seconds: uint32,
         cashback_vesting_threshold: int64,
-        miner_pay_vesting_seconds: uint32,
         max_predicate_opcode: uint16,
         max_authority_depth: uint8,
         extensions: set(future_extensions)
