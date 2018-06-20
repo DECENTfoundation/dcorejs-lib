@@ -13,7 +13,7 @@ ChainTypes.object_type = {
     asset: 3,
     miner: 4,
     custom: 7,
-    proposal: 8,
+    proposal: 6,
     operation_history: 7,
     withdraw_permission: 8,
     vesting_balance: 9
