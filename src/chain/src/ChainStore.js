@@ -47,6 +47,7 @@ class ChainStore
    constructor() {
       /** tracks everyone who wants to receive updates when the cache changes */
       this.subscribers = new Set();
+      this.pendingTransactionSubscribers = new Set();
       this.subscribed = false;
       this.clearCache();
       this.progress = 0;
@@ -118,7 +119,14 @@ class ChainStore
                           .then( v => {
                             console.log("synced and subscribed, chainstore ready");
                             this.subscribed = true;
-                             resolve();
+                              Apis.instance().db_api().exec("set_pending_transaction_callback", [ this.onPendingTransaction.bind(this), true ])
+                                .then(res => {
+                                    resolve();
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                    console.log( "Error: ", error );
+                                })
                           })
                           .catch( error => {
                             reject(error);
@@ -144,6 +152,22 @@ class ChainStore
      };
 
      return new Promise((resolve, reject) => _init(resolve, reject));
+   }
+
+   onPendingTransaction(data) {
+       this.notifyPendingTransactionSubscribers(data);
+   }
+
+
+   notifyPendingTransactionSubscribers(data) {
+       // Dispatch at most only once every x milliseconds
+       if( ! this.dispatched_pts ) {
+           this.dispatched_pts = true;
+           this.timeout = setTimeout( () => {
+               this.dispatched_pts = false;
+               this.pendingTransactionSubscribers.forEach( (callback) => { callback(data) } )
+           }, this.dispatchFrequency );
+       }
    }
 
    onUpdate( updated_objects ) /// map from account id to objects
@@ -219,6 +243,13 @@ class ChainStore
       if(this.subscribers.has(callback))
           console.error("Subscribe callback already exists", callback)
       this.subscribers.add( callback )
+   }
+
+   subscribePendingTransaction(callback) {
+       if(this.pendingTransactionSubscribers.has(callback)) {
+           console.error("Pending trans subscribe callback already exists", callback)
+       }
+       this.pendingTransactionSubscribers.add(callback);
    }
 
    /**
@@ -857,7 +888,7 @@ class ChainStore
         pending_request.promise = new Promise( (resolve, reject) => {
             Apis.instance().history_api().exec("get_account_history",
                               [ account_id, most_recent, limit, start])
-                .then( operations => { 
+                .then( operations => {
                        let current_account = this.objects_by_id.get( account_id )
                        let current_history = current_account.get( 'history' )
                        if( !current_history ) current_history = Immutable.List()
