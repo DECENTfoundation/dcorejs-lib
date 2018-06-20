@@ -7,13 +7,15 @@
     "crypto": false
   },
   "scripts": {
+    "start": "npm run build-js -- -w",
     "test": "BABEL_ENV=test mocha --compilers js:babel-register --recursive",
     "test:chain": "BABEL_ENV=test mocha --compilers js:babel-register ./test/chain --recursive",
     "test:ecc": "BABEL_ENV=test mocha --compilers js:babel-register ./test/ecc --recursive",
     "test:serializer": "BABEL_ENV=test mocha --compilers js:babel-register ./test/serializer --recursive",
     "clean": "rm -rf ./dist/* & rm -rf ./lib/*",
     "prebuild": "npm run clean",
-    "build": "BABEL_ENV=cjs babel src -d lib && npm run pack",
+    "build": "npm run build-js && npm run pack",
+    "build-js": "BABEL_ENV=cjs babel src -d lib",
     "pack": "webpack --config webpack.config.js",
     "doc": "esdoc -c esdoc.json",
     "example:transfer": "babel-node examples/transfer",
