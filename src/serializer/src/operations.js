@@ -69,7 +69,7 @@ export const asset_create_operation_fee_parameters = new Serializer(
 
 export const asset_update_operation_fee_parameters = new Serializer(
     "asset_update_operation_fee_parameters",
-    { basic_fee: uint64 }
+    { fee: uint64 }
 );
 
 export const asset_publish_feed_operation_fee_parameters = new Serializer(
@@ -87,8 +87,8 @@ export const miner_update_operation_fee_parameters = new Serializer(
     { fee: int64 }
 );
 
-export const witness_update_global_parameters_operation_fee_parameters = new Serializer(
-    "witness_update_global_parameters_operation_fee_parameters",
+export const miner_update_global_parameters_operation_fee_parameters = new Serializer(
+    "miner_update_global_parameters_operation_fee_parameters",
     { fee: uint64 }
 );
 
@@ -220,6 +220,41 @@ export const content_cancellation_operation_fee_parameters = new Serializer(
     { fee: uint64 }
 );
 
+export const asset_fund_pools_operation_fee_parameters = new Serializer(
+    "asset_fund_pools_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const asset_reserve_operation_fee_parameters = new Serializer(
+    "asset_reserve_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const asset_claim_fees_operation_fee_parameters = new Serializer(
+    "asset_claim_fees_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const update_user_issued_asset_operation_fee_parameters = new Serializer(
+    "update_user_issued_asset_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const update_monitored_asset_operation_fee_parameters = new Serializer(
+    "update_monitored_asset_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const ready_to_publish2_operation_fee_parameters = new Serializer(
+    "ready_to_publish2_operation_fee_parameters",
+    {fee: uint64}
+);
+
+export const transfer2_operation_fee_parameters = new Serializer(
+    "transfer2_operation_fee_parameters",
+    {fee: uint64}
+);
+
 export const disallow_automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "disallow_automatic_renewal_of_subscription_operation_fee_parameters",
     { fee: uint64 }
@@ -251,44 +286,51 @@ export const renewal_of_subscription_operation_fee_parameters = new Serializer(
 );
 
 let fee_parameters = static_variant([
-    transfer_operation_fee_parameters,    
-    account_create_operation_fee_parameters,    
-    account_update_operation_fee_parameters,    
-    asset_create_operation_fee_parameters,    
-    asset_update_operation_fee_parameters,    
-    asset_publish_feed_operation_fee_parameters,    
-    miner_create_operation_fee_parameters,    
-    miner_update_operation_fee_parameters,    
-    witness_update_global_parameters_operation_fee_parameters,    
-    proposal_create_operation_fee_parameters,    
-    proposal_update_operation_fee_parameters,    
-    proposal_delete_operation_fee_parameters,    
-    withdraw_permission_create_operation_fee_parameters,    
-    withdraw_permission_update_operation_fee_parameters,    
-    withdraw_permission_claim_operation_fee_parameters,    
-    withdraw_permission_delete_operation_fee_parameters,    
-    vesting_balance_create_operation_fee_parameters,    
-    vesting_balance_withdraw_operation_fee_parameters,    
-    custom_operation_fee_parameters,    
-    assert_operation_fee_parameters,    
-    content_submit_operation_fee_parameters,    
-    request_to_buy_operation_fee_parameters,    
-    leave_rating_and_comment_operation_fee_parameters,    
-    ready_to_publish_operation_fee_parameters,    
-    proof_of_custody_operation_fee_parameters,    
-    deliver_keys_operation_fee_parameters,    
-    subscribe_operation_fee_parameters,    
-    subscribe_by_author_operation_fee_parameters,    
-    automatic_renewal_of_subscription_operation_fee_parameters,    
-    report_stats_operation_fee_parameters,    
-    set_publishing_manager_operation_fee_parameters,    
-    set_publishing_right_operation_fee_parameters,    
-    content_cancellation_operation_fee_parameters,    
-    disallow_automatic_renewal_of_subscription_operation_fee_parameters,    
-    return_escrow_submission_operation_fee_parameters,    
-    return_escrow_buying_operation_fee_parameters,    
-    pay_seeder_operation_fee_parameters,    
-    finish_buying_operation_fee_parameters,    
+    transfer_operation_fee_parameters,
+    account_create_operation_fee_parameters,
+    account_update_operation_fee_parameters,
+    asset_create_operation_fee_parameters,
+    asset_update_operation_fee_parameters,
+    asset_publish_feed_operation_fee_parameters,
+    miner_create_operation_fee_parameters,
+    miner_update_operation_fee_parameters,
+    miner_update_global_parameters_operation_fee_parameters,
+    proposal_create_operation_fee_parameters,
+    proposal_update_operation_fee_parameters,
+    proposal_delete_operation_fee_parameters,
+    withdraw_permission_create_operation_fee_parameters,
+    withdraw_permission_update_operation_fee_parameters,
+    withdraw_permission_claim_operation_fee_parameters,
+    withdraw_permission_delete_operation_fee_parameters,
+    vesting_balance_create_operation_fee_parameters,
+    vesting_balance_withdraw_operation_fee_parameters,
+    custom_operation_fee_parameters,
+    assert_operation_fee_parameters,
+    content_submit_operation_fee_parameters,
+    request_to_buy_operation_fee_parameters,
+    leave_rating_and_comment_operation_fee_parameters,
+    ready_to_publish_operation_fee_parameters,
+    proof_of_custody_operation_fee_parameters,
+    deliver_keys_operation_fee_parameters,
+    subscribe_operation_fee_parameters,
+    subscribe_by_author_operation_fee_parameters,
+    automatic_renewal_of_subscription_operation_fee_parameters,
+    report_stats_operation_fee_parameters,
+    set_publishing_manager_operation_fee_parameters,
+    set_publishing_right_operation_fee_parameters,
+    content_cancellation_operation_fee_parameters,
+    asset_fund_pools_operation_fee_parameters,
+    asset_reserve_operation_fee_parameters,
+    asset_claim_fees_operation_fee_parameters,
+    update_user_issued_asset_operation_fee_parameters,
+    update_monitored_asset_operation_fee_parameters,
+    ready_to_publish2_operation_fee_parameters,
+    transfer2_operation_fee_parameters,
+    disallow_automatic_renewal_of_subscription_operation_fee_parameters,
+    return_escrow_submission_operation_fee_parameters,
+    return_escrow_buying_operation_fee_parameters,
+    pay_seeder_operation_fee_parameters,
+    finish_buying_operation_fee_parameters,
     renewal_of_subscription_operation_fee_parameters
 ]);
 
@@ -382,6 +424,17 @@ export const transfer = new Serializer(
     }
 );
 
+export const transfer2 = new Serializer(
+    "transfer2", {
+        fee: asset,
+        from: protocol_id_type("account"),
+        to: protocol_id_type("account"),
+        amount: asset,
+        memo: optional(memo_data),
+        extensions: set(future_extensions)
+    }
+);
+
 export const authority = new Serializer(
     "authority", {
         weight_threshold: uint32,
@@ -403,7 +456,7 @@ export const account_options = new Serializer(
     }
 );
 
-export const account_create = new Serializer( 
+export const account_create = new Serializer(
     "account_create", {
         fee: asset,
         registrar: protocol_id_type("account"),
@@ -437,7 +490,7 @@ export const asset_extension = new Serializer(
     "asset_extension", {
         is_fixed_max_supply: bool
     }
-)
+);
 
 export const asset_options = new Serializer(
     "asset_options", {
@@ -475,7 +528,7 @@ export const update_user_issued_asset = new Serializer(
         issuer: protocol_id_type("account"),
         asset_to_update: protocol_id_type("asset"),
         new_description: string,
-        new_issuer: optional(protocol_id_type("account")), 
+        new_issuer: optional(protocol_id_type("account")),
         max_supply: int64,
         core_exchange_rate: price,
         is_exchangeable: bool,
@@ -550,23 +603,23 @@ export const asset_publish_feed = new Serializer(
     }
 );
 
-export const miner_create = new Serializer( 
+export const miner_create = new Serializer(
     "miner_create", {
-    fee: asset,
-    miner_account: protocol_id_type("account"),
-    url: string,
-    block_signing_key: public_key
-}
+        fee: asset,
+        miner_account: protocol_id_type("account"),
+        url: string,
+        block_signing_key: public_key
+    }
 );
 
-export const miner_update = new Serializer( 
+export const miner_update = new Serializer(
     "miner_update", {
-    fee: asset,
-    miner: protocol_id_type("miner"),
-    miner_account: protocol_id_type("account"),
-    new_url: optional(string),
-    new_signing_key: optional(public_key)
-}
+        fee: asset,
+        miner: protocol_id_type("miner"),
+        miner_account: protocol_id_type("account"),
+        new_url: optional(string),
+        new_signing_key: optional(public_key)
+    }
 );
 
 export const chain_parameters = new Serializer(
@@ -575,27 +628,24 @@ export const chain_parameters = new Serializer(
         block_interval: uint8,
         maintenance_interval: uint32,
         maintenance_skip_slots: uint8,
-        witness_proposal_review_period: uint32,
+        miner_proposal_review_period: uint32,
         maximum_transaction_size: uint32,
         maximum_block_size: uint32,
         maximum_time_until_expiration: uint32,
         maximum_proposal_lifetime: uint32,
         maximum_asset_feed_publishers: uint8,
-        maximum_witness_count: uint16,
+        maximum_miner_count: uint16,
         maximum_authority_membership: uint16,
         cashback_vesting_period_seconds: uint32,
         cashback_vesting_threshold: int64,
         max_predicate_opcode: uint16,
-        fee_liquidation_threshold: int64,
-        accounts_per_fee_scale: uint16,
-        account_fee_scale_bitshifts: uint8,
         max_authority_depth: uint8,
         extensions: set(future_extensions)
     }
 );
 
-export const witness_update_global_parameters = new Serializer(
-    "witness_update_global_parameters", {
+export const miner_update_global_parameters = new Serializer(
+    "miner_update_global_parameters", {
         fee: asset,
         new_parameters: chain_parameters
     }
@@ -849,6 +899,17 @@ export const ready_to_publish = new Serializer(
     }
 );
 
+export const ready_to_publish2 = new Serializer(
+    "ready_to_publish2", {
+        fee: asset,
+        seeder: protocol_id_type("account"),
+        space: uint64,
+        pubKey: DIntegerString,
+        price_per_MByte: uint32,
+        ipfs_ID: string
+    }
+);
+
 export const CustodyProof = new Serializer(
     "CustodyProof", {
         reference_block: uint32,
@@ -1007,45 +1068,47 @@ operation.st_operations = [
     account_update,
     asset_create,
     asset_issue,
-    asset_publish_feed,
-    set_publishing_right,
-    update_monitored_asset_operation,
-    asset_issue,
+    asset_publish_feed, // 5
     miner_create,
     miner_update,
-    witness_update_global_parameters,
+    miner_update_global_parameters,
     proposal_create,
-    proposal_update,
+    proposal_update, // 10
     proposal_delete,
     withdraw_permission_create,
     withdraw_permission_update,
     withdraw_permission_claim,
-    withdraw_permission_delete,
+    withdraw_permission_delete, // 15
     vesting_balance_create,
     vesting_balance_withdraw,
     custom,
     assert,
-    content_submit,
+    content_submit, // 20
     request_to_buy,
     leave_rating_and_comment,
     ready_to_publish,
     proof_of_custody,
-    deliver_keys,
+    deliver_keys, // 25
     subscribe,
     subscribe_by_author,
     automatic_renewal_of_subscription,
+    report_stats,
+    set_publishing_manager, // 30
+    set_publishing_right,
     content_cancellation,
     asset_fund_pools_operation,
     asset_reserve_operation,
-    asset_claim_fees_operation,
+    asset_claim_fees_operation, // 35
     update_user_issued_asset,
-    disallow_automatic_renewal_of_subscription,
+    update_monitored_asset_operation,
+    ready_to_publish2,
+    transfer2,
+    disallow_automatic_renewal_of_subscription, // 40
     return_escrow_submission,
     return_escrow_buying,
     pay_seeder,
     finish_buying,
-    renewal_of_subscription,
-    asset_options
+    renewal_of_subscription, // 45
 ];
 
 export const transaction = new Serializer(
@@ -1082,7 +1145,7 @@ export const stealth_memo_data = new Serializer(
         blinding_factor: bytes(32),
         commitment: bytes(33),
         check: uint32
-    })
+    });
 // var stealth_confirmation = new Serializer(
 //     "stealth_confirmation", {
 //     one_time_key: public_key,

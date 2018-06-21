@@ -1,27 +1,27 @@
 let ChainTypes = {};
 
 ChainTypes.reserved_spaces = {
-  relative_protocol_ids: 0,
-  protocol_ids: 1,
-  implementation_ids: 2
+    relative_protocol_ids: 0,
+    protocol_ids: 1,
+    implementation_ids: 2
 };
 
 ChainTypes.object_type = {
-  "null": 0,
-  base: 1,
-  account: 2,
-  asset: 3,
-  miner: 4,
-  custom: 7,
-  proposal: 8,
-  operation_history: 7,
-  withdraw_permission: 8,
-  vesting_balance: 9
+    "null": 0,
+    base: 1,
+    account: 2,
+    asset: 3,
+    miner: 4,
+    custom: 7,
+    proposal: 6,
+    operation_history: 7,
+    withdraw_permission: 8,
+    vesting_balance: 9
 };
 
 ChainTypes.impl_object_type = {
-  global_property: 0,
-  dynamic_global_property: 1,
+    global_property: 0,
+    dynamic_global_property: 1,
     reserved0: 2,      // formerly index_meta, TODO: delete me
     asset_dynamic_data_type: 3,
     account_balance: 4,
@@ -45,9 +45,9 @@ ChainTypes.impl_object_type = {
 
 
 ChainTypes.vote_type = {
-  committee: 0,
-  miner: 1,
-  worker: 2
+    committee: 0,
+    miner: 1,
+    worker: 2
 };
 
 ChainTypes.operations= {
@@ -56,10 +56,10 @@ ChainTypes.operations= {
     account_update: 2,
     asset_create: 3,
     asset_issue: 4,
-    disallow_automatic_renewal_of_subscription: 5,
+    asset_publish_feed: 5,
     miner_create: 6,
     miner_update: 7,
-    witness_update_global_parameters: 8,
+    miner_update_global_parameters: 8,
     proposal_create: 9,
     proposal_update: 10,
     proposal_delete: 11,
@@ -88,8 +88,15 @@ ChainTypes.operations= {
     asset_reserve_operation: 34,
     asset_claim_fees_operation: 35,
     update_user_issued_asset: 36,
-    finish_buying: 37,
-    renewal_of_subscription: 38
+    update_monitored_asset: 37,
+    ready_to_publish2: 38,
+    transfer2: 39,
+    disallow_automatic_renewal_of_subscription: 40,
+    return_escrow_submission: 41,
+    return_escrow_buying: 42,
+    pay_seeder: 43,
+    finish_buying: 44,
+    renewal_of_subscription: 45
 };
 
 export default ChainTypes;
