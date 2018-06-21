@@ -2,3 +2,5 @@ node_modules/
 es/
 compiled/
 .idea
+lib/
+dist/
