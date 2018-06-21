@@ -7835,27 +7835,27 @@ function objectToString(o) {
 let ChainTypes = {};
 
 ChainTypes.reserved_spaces = {
-    relative_protocol_ids: 0,
-    protocol_ids: 1,
-    implementation_ids: 2
+  relative_protocol_ids: 0,
+  protocol_ids: 1,
+  implementation_ids: 2
 };
 
 ChainTypes.object_type = {
-    "null": 0,
-    base: 1,
-    account: 2,
-    asset: 3,
-    miner: 4,
-    custom: 7,
-    proposal: 8,
-    operation_history: 7,
-    withdraw_permission: 8,
-    vesting_balance: 9
+  "null": 0,
+  base: 1,
+  account: 2,
+  asset: 3,
+  miner: 4,
+  custom: 7,
+  proposal: 8,
+  operation_history: 7,
+  withdraw_permission: 8,
+  vesting_balance: 9
 };
 
 ChainTypes.impl_object_type = {
-    global_property: 0,
-    dynamic_global_property: 1,
+  global_property: 0,
+  dynamic_global_property: 1,
     reserved0: 2,      // formerly index_meta, TODO: delete me
     asset_dynamic_data_type: 3,
     account_balance: 4,
@@ -7879,9 +7879,9 @@ ChainTypes.impl_object_type = {
 
 
 ChainTypes.vote_type = {
-    committee: 0,
-    miner: 1,
-    worker: 2
+  committee: 0,
+  miner: 1,
+  worker: 2
 };
 
 ChainTypes.operations= {
@@ -7890,10 +7890,10 @@ ChainTypes.operations= {
     account_update: 2,
     asset_create: 3,
     asset_issue: 4,
-    asset_publish_feed: 5,
+    disallow_automatic_renewal_of_subscription: 5,
     miner_create: 6,
     miner_update: 7,
-    miner_update_global_parameters: 8,
+    witness_update_global_parameters: 8,
     proposal_create: 9,
     proposal_update: 10,
     proposal_delete: 11,
@@ -7922,15 +7922,8 @@ ChainTypes.operations= {
     asset_reserve_operation: 34,
     asset_claim_fees_operation: 35,
     update_user_issued_asset: 36,
-    update_monitored_asset: 37,
-    ready_to_publish2: 38,
-    transfer2: 39,
-    disallow_automatic_renewal_of_subscription: 40,
-    return_escrow_submission: 41,
-    return_escrow_buying: 42,
-    pay_seeder: 43,
-    finish_buying: 44,
-    renewal_of_subscription: 45
+    finish_buying: 37,
+    renewal_of_subscription: 38
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (ChainTypes);
@@ -17011,44 +17004,44 @@ const renewal_of_subscription_operation_fee_parameters = new Serializer(
 
 
 let fee_parameters = static_variant([
-    transfer_operation_fee_parameters,
-    account_create_operation_fee_parameters,
-    account_update_operation_fee_parameters,
-    asset_create_operation_fee_parameters,
-    asset_update_operation_fee_parameters,
-    asset_publish_feed_operation_fee_parameters,
-    miner_create_operation_fee_parameters,
-    miner_update_operation_fee_parameters,
-    witness_update_global_parameters_operation_fee_parameters,
-    proposal_create_operation_fee_parameters,
-    proposal_update_operation_fee_parameters,
-    proposal_delete_operation_fee_parameters,
-    withdraw_permission_create_operation_fee_parameters,
-    withdraw_permission_update_operation_fee_parameters,
-    withdraw_permission_claim_operation_fee_parameters,
-    withdraw_permission_delete_operation_fee_parameters,
-    vesting_balance_create_operation_fee_parameters,
-    vesting_balance_withdraw_operation_fee_parameters,
-    custom_operation_fee_parameters,
-    assert_operation_fee_parameters,
-    content_submit_operation_fee_parameters,
-    request_to_buy_operation_fee_parameters,
-    leave_rating_and_comment_operation_fee_parameters,
-    ready_to_publish_operation_fee_parameters,
-    proof_of_custody_operation_fee_parameters,
-    deliver_keys_operation_fee_parameters,
-    subscribe_operation_fee_parameters,
-    subscribe_by_author_operation_fee_parameters,
-    automatic_renewal_of_subscription_operation_fee_parameters,
-    report_stats_operation_fee_parameters,
-    set_publishing_manager_operation_fee_parameters,
-    set_publishing_right_operation_fee_parameters,
-    content_cancellation_operation_fee_parameters,
-    disallow_automatic_renewal_of_subscription_operation_fee_parameters,
-    return_escrow_submission_operation_fee_parameters,
-    return_escrow_buying_operation_fee_parameters,
-    pay_seeder_operation_fee_parameters,
-    finish_buying_operation_fee_parameters,
+    transfer_operation_fee_parameters,    
+    account_create_operation_fee_parameters,    
+    account_update_operation_fee_parameters,    
+    asset_create_operation_fee_parameters,    
+    asset_update_operation_fee_parameters,    
+    asset_publish_feed_operation_fee_parameters,    
+    miner_create_operation_fee_parameters,    
+    miner_update_operation_fee_parameters,    
+    witness_update_global_parameters_operation_fee_parameters,    
+    proposal_create_operation_fee_parameters,    
+    proposal_update_operation_fee_parameters,    
+    proposal_delete_operation_fee_parameters,    
+    withdraw_permission_create_operation_fee_parameters,    
+    withdraw_permission_update_operation_fee_parameters,    
+    withdraw_permission_claim_operation_fee_parameters,    
+    withdraw_permission_delete_operation_fee_parameters,    
+    vesting_balance_create_operation_fee_parameters,    
+    vesting_balance_withdraw_operation_fee_parameters,    
+    custom_operation_fee_parameters,    
+    assert_operation_fee_parameters,    
+    content_submit_operation_fee_parameters,    
+    request_to_buy_operation_fee_parameters,    
+    leave_rating_and_comment_operation_fee_parameters,    
+    ready_to_publish_operation_fee_parameters,    
+    proof_of_custody_operation_fee_parameters,    
+    deliver_keys_operation_fee_parameters,    
+    subscribe_operation_fee_parameters,    
+    subscribe_by_author_operation_fee_parameters,    
+    automatic_renewal_of_subscription_operation_fee_parameters,    
+    report_stats_operation_fee_parameters,    
+    set_publishing_manager_operation_fee_parameters,    
+    set_publishing_right_operation_fee_parameters,    
+    content_cancellation_operation_fee_parameters,    
+    disallow_automatic_renewal_of_subscription_operation_fee_parameters,    
+    return_escrow_submission_operation_fee_parameters,    
+    return_escrow_buying_operation_fee_parameters,    
+    pay_seeder_operation_fee_parameters,    
+    finish_buying_operation_fee_parameters,    
     renewal_of_subscription_operation_fee_parameters
 ]);
 
@@ -17160,19 +17153,6 @@ const transfer = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["transfer"] = transfer;
 
 
-const transfer2 = new Serializer(
-    "transfer2", {
-        fee: asset,
-        from: protocol_id_type("account"),
-        to: protocol_id_type("account"),
-        amount: asset,
-        memo: optional(memo_data),
-        extensions: set(future_extensions)
-    }
-);
-/* harmony export (immutable) */ __webpack_exports__["transfer2"] = transfer2;
-
-
 const authority = new Serializer(
     "authority", {
         weight_threshold: uint32,
@@ -17198,7 +17178,7 @@ const account_options = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["account_options"] = account_options;
 
 
-const account_create = new Serializer(
+const account_create = new Serializer( 
     "account_create", {
         fee: asset,
         registrar: protocol_id_type("account"),
@@ -17284,7 +17264,7 @@ const update_user_issued_asset = new Serializer(
         issuer: protocol_id_type("account"),
         asset_to_update: protocol_id_type("asset"),
         new_description: string,
-        new_issuer: optional(protocol_id_type("account")),
+        new_issuer: optional(protocol_id_type("account")), 
         max_supply: int64,
         core_exchange_rate: price,
         is_exchangeable: bool,
@@ -17375,25 +17355,25 @@ const asset_publish_feed = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["asset_publish_feed"] = asset_publish_feed;
 
 
-const miner_create = new Serializer(
+const miner_create = new Serializer( 
     "miner_create", {
-        fee: asset,
-        miner_account: protocol_id_type("account"),
-        url: string,
-        block_signing_key: public_key
-    }
+    fee: asset,
+    miner_account: protocol_id_type("account"),
+    url: string,
+    block_signing_key: public_key
+}
 );
 /* harmony export (immutable) */ __webpack_exports__["miner_create"] = miner_create;
 
 
-const miner_update = new Serializer(
+const miner_update = new Serializer( 
     "miner_update", {
-        fee: asset,
-        miner: protocol_id_type("miner"),
-        miner_account: protocol_id_type("account"),
-        new_url: optional(string),
-        new_signing_key: optional(public_key)
-    }
+    fee: asset,
+    miner: protocol_id_type("miner"),
+    miner_account: protocol_id_type("account"),
+    new_url: optional(string),
+    new_signing_key: optional(public_key)
+}
 );
 /* harmony export (immutable) */ __webpack_exports__["miner_update"] = miner_update;
 
@@ -17425,13 +17405,13 @@ const chain_parameters = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["chain_parameters"] = chain_parameters;
 
 
-const miner_update_global_parameters = new Serializer(
-    "miner_update_global_parameters", {
+const witness_update_global_parameters = new Serializer(
+    "witness_update_global_parameters", {
         fee: asset,
         new_parameters: chain_parameters
     }
 );
-/* harmony export (immutable) */ __webpack_exports__["miner_update_global_parameters"] = miner_update_global_parameters;
+/* harmony export (immutable) */ __webpack_exports__["witness_update_global_parameters"] = witness_update_global_parameters;
 
 
 const op_wrapper = new Serializer(
@@ -17732,19 +17712,6 @@ const ready_to_publish = new Serializer(
 /* harmony export (immutable) */ __webpack_exports__["ready_to_publish"] = ready_to_publish;
 
 
-const ready_to_publish2 = new Serializer(
-    "ready_to_publish2", {
-        fee: asset,
-        seeder: protocol_id_type("account"),
-        space: uint64,
-        pubKey: DIntegerString,
-        price_per_MByte: uint32,
-        ipfs_ID: string
-    }
-);
-/* harmony export (immutable) */ __webpack_exports__["ready_to_publish2"] = ready_to_publish2;
-
-
 const CustodyProof = new Serializer(
     "CustodyProof", {
         reference_block: uint32,
@@ -17938,9 +17905,12 @@ operation.st_operations = [
     asset_create,
     asset_issue,
     asset_publish_feed,
+    set_publishing_right,
+    update_monitored_asset_operation,
+    asset_issue,
     miner_create,
     miner_update,
-    miner_update_global_parameters,
+    witness_update_global_parameters,
     proposal_create,
     proposal_update,
     proposal_delete,
@@ -17961,23 +17931,18 @@ operation.st_operations = [
     subscribe,
     subscribe_by_author,
     automatic_renewal_of_subscription,
-    report_stats,
-    set_publishing_manager,
-    set_publishing_right,
     content_cancellation,
     asset_fund_pools_operation,
     asset_reserve_operation,
     asset_claim_fees_operation,
     update_user_issued_asset,
-    update_monitored_asset_operation,
-    ready_to_publish2,
-    transfer2,
     disallow_automatic_renewal_of_subscription,
     return_escrow_submission,
     return_escrow_buying,
     pay_seeder,
     finish_buying,
     renewal_of_subscription,
+    asset_options
 ];
 
 const transaction = new Serializer(
@@ -18018,7 +17983,7 @@ const stealth_memo_data = new Serializer(
         blinding_factor: bytes(32),
         commitment: bytes(33),
         check: uint32
-    });
+    })
 /* harmony export (immutable) */ __webpack_exports__["stealth_memo_data"] = stealth_memo_data;
 
 // var stealth_confirmation = new Serializer(
@@ -19793,7 +19758,7 @@ class ErrorWithCause {
 /* 68 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["bigi@1.4.2","/home/katka/decent/new/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/home/katka/decent/new/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
+module.exports = {"_args":[["bigi@1.4.2","/Users/duskis/Documents/touch4it/dev/decent/dcorejs-lib"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/","/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/duskis/Documents/touch4it/dev/decent/dcorejs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
 
 /***/ }),
 /* 69 */
