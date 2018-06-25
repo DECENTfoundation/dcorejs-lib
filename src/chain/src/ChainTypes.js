@@ -88,7 +88,7 @@ ChainTypes.operations= {
     asset_reserve_operation: 34,
     asset_claim_fees_operation: 35,
     update_user_issued_asset: 36,
-    update_monitored_asset: 37,
+    update_monitored_asset_operation: 37,
     ready_to_publish2: 38,
     transfer2: 39,
     disallow_automatic_renewal_of_subscription: 40,
