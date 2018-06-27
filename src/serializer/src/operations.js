@@ -475,6 +475,12 @@ export const price = new Serializer(
     }
 );
 
+export const coreExchangeRate = new Serializer(
+    "core_exchange_rate", {
+        core_exchange_rate: price
+    }
+);
+
 export const account_update = new Serializer(
     "account_update", {
         fee: asset,
@@ -503,6 +509,9 @@ export const asset_options = new Serializer(
 
 export const monitored_asset_options = new Serializer(
     "monitored_asset_options", {
+        feeds: map((protocol_id_type("account")), (array(time_point_sec, coreExchangeRate))),
+        current_feed: coreExchangeRate,
+        current_feed_publication_time: time_point_sec,
         feed_lifetime_sec: uint32,
         minimum_feeds: uint8,
     }
