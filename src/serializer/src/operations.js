@@ -563,7 +563,7 @@ export const update_monitored_asset_operation = new Serializer(
         new_description: string,
         new_feed_lifetime_sec: uint32,
         new_minimum_feeds: uint8,
-        extensions: optional(future_extensions)
+        extensions: set(future_extensions)
     }
 );
 
