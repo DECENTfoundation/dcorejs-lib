@@ -8,8 +8,8 @@ import fp from './FastParser';
 import ChainTypes from "../../chain/src/ChainTypes";
 import ObjectId from "../../chain/src/ObjectId";
 
-import { PublicKey, Address } from "../../ecc";
-import { ChainConfig } from "../../ws/cjs";
+import {Address, PublicKey} from "../../ecc";
+import {ChainConfig} from "../../ws/cjs";
 
 var Types = {};
 
@@ -523,7 +523,12 @@ var id_type = function(reserved_spaces, object_type){
         return v.get_instance(reserved_spaces, object_type, object);
     },
     toObject(object, debug = {}){
-        var object_type_id = ChainTypes.object_type[object_type];
+        let object_type_id;
+        if (reserved_spaces === 1) {
+            object_type_id = ChainTypes.object_type[object_type];
+        } else if (reserved_spaces === 2) {
+            object_type_id = ChainTypes.impl_object_type[object_type];
+        }
         if (debug.use_default && object === undefined) {
             return `${reserved_spaces}.${object_type_id}.0`;
         }
@@ -539,8 +544,13 @@ var id_type = function(reserved_spaces, object_type){
 };
 
 Types.protocol_id_type = function(name){
-    v.required(name, "name")
+    v.required(name, "name");
     return id_type(ChainTypes.reserved_spaces.protocol_ids, name);
+};
+
+Types.implementation_id_type = function (name) {
+    v.required(name, "name");
+    return id_type(ChainTypes.reserved_spaces.implementation_ids, name);
 };
 
 Types.object_id_type =

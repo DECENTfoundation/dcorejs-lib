@@ -4,9 +4,9 @@ import SerializerImpl from "./serializer";
 var {
     //id_type,
     //varint32,
-    int8, uint8, uint16, uint32, int64, uint64,
+    int8, uint8, uint16, uint32, int64, uint64, uint64_t,
     string, bytes, bool, array, fixed_array,
-    protocol_id_type, object_id_type, vote_id,
+    protocol_id_type, implementation_id_type, object_id_type, vote_id,
     future_extensions,
     static_variant, map, set,
     public_key, address,
@@ -197,7 +197,7 @@ export const subscribe_by_author_operation_fee_parameters = new Serializer(
 
 export const automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "automatic_renewal_of_subscription_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64_t}
 );
 
 export const report_stats_operation_fee_parameters = new Serializer(
@@ -978,7 +978,7 @@ export const automatic_renewal_of_subscription = new Serializer(
     "automatic_renewal_of_subscription", {
         fee: asset,
         consumer: protocol_id_type("account"),
-        subscription: protocol_id_type("subscription"),
+        subscription: implementation_id_type("subscription_object"),
         automatic_renewal: bool
     }
 );

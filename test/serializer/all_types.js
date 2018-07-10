@@ -1,4 +1,4 @@
-import { PrivateKey, PublicKey, Address, Serializer, ops, types } from "../../src";
+import {Address, ops, PrivateKey, Serializer, types} from "../../src";
 import assert from 'assert';
 
 var {
@@ -6,6 +6,7 @@ var {
     uint8, uint16, uint32, int64, uint64,
     string, bytes, bool, array, fixed_array,
     protocol_id_type, object_id_type, vote_id,
+    implementation_id_type,
     // future_extensions,
     static_variant, map, set,
     public_key, address,
@@ -20,6 +21,7 @@ let AllTypes = new Serializer("all_types", {
     uint8, uint16, uint32, int64, uint64,
     string, bytes: bytes(1), bool, array: array(uint8), fixed_array: fixed_array(2, uint8),
     protocol_id_type: protocol_id_type("account"), object_id_type, //vote_id,
+    implementation_id_type: implementation_id_type("subscription_object"),
 
     static_variant: array(static_variant( [asset, account_name_eq_lit_predicate] )),
     map: map(uint8, uint8),
@@ -40,6 +42,7 @@ let allTypes = {
 
     string: "test", bytes: "ff", bool: true, array: [2, 1], fixed_array: [1, 0],
     protocol_id_type: "1.2.2222", object_id_type: "1.1.1", //vote_id: "2:1",
+    implementation_id_type: "2.15.2222222",
 
     static_variant: [ [1, {account_id: "1.2.1", name: "abc"}],[0, { amount: "1", asset_id: "1.3.0" }] ],
     map: [[4,3], [2,1]],
