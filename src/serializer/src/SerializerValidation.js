@@ -131,7 +131,7 @@ var _my = {
     // Does not support over 53 bits
     require_range(min,max,value, field_name=""){
         if (this.is_empty(value) ){ return value; }
-        var number = this.to_number(value);
+        let number = this.to_number(value);
         if (value < min || value > max) {
             throw new Error(`out of range ${value} ${field_name} ${value}`);
         }
@@ -143,11 +143,16 @@ var _my = {
         field_name=""
     ){
         if (this.is_empty(value) ){ return value; }
-        var object_type = ChainTypes.object_type[type];
+        let object_type;
+        if (reserved_spaces === 1) {
+            object_type = ChainTypes.object_type[type];
+        } else if (reserved_spaces === 2) {
+            object_type = ChainTypes.impl_object_type[type];
+        }
         if (!object_type) {
             throw new Error(`Unknown object type ${type} ${field_name} ${value}`);
         }
-        var re = new RegExp(`${reserved_spaces}\.${object_type}\.[0-9]+$`);
+        let re = new RegExp(`${reserved_spaces}\.${object_type}\.[0-9]+$`);
         if (!re.test(value)) {
             throw new Error(`Expecting ${type} in format `+ `${reserved_spaces}.${object_type}.[0-9]+ `+ `instead of ${value} ${field_name} ${value}`);
         }
