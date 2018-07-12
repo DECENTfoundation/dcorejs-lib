@@ -5,20 +5,19 @@ import assert from 'assert';
 import p from '../../src/serializer/src/precision';
 import th from './test_helper';
 
-import { is } from "immutable";
-import { PublicKey, PrivateKey, types } from "../../src";
-import { ChainConfig } from "../../src/ws";
+import {types} from "../../src";
+import {ChainConfig} from "../../src/ws";
 
 describe("types", function() {
 
     it("vote_id",function() {
-        var toHex=function(id){
-            var vote = types.vote_id.fromObject(id);
+        const toHex = function (id) {
+            const vote = types.vote_id.fromObject(id);
             return Convert(types.vote_id).toHex(vote);
         };
         assert.equal("ff000000", toHex("255:0"));
         assert.equal("00ffffff", toHex("0:"+0xffffff));
-        var out_of_range=function(id){
+        const out_of_range = function (id) {
             try {
                 toHex(id);
                 return assert(false, 'should have been out of range');
@@ -32,7 +31,7 @@ describe("types", function() {
     });
 
     it("set sort", function() {
-        var bool_set = types.set(types.bool);
+        const bool_set = types.set(types.bool);
         // Note, 1,0 sorts to 0,1
         assert.equal("020001", Convert(bool_set).toHex([1,0]));
         th.error("duplicate (set)", function() { return Convert(bool_set).toHex([1,1]); });
@@ -40,49 +39,49 @@ describe("types", function() {
     });
 
     it("string sort", function() {
-        var setType = types.set(types.string);
-        var set = setType.fromObject(["a","z","m"])
-        var setObj = setType.toObject(set)
-        assert.deepEqual(["a","m","z"], setObj, "not sorted")
+        const setType = types.set(types.string);
+        const set = setType.fromObject(["a", "z", "m"]);
+        const setObj = setType.toObject(set);
+        assert.deepEqual(["a", "m", "z"], setObj, "not sorted");
     });
 
     it("map sort", function() {
-        var bool_map = types.map(types.bool, types.bool);
+        const bool_map = types.map(types.bool, types.bool);
         // 1,1 0,0   sorts to   0,0  1,1
         assert.equal("0200000101", Convert(bool_map).toHex([[1,1],[0,0]]));
         th.error("duplicate (map)", function() { return Convert(bool_map).toHex([[1,1],[1,1]]); });
-    })
+    });
 
     before(function() {
         ChainConfig.setPrefix("TEST");
     });
 
     it("public_key sort", function() {
-        let mapType = types.map(types.public_key, types.uint16)
+        let mapType = types.map(types.public_key, types.uint16);
         let map = mapType.fromObject([//not sorted
             ["TEST6FHYdi17RhcUXJZr5fxZm1wvVCpXPekiHeAEwRHSEBmiR3yceK",0],
             ["TEST5YdgWfAejDdSuq55xfguqFTtbRKLi2Jcz1YtTsCzYgdUYXs92c",0],
             ["TEST7AGnzGCAGVfFnyvPziN67mfuHx9rx89r2zVoRGW1Aawim1f3Qt",0],
-        ])
-        let mapObject = mapType.toObject(map)
+        ]);
+        let mapObject = mapType.toObject(map);
         assert.deepEqual(mapObject, [ // sorted (witness_node sorts assending by "address" (not pubkey))
             ["TEST7AGnzGCAGVfFnyvPziN67mfuHx9rx89r2zVoRGW1Aawim1f3Qt",0],
             ["TEST5YdgWfAejDdSuq55xfguqFTtbRKLi2Jcz1YtTsCzYgdUYXs92c",0],
             ["TEST6FHYdi17RhcUXJZr5fxZm1wvVCpXPekiHeAEwRHSEBmiR3yceK",0],
         ])
-    })
+    });
 
 
 
     it("type_id sort", function() {
         // map (protocol_id_type "account"), (uint16)
         let t = types.map(types.protocol_id_type("account"), types.uint16);
-        assert.deepEqual( t.fromObject([[1,1],[0,0]]), [[0,0],[1,1]], 'did not sort' )
-        assert.deepEqual( t.fromObject([[0,0],[1,1]]), [[0,0],[1,1]], 'did not sort' )
+        assert.deepEqual(t.fromObject([[1, 1], [0, 0]]), [[0, 0], [1, 1]], 'did not sort');
+        assert.deepEqual(t.fromObject([[0, 0], [1, 1]]), [[0, 0], [1, 1]], 'did not sort');
     });
 
     it("precision number strings", function() {
-        var check=function(input_string, precision, output_string){
+        const check = function (input_string, precision, output_string) {
             return assert.equal(
                 output_string,
                 p._internal.decimal_precision_string(
@@ -120,7 +119,7 @@ describe("types", function() {
     });
 
     return it("precision number long", function() {
-        var _precision;
+        let _precision;
         assert.equal(
             Long.MAX_VALUE.toString(),
             p.to_bigint64(
@@ -147,4 +146,6 @@ describe("types", function() {
     });
 });
 
-var overflow = function(f){ return th.error("overflow", f); };
+const overflow = function (f) {
+    return th.error("overflow", f);
+};

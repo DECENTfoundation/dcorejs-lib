@@ -11,12 +11,12 @@ describe("operation test", function() {
             template(ops[op])
         }
     })
-})
+});
 
 function template(op) {
 
-    assert(op.toObject({}, {use_default: true}))
-    assert(op.toObject({}, {use_default: true, annotate: true}))
+    assert(op.toObject({}, {use_default: true}));
+    assert(op.toObject({}, {use_default: true, annotate: true}));
 
     // sample json
     let obj = op.toObject({}, {use_default: true, annotate: false})
