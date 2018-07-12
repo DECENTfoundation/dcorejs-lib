@@ -47,7 +47,7 @@ ChainTypes.vote_type = {
     worker: 2
 };
 
-ChainTypes.operations= {
+ChainTypes.operations = {
     transfer: 0,
     account_create: 1,
     account_update: 2,

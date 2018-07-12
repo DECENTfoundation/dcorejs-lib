@@ -1,4 +1,3 @@
-
 export default function normalize(brainKey) {
     if (typeof brainKey !== 'string') {
         throw new Error("string required for brainKey");

@@ -3,8 +3,8 @@ import key from "../../ecc/src/KeyUtils";
 
 import {get, set} from "./state";
 
-var _keyCachePriv = {};
-var _keyCachePub = {};
+let _keyCachePriv = {};
+let _keyCachePub = {};
 
 class AccountLogin {
 
@@ -38,7 +38,7 @@ class AccountLogin {
 
         (roles || this.get("roles")).forEach(role => {
             let seed = accountName + role + password;
-            let pkey = _keyCachePriv[seed] ? _keyCachePriv[seed] :  PrivateKey.fromSeed( key.normalize_brainKey(seed) );
+            let pkey = _keyCachePriv[seed] ? _keyCachePriv[seed] : PrivateKey.fromSeed(key.normalize_brainKey(seed));
             _keyCachePriv[seed] = pkey;
 
             privKeys[role] = pkey;
@@ -64,7 +64,7 @@ class AccountLogin {
                     this.set(role, {priv: privKeys[role], pub: pubKeys[role]});
                 }
             });
-        };
+        }
 
         if (hasKey) {
             this.set("name", accountName);
