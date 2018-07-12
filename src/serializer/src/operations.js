@@ -1,7 +1,7 @@
 import types from "./types";
 import SerializerImpl from "./serializer";
 
-var {
+let {
     //id_type,
     //varint32,
     int8, uint8, uint16, uint32, int64, uint64, uint64_t,
@@ -31,15 +31,15 @@ public_key = new Serializer(
 // Place-holder, their are dependencies on "operation" .. The final list of
 // operations is not avialble until the very end of the generated code.
 // See: operation.st_operations = ...
-var operation = static_variant();
+let operation = static_variant();
 // module.exports["operation"] = operation;
 
-export { operation };
+export {operation};
 // For module.exports
-var Serializer = function (operation_name, serilization_types_object) {
+let Serializer = function (operation_name, serilization_types_object) {
     return new SerializerImpl(operation_name, serilization_types_object);
     // return module.exports[operation_name] = s;
-}
+};
 
 // Custom-types follow Generated code:
 
@@ -49,47 +49,47 @@ var Serializer = function (operation_name, serilization_types_object) {
 
 export const transfer_operation_fee_parameters = new Serializer(
     "transfer_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const account_create_operation_fee_parameters = new Serializer(
     "account_create_operation_fee_parameters",
-    { basic_fee: uint64 }
+    {basic_fee: uint64}
 );
 
 export const account_update_operation_fee_parameters = new Serializer(
     "account_update_operation_fee_parameters",
-    { fee: int64 }
+    {fee: int64}
 );
 
 export const asset_create_operation_fee_parameters = new Serializer(
     "asset_create_operation_fee_parameters",
-    { basic_fee: uint64 }
+    {basic_fee: uint64}
 );
 
 export const asset_update_operation_fee_parameters = new Serializer(
     "asset_update_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const asset_publish_feed_operation_fee_parameters = new Serializer(
     "asset_publish_feed_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const miner_create_operation_fee_parameters = new Serializer(
     "miner_create_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const miner_update_operation_fee_parameters = new Serializer(
     "miner_update_operation_fee_parameters",
-    { fee: int64 }
+    {fee: int64}
 );
 
 export const miner_update_global_parameters_operation_fee_parameters = new Serializer(
     "miner_update_global_parameters_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const proposal_create_operation_fee_parameters = new Serializer(
@@ -108,17 +108,17 @@ export const proposal_update_operation_fee_parameters = new Serializer(
 
 export const proposal_delete_operation_fee_parameters = new Serializer(
     "proposal_delete_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const withdraw_permission_create_operation_fee_parameters = new Serializer(
     "withdraw_permission_create_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const withdraw_permission_update_operation_fee_parameters = new Serializer(
     "withdraw_permission_update_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const withdraw_permission_claim_operation_fee_parameters = new Serializer(
@@ -130,17 +130,17 @@ export const withdraw_permission_claim_operation_fee_parameters = new Serializer
 
 export const withdraw_permission_delete_operation_fee_parameters = new Serializer(
     "withdraw_permission_delete_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const vesting_balance_create_operation_fee_parameters = new Serializer(
     "vesting_balance_create_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const vesting_balance_withdraw_operation_fee_parameters = new Serializer(
     "vesting_balance_withdraw_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const custom_operation_fee_parameters = new Serializer(
@@ -152,47 +152,47 @@ export const custom_operation_fee_parameters = new Serializer(
 
 export const assert_operation_fee_parameters = new Serializer(
     "assert_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const content_submit_operation_fee_parameters = new Serializer(
     "content_submit_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const request_to_buy_operation_fee_parameters = new Serializer(
     "request_to_buy_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const leave_rating_and_comment_operation_fee_parameters = new Serializer(
     "leave_rating_and_comment_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const ready_to_publish_operation_fee_parameters = new Serializer(
     "ready_to_publish_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const proof_of_custody_operation_fee_parameters = new Serializer(
     "proof_of_custody_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const deliver_keys_operation_fee_parameters = new Serializer(
     "deliver_keys_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const subscribe_operation_fee_parameters = new Serializer(
     "subscribe_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const subscribe_by_author_operation_fee_parameters = new Serializer(
     "subscribe_by_author_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
@@ -202,22 +202,22 @@ export const automatic_renewal_of_subscription_operation_fee_parameters = new Se
 
 export const report_stats_operation_fee_parameters = new Serializer(
     "report_stats_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const set_publishing_manager_operation_fee_parameters = new Serializer(
     "set_publishing_manager_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const set_publishing_right_operation_fee_parameters = new Serializer(
     "set_publishing_right_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const content_cancellation_operation_fee_parameters = new Serializer(
     "content_cancellation_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const asset_fund_pools_operation_fee_parameters = new Serializer(
@@ -257,32 +257,32 @@ export const transfer2_operation_fee_parameters = new Serializer(
 
 export const disallow_automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "disallow_automatic_renewal_of_subscription_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const return_escrow_submission_operation_fee_parameters = new Serializer(
     "return_escrow_submission_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const return_escrow_buying_operation_fee_parameters = new Serializer(
     "return_escrow_buying_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const pay_seeder_operation_fee_parameters = new Serializer(
     "pay_seeder_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const finish_buying_operation_fee_parameters = new Serializer(
     "finish_buying_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 export const renewal_of_subscription_operation_fee_parameters = new Serializer(
     "renewal_of_subscription_operation_fee_parameters",
-    { fee: uint64 }
+    {fee: uint64}
 );
 
 let fee_parameters = static_variant([
@@ -599,7 +599,7 @@ export const asset_claim_fees_operation = new Serializer(
 
 export const price_feed = new Serializer(
     "price_feed",
-    { core_exchange_rate: price }
+    {core_exchange_rate: price}
 );
 
 export const asset_publish_feed = new Serializer(
@@ -662,7 +662,7 @@ export const miner_update_global_parameters = new Serializer(
 
 export const op_wrapper = new Serializer(
     "op_wrapper",
-    { op: operation }
+    {op: operation}
 );
 
 export const proposal_create = new Serializer(
@@ -811,7 +811,7 @@ export const asset_symbol_eq_lit_predicate = new Serializer(
 
 export const block_id_predicate = new Serializer(
     "block_id_predicate",
-    { id: bytes(20) }
+    {id: bytes(20)}
 );
 
 let predicate = static_variant([
@@ -839,7 +839,7 @@ export const regional_price = new Serializer(
 
 export const DIntegerString = new Serializer(
     "DIntegerString",
-    { s: string }
+    {s: string}
 );
 
 export const CiphertextString = new Serializer(
