@@ -4,7 +4,7 @@ exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var WebSocketClient = void 0;
+let WebSocketClient = void 0;
 if (typeof WebSocket === "undefined" && !process.env.browser) {
     WebSocketClient = require("ws");
 } else if (typeof WebSocket !== "undefined" && typeof document !== "undefined") {
@@ -15,11 +15,11 @@ if (typeof WebSocket === "undefined" && !process.env.browser) {
     WebSocketClient = WebSocket;
 }
 
-var SOCKET_DEBUG = false;
+let SOCKET_DEBUG = false;
 
-var ChainWebSocket = function () {
+let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
-        var _this = this;
+        const _this = this;
 
         _classCallCheck(this, ChainWebSocket);
 
@@ -62,10 +62,12 @@ var ChainWebSocket = function () {
     }
 
     ChainWebSocket.prototype.call = function call(params) {
-        var _this2 = this;
+        const _this2 = this;
 
-        var method = params[1];
-        if (SOCKET_DEBUG) console.log("[ChainWebSocket] >---- call ----->  \"id\":" + (this.cbId + 1), JSON.stringify(params));
+        const method = params[1];
+        if (SOCKET_DEBUG) {
+            console.log("[ChainWebSocket] >---- call ----->  \"id\":" + (this.cbId + 1), JSON.stringify(params));
+        }
 
         this.cbId += 1;
 
@@ -84,10 +86,10 @@ var ChainWebSocket = function () {
                 throw new Error("First parameter of unsub must be the original callback");
             }
 
-            var unSubCb = params[2].splice(0, 1)[0];
+            const unSubCb = params[2].splice(0, 1)[0];
 
             // Find the corresponding subscription
-            for (var id in this.subs) {
+            for (let id in this.subs) {
                 if (this.subs[id].callback === unSubCb) {
                     this.unsub[this.cbId] = id;
                     break;
@@ -95,7 +97,7 @@ var ChainWebSocket = function () {
             }
         }
 
-        var request = {
+        const request = {
             method: "call",
             params: params
         };
@@ -116,7 +118,9 @@ var ChainWebSocket = function () {
     };
 
     ChainWebSocket.prototype.listener = function listener(response) {
-        if (SOCKET_DEBUG) console.log("[ChainWebSocket] <---- reply ----<", JSON.stringify(response));
+        if (SOCKET_DEBUG) {
+            console.log("[ChainWebSocket] <---- reply ----<", JSON.stringify(response));
+        }
 
         let sub = false, callback = null;
 
@@ -151,7 +155,7 @@ var ChainWebSocket = function () {
     };
 
     ChainWebSocket.prototype.login = function login(user, password) {
-        var _this3 = this;
+        const _this3 = this;
 
         return this.connect_promise.then(function () {
             return _this3.call([1, "login", [user, password]]);

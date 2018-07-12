@@ -1,8 +1,8 @@
 import assert from "assert";
 import {Apis, ChainConfig} from "../../src/ws";
-import { FetchChain, ChainStore } from "../../src";
+import {ChainStore} from "../../src";
 
-var coreAsset;
+let coreAsset;
 
 describe("ChainStore", () => {
     // Connect once for all tests
@@ -29,40 +29,40 @@ describe("ChainStore", () => {
         it("Asset not found", function() {
             return new Promise( function(resolve) {
                 ChainStore.subscribe(function() {
-                    assert(ChainStore.getAsset("NOTFOUND") === null)
+                    assert(ChainStore.getAsset("NOTFOUND") === null);
                     resolve()
-                })
-                assert(ChainStore.getAsset("NOTFOUND") === undefined)
+                });
+                assert(ChainStore.getAsset("NOTFOUND") === undefined);
             })
-        })
+        });
 
         it("Asset by name", function() {
             return new Promise( function(resolve) {
                 ChainStore.subscribe(function() {
-                    assert(ChainStore.getAsset(coreAsset) != null)
-                    resolve()
-                })
-                assert(ChainStore.getAsset(coreAsset) === undefined)
+                    assert(ChainStore.getAsset(coreAsset) != null);
+                    resolve();
+                });
+                assert(ChainStore.getAsset(coreAsset) === undefined);
             })
-        })
+        });
 
         it("Asset by id", function() {
             return new Promise( function(resolve) {
                 ChainStore.subscribe(function() {
-                    assert(ChainStore.getAsset("1.3.0") != null)
-                    resolve()
-                })
+                    assert(ChainStore.getAsset("1.3.0") != null);
+                    resolve();
+                });
                 assert(ChainStore.getAsset("1.3.0") === undefined)
             })
-        })
+        });
 
         it("Object by id", function() {
             return new Promise( function(resolve) {
                 ChainStore.subscribe(function() {
-                    assert(ChainStore.getAsset("2.0.0") != null)
-                    resolve()
-                })
-                assert(ChainStore.getAsset("2.0.0") === undefined)
+                    assert(ChainStore.getAsset("2.0.0") != null);
+                    resolve();
+                });
+                assert(ChainStore.getAsset("2.0.0") === undefined);
             })
         })
 
@@ -77,4 +77,4 @@ describe("ChainStore", () => {
         // })
 
 
-})
+});

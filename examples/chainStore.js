@@ -11,6 +11,5 @@ Apis.instance("wss://bitshares.openledger.info/ws", true).init_promise.then((res
 let dynamicGlobal = null;
 function updateState(object) {
     dynamicGlobal = ChainStore.getObject("2.1.0");
-
     console.log("ChainStore object update\n", dynamicGlobal ? dynamicGlobal.toJS() : dynamicGlobal);
 }
