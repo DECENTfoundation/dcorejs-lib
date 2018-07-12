@@ -69,7 +69,7 @@ var ChainWebSocket = function () {
 
         this.cbId += 1;
 
-        if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback") {
+        if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback" || method === "set_block_applied_callback") {
             // Store callback in subs map
             this.subs[this.cbId] = {
                 callback: params[2][0]
@@ -118,8 +118,7 @@ var ChainWebSocket = function () {
     ChainWebSocket.prototype.listener = function listener(response) {
         if (SOCKET_DEBUG) console.log("[ChainWebSocket] <---- reply ----<", JSON.stringify(response));
 
-        var sub = false,
-            callback = null;
+        let sub = false, callback = null;
 
         if (response.method === "notice") {
             sub = true;

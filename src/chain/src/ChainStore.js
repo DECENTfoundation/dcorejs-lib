@@ -48,6 +48,7 @@ class ChainStore {
         /** tracks everyone who wants to receive updates when the cache changes */
         this.subscribers = new Set();
         this.pendingTransactionSubscribers = new Set();
+        this.blockSubscribers = new Set();
         this.subscribed = false;
         this.clearCache();
         this.progress = 0;
@@ -121,17 +122,25 @@ class ChainStore {
                                     this.subscribed = true;
                                     Apis.instance().db_api().exec("set_pending_transaction_callback", [this.onPendingTransaction.bind(this), true])
                                         .then(res => {
-                                            resolve();
+                                            Apis.instance().db_api().exec("set_block_applied_callback", [this.onBlockApplied.bind(this), true])
+                                                .then(res => {
+                                                    resolve();
+                                                })
+                                                .catch(error => {
+                                                    reject(error);
+                                                    console.log("Error: ", error);
+                                                });
+
                                         })
                                         .catch(err => {
                                             reject(err);
                                             console.log("Error: ", error);
-                                        })
+                                        });
                                 })
                                 .catch(error => {
                                     reject(error);
                                     console.log("Error: ", error)
-                                })
+                                });
                         } else {
                             console.log("not yet synced, retrying in 1s");
                             reconnectCounter++;
@@ -166,6 +175,18 @@ class ChainStore {
                 this.dispatched_pts = false;
                 this.pendingTransactionSubscribers.forEach((callback) => {
                     callback(data)
+                })
+            }, this.dispatchFrequency);
+        }
+    }
+
+    onBlockApplied(data) {
+        if (!this.dispatchedBlockApplied) {
+            this.dispatchedBlockApplied = true;
+            this.timeout = setTimeout(() => {
+                this.dispatchedBlockApplied = false;
+                this.blockSubscribers.forEach((callback) => {
+                    callback(data);
                 })
             }, this.dispatchFrequency);
         }
@@ -214,11 +235,12 @@ class ChainStore {
                     // Remove the object
                     this.objects_by_id = this.objects_by_id.set(obj, null)
                 }
-                else
-                    this._updateObject(obj)
+                else {
+                    this._updateObject(obj);
+                }
             }
         }
-        this.notifySubscribers(updated_objects)
+        this.notifySubscribers(updated_objects);
     }
 
     notifySubscribers(updated_objects) {
@@ -228,7 +250,7 @@ class ChainStore {
             this.timeout = setTimeout(() => {
                 this.dispatched = false;
                 this.subscribers.forEach((callback) => {
-                    callback(updated_objects)
+                    callback(updated_objects);
                 })
             }, this.dispatchFrequency);
         }
@@ -238,8 +260,9 @@ class ChainStore {
      *  Add a callback that will be called anytime any object in the cache is updated
      */
     subscribe(callback) {
-        if (this.subscribers.has(callback))
+        if (this.subscribers.has(callback)) {
             console.error("Subscribe callback already exists", callback);
+        }
         this.subscribers.add(callback)
     }
 
@@ -250,13 +273,35 @@ class ChainStore {
         this.pendingTransactionSubscribers.add(callback);
     }
 
+    subscribeBlockApplied(callback) {
+        if (this.blockSubscribers.has(callback)) {
+            console.error("Block subscribers callback already exists", callback)
+        }
+        this.blockSubscribers.add(callback);
+    }
+
     /**
      *  Remove a callback that was previously added via subscribe
      */
     unsubscribe(callback) {
-        if (!this.subscribers.has(callback))
+        if (!this.subscribers.has(callback)) {
             console.error("Unsubscribe callback does not exists", callback);
-        this.subscribers.delete(callback)
+        }
+        this.subscribers.delete(callback);
+    }
+
+    unsubscribePendingTransaction(callback) {
+        if (!this.pendingTransactionSubscribers.has(callback)) {
+            console.error("Unsubscribe pending transaction callback does not exists", callback);
+        }
+        this.pendingTransactionSubscribers.delete(callback);
+    }
+
+    unsubscribeBlockApplied(callback) {
+        if (!this.blockSubscribers.has(callback)) {
+            console.error("Unsubscribe block callback does not exists", callback);
+        }
+        this.blockSubscribers.delete(callback);
     }
 
     /** Clear an object from the cache to force it to be fetched again. This may
@@ -264,7 +309,7 @@ class ChainStore {
      * it may succeede the second time.
      */
     clearObjectCache(id) {
-        this.objects_by_id = this.objects_by_id.delete(id)
+        this.objects_by_id = this.objects_by_id.delete(id);
     }
 
     /**
@@ -276,16 +321,17 @@ class ChainStore {
      *
      */
     getObject(id, force = false) {
-        if (!ChainValidation.is_object_id(id))
+        if (!ChainValidation.is_object_id(id)) {
             throw Error("argument is not an object id: " + JSON.stringify(id));
-
+        }
         let result = this.objects_by_id.get(id);
-        if (result === undefined || force)
+        if (result === undefined || force) {
             return this.fetchObject(id, force);
-        if (result === true)
+        }
+        if (result === true) {
             return undefined;
-
-        return result
+        }
+        return result;
     }
 
     /**
@@ -319,27 +365,29 @@ class ChainStore {
             return asset;
         }
 
-        if (asset_id === null)
+        if (asset_id === null) {
             return null;
+        }
 
-        if (asset_id === true)
+        if (asset_id === true) {
             return undefined;
+        }
 
         Apis.instance().db_api().exec("lookup_asset_symbols", [[id_or_symbol]])
             .then(asset_objects => {
                 // console.log( "lookup symbol ", id_or_symbol )
-                if (asset_objects.length && asset_objects[0])
+                if (asset_objects.length && asset_objects[0]) {
                     this._updateObject(asset_objects[0], true);
+                }
                 else {
                     this.assets_by_symbol = this.assets_by_symbol.set(id_or_symbol, null);
                     this.notifySubscribers()
                 }
             }).catch(error => {
             console.log("Error: ", error);
-            this.assets_by_symbol = this.assets_by_symbol.delete(id_or_symbol)
+            this.assets_by_symbol = this.assets_by_symbol.delete(id_or_symbol);
         });
-
-        return undefined
+        return undefined;
     }
 
     /**
@@ -354,8 +402,9 @@ class ChainStore {
      *  server will notify us of any accounts that reference these keys
      */
     getAccountRefsOfKey(key) {
-        if (this.get_account_refs_of_keys_calls.has(key))
+        if (this.get_account_refs_of_keys_calls.has(key)) {
             return this.account_ids_by_key.get(key);
+        }
         else {
             this.get_account_refs_of_keys_calls = this.get_account_refs_of_keys_calls.add(key);
             Apis.instance().db_api().exec("get_key_references", [[key]])
@@ -372,9 +421,9 @@ class ChainStore {
                     },
                     error => {
                         this.account_ids_by_key = this.account_ids_by_key.delete(key);
-                        this.get_account_refs_of_keys_calls = this.get_account_refs_of_keys_calls.delete(key)
+                        this.get_account_refs_of_keys_calls = this.get_account_refs_of_keys_calls.delete(key);
                     });
-            return undefined
+            return undefined;
         }
     }
 
@@ -404,7 +453,7 @@ class ChainStore {
                         this.notifySubscribers();
                     },
                     error => {
-                        this.balance_objects_by_address = this.balance_objects_by_address.delete(address)
+                        this.balance_objects_by_address = this.balance_objects_by_address.delete(address);
                     })
         }
         return this.balance_objects_by_address.get(address);
@@ -422,15 +471,22 @@ class ChainStore {
     fetchObject(id, force = false) {
         if (typeof id !== 'string') {
             let result = [];
-            for (let i = 0; i < id.length; ++i)
+            for (let i = 0; i < id.length; ++i) {
                 result.push(this.fetchObject(id[i]));
-            return result
+            }
+            return result;
         }
 
-        if (DEBUG) console.log("!!! fetchObject: ", id, this.subscribed, !this.subscribed && !force);
-        if (!this.subscribed && !force) return undefined;
+        if (DEBUG) {
+            console.log("!!! fetchObject: ", id, this.subscribed, !this.subscribed && !force);
+        }
+        if (!this.subscribed && !force) {
+            return undefined;
+        }
 
-        if (DEBUG) console.log("maybe fetch object: ", id);
+        if (DEBUG) {
+            console.log("maybe fetch object: ", id);
+        }
         if (!ChainValidation.is_object_id(id)) {
             throw Error("argument is not an object id: " + id);
         }
@@ -441,14 +497,17 @@ class ChainStore {
 
         let result = this.objects_by_id.get(id);
         if (result === undefined) { // the fetch
-            if (DEBUG) console.log("fetching object: ", id);
+            if (DEBUG) {
+                console.log("fetching object: ", id);
+            }
             this.objects_by_id = this.objects_by_id.set(id, true);
             Apis.instance().db_api().exec("get_objects", [[id]]).then(optional_objects => {
                 //if(DEBUG) console.log('... optional_objects',optional_objects ? optional_objects[0].id : null)
                 for (let i = 0; i < optional_objects.length; i++) {
                     let optional_object = optional_objects[i];
-                    if (optional_object)
+                    if (optional_object) {
                         this._updateObject(optional_object, true);
+                    }
                     else {
                         this.objects_by_id = this.objects_by_id.set(id, null);
                         this.notifySubscribers()
@@ -456,11 +515,12 @@ class ChainStore {
                 }
             }).catch(error => { // in the event of an error clear the pending state for id
                 console.log('!!! Chain API error', error);
-                this.objects_by_id = this.objects_by_id.delete(id)
+                this.objects_by_id = this.objects_by_id.delete(id);
             })
         }
-        else if (result === true) // then we are waiting a response
+        else if (result === true) { // then we are waiting a response
             return undefined;
+        }
         return result; // we have a response, return it
     }
 
@@ -471,31 +531,41 @@ class ChainStore {
      */
     getAccount(name_or_id) {
 
-        if (!name_or_id)
+        if (!name_or_id) {
             return null;
+        }
 
         if (typeof name_or_id === 'object') {
-            if (name_or_id.id) return this.getAccount(name_or_id.id);
-            else if (name_or_id.get) return this.getAccount(name_or_id.get('id'));
-            else return undefined;
+            if (name_or_id.id) {
+                return this.getAccount(name_or_id.id);
+            }
+            else if (name_or_id.get) {
+                return this.getAccount(name_or_id.get('id'));
+            }
+            else {
+                return undefined;
+            }
         }
 
         if (ChainValidation.is_object_id(name_or_id)) {
-            let account = this.getObject(name_or_id)
+            let account = this.getObject(name_or_id);
             if (account === null) {
                 return null;
             }
             if (account === undefined || account.get('name') === undefined) {
-                return this.fetchFullAccount(name_or_id)
+                return this.fetchFullAccount(name_or_id);
             }
-            return account
+            return account;
         }
         else if (ChainValidation.is_account_name(name_or_id, true)) {
-            let account_id = this.accounts_by_name.get(name_or_id)
-            if (account_id === null) return null; // already fetched and it wasn't found
-            if (account_id === undefined) // then no query, fetch it
-                return this.fetchFullAccount(name_or_id)
-            return this.getObject(account_id) // return it
+            let account_id = this.accounts_by_name.get(name_or_id);
+            if (account_id === null) {
+                return null;
+            } // already fetched and it wasn't found
+            if (account_id === undefined) {// then no query, fetch it
+                return this.fetchFullAccount(name_or_id);
+            }
+            return this.getObject(account_id); // return it
         }
         //throw Error( `Argument is not an account name or id: ${name_or_id}` )
     }
@@ -534,56 +604,23 @@ class ChainStore {
      * Obsolete! Please use getWitnessById
      * This method will attempt to lookup the account, and then query to see whether or not there is
      * a witness for this account.  If the answer is known, it will return the witness_object, otherwise
-     * it will attempt to look it up and return null.   Once the lookup has completed on_update will
+     * it will attempt to look it up and return null. ???? Once the lookup has completed on_update will
      * be called.
      *
      * @param id_or_account may either be an account_id, a witness_id, or an account_name
      */
     getWitness(id_or_account) {
         let account = this.getAccount(id_or_account);
-        if (!account) return null;
+        if (!account) {
+            return null;
+        }
         let account_id = account.get('id');
 
         let witness_id = this.witness_by_account_id.get(account_id);
-        if (witness_id === undefined)
+        if (witness_id === undefined) {
             this.fetchWitnessByAccount(account_id);
-        return this.getObject(witness_id);
-
-        if (ChainValidation.is_account_name(id_or_account, true) || (id_or_account.substring(0, 4) === "1.2.")) {
-            let account = this.getAccount(id_or_account);
-            if (!account) {
-                this.lookupAccountByName(id_or_account).then(account => {
-                    if (!account) return null;
-
-                    let account_id = account.get('id');
-                    let witness_id = this.witness_by_account_id.get(account_id);
-                    if (ChainValidation.is_object_id(witness_id))
-                        return this.getObject(witness_id, on_update);
-
-                    if (witness_id === undefined)
-                        this.fetchWitnessByAccount(account_id).then(witness => {
-                            this.witness_by_account_id.set(account_id, witness ? witness.get('id') : null);
-                            if (witness && on_update) on_update()
-                        })
-                }, error => {
-                    let witness_id = this.witness_by_account_id.set(id_or_account, null)
-                })
-            }
-            else {
-                let account_id = account.get('id');
-                let witness_id = this.witness_by_account_id.get(account_id);
-                if (ChainValidation.is_object_id(witness_id))
-                    return this.getObject(witness_id, on_update);
-
-                if (witness_id === undefined)
-                    this.fetchWitnessByAccount(account_id).then(witness => {
-                        this.witness_by_account_id.set(account_id, witness ? witness.get('id') : null);
-                        if (witness && on_update) on_update()
-                    })
-            }
-            return null
         }
-        return null
+        return this.getObject(witness_id);
     }
 
     // Obsolete! Please use getCommitteeMemberById
@@ -595,32 +632,38 @@ class ChainStore {
                 this.lookupAccountByName(id_or_account).then(account => {
                     let account_id = account.get('id');
                     let committee_id = this.committee_by_account_id.get(account_id);
-                    if (ChainValidation.is_object_id(committee_id)) return this.getObject(committee_id, on_update);
-
+                    if (ChainValidation.is_object_id(committee_id)) {
+                        return this.getObject(committee_id, on_update);
+                    }
                     if (committee_id === undefined) {
                         this.fetchCommitteeMemberByAccount(account_id).then(committee => {
                             this.committee_by_account_id.set(account_id, committee ? committee.get('id') : null);
-                            if (on_update && committee) on_update()
+                            if (on_update && committee) {
+                                on_update();
+                            }
                         })
                     }
                 }, error => {
-                    let witness_id = this.committee_by_account_id.set(id_or_account, null)
+                    let witness_id = this.committee_by_account_id.set(id_or_account, null);
                 })
             }
             else {
                 let account_id = account.get('id');
                 let committee_id = this.committee_by_account_id.get(account_id);
-                if (ChainValidation.is_object_id(committee_id)) return this.getObject(committee_id, on_update);
-
+                if (ChainValidation.is_object_id(committee_id)) {
+                    return this.getObject(committee_id, on_update);
+                }
                 if (committee_id === undefined) {
                     this.fetchCommitteeMemberByAccount(account_id).then(committee => {
                         this.committee_by_account_id.set(account_id, committee ? committee.get('id') : null);
-                        if (on_update && committee) on_update()
+                        if (on_update && committee) {
+                            on_update();
+                        }
                     })
                 }
             }
         }
-        return null
+        return null;
     }
 
     /**
@@ -634,12 +677,12 @@ class ChainStore {
                     if (optional_witness_object) {
                         this.witness_by_account_id = this.witness_by_account_id.set(optional_witness_object.witness_account, optional_witness_object.id);
                         let witness_object = this._updateObject(optional_witness_object, true);
-                        resolve(witness_object)
+                        resolve(witness_object);
                     }
                     else {
                         this.witness_by_account_id = this.witness_by_account_id.set(account_id, null);
                         this.notifySubscribers();
-                        resolve(null)
+                        resolve(null);
                     }
                 }, reject)
         })
@@ -654,14 +697,14 @@ class ChainStore {
             Apis.instance().db_api().exec("get_committee_member_by_account", [account_id])
                 .then(optional_committee_object => {
                     if (optional_committee_object) {
-                        this.committee_by_account_id = this.committee_by_account_id.set(optional_committee_object.committee_member_account, optional_committee_object.id)
+                        this.committee_by_account_id = this.committee_by_account_id.set(optional_committee_object.committee_member_account, optional_committee_object.id);
                         let committee_object = this._updateObject(optional_committee_object, true);
                         resolve(committee_object);
                     }
                     else {
                         this.committee_by_account_id = this.committee_by_account_id.set(account_id, null);
                         this.notifySubscribers();
-                        resolve(null)
+                        resolve(null);
                     }
                 }, reject)
         })
@@ -678,21 +721,26 @@ class ChainStore {
      *  @return null if the object has been queried and was not found
      */
     fetchFullAccount(name_or_id) {
-        if (DEBUG) console.log("Fetch full account: ", name_or_id);
+        if (DEBUG) {
+            console.log("Fetch full account: ", name_or_id);
+        }
 
         let fetch_account = false;
         if (ChainValidation.is_object_id(name_or_id)) {
             let current = this.objects_by_id.get(name_or_id);
             fetch_account = current === undefined;
-            if (!fetch_account && fetch_account.get('name')) return current;
+            if (!fetch_account && fetch_account.get('name')) {
+                return current;
+            }
         }
         else {
-            if (!ChainValidation.is_account_name(name_or_id, true))
+            if (!ChainValidation.is_account_name(name_or_id, true)) {
                 throw Error("argument is not an account name: " + name_or_id);
-
+            }
             let account_id = this.accounts_by_name.get(name_or_id);
-            if (ChainValidation.is_object_id(account_id))
+            if (ChainValidation.is_object_id(account_id)) {
                 return this.getAccount(account_id);
+            }
         }
 
 
@@ -705,12 +753,14 @@ class ChainStore {
                     if (results.length === 0) {
                         if (ChainValidation.is_object_id(name_or_id)) {
                             this.objects_by_id = this.objects_by_id.set(name_or_id, null);
-                            this.notifySubscribers()
+                            this.notifySubscribers();
                         }
                         return;
                     }
                     let full_account = results[0][1];
-                    if (DEBUG) console.log("full_account: ", full_account);
+                    if (DEBUG) {
+                        console.log("full_account: ", full_account);
+                    }
 
                     let {
                         account,
@@ -773,41 +823,51 @@ class ChainStore {
                     this._updateObject(statistics);
                     let updated_account = this._updateObject(account);
                     this.fetchRecentHistory(updated_account);
-                    this.notifySubscribers()
+                    this.notifySubscribers();
                 }, error => {
                     console.log("Error: ", error);
-                    if (ChainValidation.is_object_id(name_or_id))
+                    if (ChainValidation.is_object_id(name_or_id)) {
                         this.objects_by_id = this.objects_by_id.delete(name_or_id);
-                    else
+                    }
+                    else {
                         this.accounts_by_name = this.accounts_by_name.delete(name_or_id);
+                    }
                 })
         }
         return undefined;
     }
 
     getAccountMemberStatus(account) {
-        if (account === undefined) return undefined;
-        if (account === null) return "unknown";
-        if (account.get('lifetime_referrer') === account.get('id'))
+        if (account === undefined) {
+            return undefined;
+        }
+        if (account === null) {
+            return "unknown";
+        }
+        if (account.get('lifetime_referrer') === account.get('id')) {
             return "lifetime";
+        }
         let exp = new Date(account.get('membership_expiration_date')).getTime();
         let now = new Date().getTime();
-        if (exp < now)
+        if (exp < now) {
             return "basic";
-        return "annual"
+        }
+        return "annual";
     }
 
     getAccountBalance(account, asset_type) {
         let balances = account.get('balances');
-        if (!balances)
+        if (!balances) {
             return 0;
-
+        }
         let balance_obj_id = balances.get(asset_type);
         if (balance_obj_id) {
             let bal_obj = this.objects_by_id.get(balance_obj_id);
-            if (bal_obj) return bal_obj.get('balance');
+            if (bal_obj) {
+                return bal_obj.get('balance');
+            }
         }
-        return 0
+        return 0;
     }
 
     /**
@@ -825,45 +885,46 @@ class ChainStore {
         /// TODO: make sure we do not submit a query if there is already one
         /// in flight...
         let account_id = account;
-        if (!ChainValidation.is_object_id(account_id) && account.toJS)
+        if (!ChainValidation.is_object_id(account_id) && account.toJS) {
             account_id = account.get('id');
-
-        if (!ChainValidation.is_object_id(account_id))
+        }
+        if (!ChainValidation.is_object_id(account_id)) {
             return;
-
+        }
         account = this.objects_by_id.get(account_id);
-        if (!account) return;
-
-
+        if (!account) {
+            return;
+        }
         let pending_request = this.account_history_requests.get(account_id);
         if (pending_request) {
             pending_request.requests++;
-            return pending_request.promise
+            return pending_request.promise;
         }
-        else pending_request = {requests: 0};
-
-
+        else {
+            pending_request = {requests: 0};
+        }
         let most_recent = "1." + op_history + ".0";
         let history = account.get('history');
-
-        if (history && history.size) most_recent = history.first().get('id');
-
-
+        if (history && history.size) {
+            most_recent = history.first().get('id');
+        }
         /// starting at 0 means start at NOW, set this to something other than 0
         /// to skip recent transactions and fetch the tail
         let start = "1." + op_history + ".0";
-
         pending_request.promise = new Promise((resolve, reject) => {
             Apis.instance().history_api().exec("get_account_history",
                 [account_id, most_recent, limit, start])
                 .then(operations => {
                     let current_account = this.objects_by_id.get(account_id);
                     let current_history = current_account.get('history');
-                    if (!current_history) current_history = Immutable.List();
+                    if (!current_history) {
+                        current_history = Immutable.List();
+                    }
                     let updated_history = Immutable.fromJS(operations);
                     updated_history = updated_history.withMutations(list => {
-                        for (let i = 0; i < current_history.size; ++i)
-                            list.push(current_history.get(i))
+                        for (let i = 0; i < current_history.size; ++i) {
+                            list.push(current_history.get(i));
+                        }
                     });
                     let updated_account = current_account.set('history', updated_history);
                     this.objects_by_id = this.objects_by_id.set(account_id, updated_account);
@@ -877,15 +938,15 @@ class ChainStore {
                         // it looks like some more history may have come in while we were
                         // waiting on the result, lets fetch anything new before we resolve
                         // this query.
-                        this.fetchRecentHistory(updated_account, limit).then(resolve, reject)
+                        this.fetchRecentHistory(updated_account, limit).then(resolve, reject);
                     }
-                    else
-                        resolve(updated_account)
-                }) // end then
+                    else {
+                        resolve(updated_account);
+                    }
+                })
         });
-
         this.account_history_requests.set(account_id, pending_request);
-        return pending_request.promise
+        return pending_request.promise;
     }
 
     //_notifyAccountSubscribers( account_id )
@@ -983,19 +1044,22 @@ class ChainStore {
             object.participation = 100 * (BigInteger(object.recent_slots_filled).bitCount() / 128.0);
             this.head_block_time_string = object.time;
             this.chain_time_offset.push(Date.now() - timeStringToDate(object.time).getTime());
-            if (this.chain_time_offset.length > 10) this.chain_time_offset.shift() // remove first
+            if (this.chain_time_offset.length > 10) {
+                this.chain_time_offset.shift() // remove first
+            }
         }
 
         let current = this.objects_by_id.get(object.id);
-        if (!current)
+        if (!current) {
             current = Immutable.Map();
-        let prior = current;
-        if (current === undefined || current === true)
-            this.objects_by_id = this.objects_by_id.set(object.id, current = Immutable.fromJS(object));
-        else {
-            this.objects_by_id = this.objects_by_id.set(object.id, current = current.mergeDeep(Immutable.fromJS(object)))
         }
-
+        let prior = current;
+        if (current === undefined || current === true) {
+            this.objects_by_id = this.objects_by_id.set(object.id, current = Immutable.fromJS(object));
+        }
+        else {
+            this.objects_by_id = this.objects_by_id.set(object.id, current = current.mergeDeep(Immutable.fromJS(object)));
+        }
 
         // BALANCE OBJECT
         if (object.id.substring(0, balance_prefix.length) === balance_prefix) {
@@ -1010,17 +1074,17 @@ class ChainStore {
             }
             else {
                 let balances = owner.get("balances");
-                if (!balances)
+                if (!balances) {
                     owner = owner.set("balances", Immutable.Map());
-                owner = owner.setIn(['balances', object.asset_type], object.id)
+                }
+                owner = owner.setIn(['balances', object.asset_type], object.id);
             }
-            this.objects_by_id = this.objects_by_id.set(object.owner, owner)
+            this.objects_by_id = this.objects_by_id.set(object.owner, owner);
         }
         // ACCOUNT STATS OBJECT
         else if (object.id.substring(0, account_stats_prefix.length) === account_stats_prefix) {
             // console.log( "HISTORY CHANGED" )
             let prior_most_recent_op = prior ? prior.get('most_recent_op') : "2.9.0";
-
             if (prior_most_recent_op !== object.most_recent_op) {
                 this.fetchRecentHistory(object.owner);
             }
@@ -1028,12 +1092,12 @@ class ChainStore {
         // WITNESS OBJECT
         else if (object.id.substring(0, witness_prefix.length) === witness_prefix) {
             this.witness_by_account_id.set(object.witness_account, object.id);
-            this.objects_by_vote_id.set(object.vote_id, object.id)
+            this.objects_by_vote_id.set(object.vote_id, object.id);
         }
         // COMMITTEE MEMBER OBJECT
         else if (object.id.substring(0, committee_prefix.length) === committee_prefix) {
             this.committee_by_account_id.set(object.committee_member_account, object.id);
-            this.objects_by_vote_id.set(object.vote_id, object.id)
+            this.objects_by_vote_id.set(object.vote_id, object.id);
         }
         // ACCOUNT OBJECT
         else if (object.id.substring(0, account_prefix.length) === account_prefix) {
@@ -1045,7 +1109,7 @@ class ChainStore {
             current = current.set('whitelisted_accounts', Immutable.fromJS(object.whitelisted_accounts));
             current = current.set('blacklisted_accounts', Immutable.fromJS(object.blacklisted_accounts));
             this.objects_by_id = this.objects_by_id.set(object.id, current);
-            this.accounts_by_name = this.accounts_by_name.set(object.name, object.id)
+            this.accounts_by_name = this.accounts_by_name.set(object.name, object.id);
         }
         // ASSET OBJECT
         else if (object.id.substring(0, asset_prefix.length) === asset_prefix) {
@@ -1053,13 +1117,13 @@ class ChainStore {
             let dynamic = current.get('dynamic');
             if (!dynamic) {
                 let dad = this.getObject(object.dynamic_asset_data_id, true);
-                if (!dad)
+                if (!dad) {
                     dad = Immutable.Map();
+                }
                 if (!dad.get('asset_id')) {
                     dad = dad.set('asset_id', object.id);
                 }
                 this.objects_by_id = this.objects_by_id.set(object.dynamic_asset_data_id, dad);
-
                 current = current.set('dynamic', dad);
                 this.objects_by_id = this.objects_by_id.set(object.id, current);
             }
@@ -1067,14 +1131,13 @@ class ChainStore {
             let bitasset = current.get('bitasset');
             if (!bitasset && object.bitasset_data_id) {
                 let bad = this.getObject(object.bitasset_data_id, true);
-                if (!bad)
+                if (!bad) {
                     bad = Immutable.Map();
-
+                }
                 if (!bad.get('asset_id')) {
                     bad = bad.set('asset_id', object.id);
                 }
                 this.objects_by_id = this.objects_by_id.set(object.bitasset_data_id, bad);
-
                 current = current.set('bitasset', bad);
                 this.objects_by_id = this.objects_by_id.set(object.id, current);
             }
@@ -1141,9 +1204,8 @@ class ChainStore {
             this.addProposalData(object.required_owner_approvals, object.id);
         }
 
-
         if (notify_subscribers) {
-            this.notifySubscribers()
+            this.notifySubscribers();
         }
         return current;
     }
@@ -1153,8 +1215,9 @@ class ChainStore {
         let missing = [];
         for (let i = 0; i < vote_ids.length; ++i) {
             let obj = this.objects_by_vote_id.get(vote_ids[i]);
-            if (obj)
+            if (obj) {
                 result.push(this.getObject(obj));
+            }
             else {
                 result.push(null);
                 missing.push(vote_ids[i]);
@@ -1184,7 +1247,7 @@ class ChainStore {
     }
 
     getHeadBlockDate() {
-        return timeStringToDate(this.head_block_time_string)
+        return timeStringToDate(this.head_block_time_string);
     }
 
     getEstimatedChainTimeOffset() {
@@ -1194,7 +1257,7 @@ class ChainStore {
         let median_offset = Immutable.List(this.chain_time_offset)
             .sort().get(Math.floor((this.chain_time_offset.length - 1) / 2));
         // console.log("median_offset", median_offset)
-        return median_offset
+        return median_offset;
     }
 
     addProposalData(approvals, objectId) {
@@ -1202,7 +1265,6 @@ class ChainStore {
             let impactedAccount = this.objects_by_id.get(id);
             if (impactedAccount) {
                 let proposals = impactedAccount.get("proposals");
-
                 if (!proposals.includes(objectId)) {
                     proposals = proposals.add(objectId);
                     impactedAccount = impactedAccount.set("proposals", proposals);
@@ -1235,7 +1297,9 @@ function FetchChainObjects(method, object_ids, timeout) {
         }
 
         let resolved = onUpdate(true);
-        if (!resolved) chain_store.subscribe(onUpdate);
+        if (!resolved) {
+            chain_store.subscribe(onUpdate);
+        }
 
         if (timeout && !resolved) timeout_handle = setTimeout(() => {
             chain_store.unsubscribe(onUpdate);
@@ -1251,24 +1315,30 @@ chain_store.FetchChainObjects = FetchChainObjects;
 function FetchChain(methodName, objectIds, timeout = 1900) {
 
     let method = chain_store[methodName];
-    if (!method) throw new Error("ChainStore does not have method " + methodName);
-    ;
+    if (!method) {
+        throw new Error("ChainStore does not have method " + methodName);
+    }
 
     let arrayIn = Array.isArray(objectIds);
-    if (!arrayIn) objectIds = [objectIds];
+    if (!arrayIn) {
+        objectIds = [objectIds];
+    }
 
     return chain_store.FetchChainObjects(method, Immutable.List(objectIds), timeout)
-        .then(res => arrayIn ? res : res.get(0))
+        .then(res => arrayIn ? res : res.get(0));
 }
 
 chain_store.FetchChain = FetchChain;
 
 function timeStringToDate(time_string) {
-    if (!time_string) return new Date("1970-01-01T00:00:00.000Z");
-    if (!/Z$/.test(time_string)) //does not end in Z
-    // https://github.com/cryptonomex/graphene/issues/368
+    if (!time_string) {
+        return new Date("1970-01-01T00:00:00.000Z");
+    }
+    if (!/Z$/.test(time_string)) {//does not end in Z
+        // https://github.com/cryptonomex/graphene/issues/368
         time_string = time_string + "Z";
-    return new Date(time_string)
+    }
+    return new Date(time_string);
 }
 
 export default chain_store;
