@@ -158,16 +158,13 @@ let _my = {
             return value;
         }
         let number = this.to_number(value);
-        if (value < min || value > max) {
+        if (number < min || number > max) {
             throw new Error(`out of range ${value} ${field_name} ${value}`);
         }
         return value;
     },
 
-    require_object_type: function (
-        reserved_spaces = 1, type, value,
-        field_name = ""
-    ) {
+    require_object_type: function (reserved_spaces = 1, type, value, field_name = "") {
         if (this.is_empty(value)) {
             return value;
         }
@@ -180,8 +177,8 @@ let _my = {
         if (!object_type) {
             throw new Error(`Unknown object type ${type} ${field_name} ${value}`);
         }
-        let re = new RegExp(`${reserved_spaces}\.${object_type}\.[0-9]+$`);
-        if (!re.test(value)) {
+        let regExp = new RegExp(`${reserved_spaces}\.${object_type}\.[0-9]+$`);
+        if (!regExp.test(value)) {
             throw new Error(`Expecting ${type} in format ` + `${reserved_spaces}.${object_type}.[0-9]+ ` + `instead of ${value} ${field_name} ${value}`);
         }
         return value;
@@ -191,8 +188,12 @@ let _my = {
         if (this.is_empty(value)) {
             return value;
         }
-        this.require_object_type(reserve_spaces, type, value, field_name);
-        return this.to_number(value.split('.')[2]);
+        try {
+            this.require_object_type(reserve_spaces, type, value, field_name);
+            return this.to_number(value.split('.')[2]);
+        } catch (exception) {
+            throw new Error(exception);
+        }
     },
 
     require_relative_type: function (type, value, field_name) {
@@ -226,7 +227,7 @@ let _my = {
             return value;
         }
         this.require_object_id(value, field_name);
-        var values = value.split('.');
+        const values = value.split('.');
         return this.to_number(values[1]);
     },
 
@@ -234,7 +235,7 @@ let _my = {
         if (this.is_empty(value)) {
             return value;
         }
-        var type_id = this.get_protocol_type(value, field_name);
+        const type_id = this.get_protocol_type(value, field_name);
         return (Object.keys(ChainTypes.object_type))[type_id];
     },
 
@@ -260,7 +261,7 @@ let _my = {
             return;
         }
         if (typeof value === "string") {
-            var int = parseInt(value);
+            const int = parseInt(value);
             if (value > MAX_SAFE_INT || value < MIN_SAFE_INT) {
                 throw new Error(`overflow ${field_name} ${value}`);
             }

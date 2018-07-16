@@ -1,7 +1,7 @@
 // Low-level types that make up operations
 
-import v from './SerializerValidation';
-import fp from './FastParser';
+import SerializerValidation from './SerializerValidation';
+import FastParser from './FastParser';
 
 import ChainTypes from "../../chain/src/ChainTypes";
 import ObjectId from "../../chain/src/ObjectId";
@@ -16,22 +16,22 @@ const HEX_DUMP = process.env.npm_config__graphene_serializer_hex_dump;
 
 Types.uint8 = {
 
-    fromByteBuffer(b) {
-        return b.readUint8();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint8();
     },
-    appendByteBuffer(b, object) {
-        v.require_range(0, 0xFF, object, `uint8 ${object}`);
-        b.writeUint8(object);
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.require_range(0, 0xFF, object, `uint8 ${object}`);
+        byteBuffer.writeUint8(object);
     },
     fromObject(object) {
-        v.require_range(0, 0xFF, object, `uint8 ${object}`);
+        SerializerValidation.require_range(0, 0xFF, object, `uint8 ${object}`);
         return object;
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return 0;
         }
-        v.require_range(0, 0xFF, object, `uint8 ${object}`);
+        SerializerValidation.require_range(0, 0xFF, object, `uint8 ${object}`);
         return parseInt(object);
     }
 };
@@ -42,22 +42,22 @@ let MAX_SIGNED_8 = Math.pow(2, 7) - 1;
 
 Types.int8 = {
 
-    fromByteBuffer(b) {
-        return b.readInt8();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readInt8();
     },
-    appendByteBuffer(b, object) {
-        v.require_range(0, 0xFF, object, `int8 ${object}`);
-        b.writeInt8(object);
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.require_range(0, 0xFF, object, `int8 ${object}`);
+        byteBuffer.writeInt8(object);
     },
     fromObject(object) {
-        v.require_range(0, 0xFF, object, `int8 ${object}`);
+        SerializerValidation.require_range(0, 0xFF, object, `int8 ${object}`);
         return object;
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return 0;
         }
-        v.require_range(
+        SerializerValidation.require_range(
             MIN_SIGNED_8,
             MAX_SIGNED_8,
             object,
@@ -68,43 +68,43 @@ Types.int8 = {
 };
 
 Types.uint16 = {
-    fromByteBuffer(b) {
-        return b.readUint16();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint16();
     },
-    appendByteBuffer(b, object) {
-        v.require_range(0, 0xFFFF, object, `uint16 ${object}`);
-        b.writeUint16(object);
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.require_range(0, 0xFFFF, object, `uint16 ${object}`);
+        byteBuffer.writeUint16(object);
     },
     fromObject(object) {
-        v.require_range(0, 0xFFFF, object, `uint16 ${object}`);
+        SerializerValidation.require_range(0, 0xFFFF, object, `uint16 ${object}`);
         return object;
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return 0;
         }
-        v.require_range(0, 0xFFFF, object, `uint16 ${object}`);
+        SerializerValidation.require_range(0, 0xFFFF, object, `uint16 ${object}`);
         return parseInt(object);
     }
 };
 
 Types.uint32 = {
-    fromByteBuffer(b) {
-        return b.readUint32();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint32();
     },
-    appendByteBuffer(b, object) {
-        v.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
-        b.writeUint32(object);
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
+        byteBuffer.writeUint32(object);
     },
     fromObject(object) {
-        v.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
+        SerializerValidation.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
         return object;
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return 0;
         }
-        v.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
+        SerializerValidation.require_range(0, 0xFFFFFFFF, object, `uint32 ${object}`);
         return parseInt(object);
     }
 };
@@ -113,20 +113,20 @@ let MIN_SIGNED_32 = -1 * Math.pow(2, 31);
 let MAX_SIGNED_32 = Math.pow(2, 31) - 1;
 
 Types.varint32 = {
-    fromByteBuffer(b) {
-        return b.readVarint32();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readVarint32();
     },
-    appendByteBuffer(b, object) {
-        v.require_range(
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.require_range(
             MIN_SIGNED_32,
             MAX_SIGNED_32,
             object,
             `uint32 ${object}`
         );
-        b.writeVarint32(object);
+        byteBuffer.writeVarint32(object);
     },
     fromObject(object) {
-        v.require_range(
+        SerializerValidation.require_range(
             MIN_SIGNED_32,
             MAX_SIGNED_32,
             object,
@@ -138,7 +138,7 @@ Types.varint32 = {
         if (debug.use_default && object === undefined) {
             return 0;
         }
-        v.require_range(
+        SerializerValidation.require_range(
             MIN_SIGNED_32,
             MAX_SIGNED_32,
             object,
@@ -149,59 +149,59 @@ Types.varint32 = {
 };
 
 Types.int64 = {
-    fromByteBuffer(b) {
-        return b.readInt64();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readInt64();
     },
-    appendByteBuffer(b, object) {
-        v.required(object);
-        b.writeInt64(v.to_long(object));
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.required(object);
+        byteBuffer.writeInt64(SerializerValidation.to_long(object));
     },
     fromObject(object) {
-        v.required(object);
-        return v.to_long(object);
+        SerializerValidation.required(object);
+        return SerializerValidation.to_long(object);
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return "0";
         }
-        v.required(object);
-        return v.to_long(object).toString();
+        SerializerValidation.required(object);
+        return SerializerValidation.to_long(object).toString();
     }
 };
 
 Types.uint64 = {
-    fromByteBuffer(b) {
-        return b.readUint64();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint64();
     },
-    appendByteBuffer(b, object) {
-        b.writeUint64(v.to_long(v.unsigned(object)));
+    appendByteBuffer(byteBuffer, object) {
+        byteBuffer.writeUint64(SerializerValidation.to_long(SerializerValidation.unsigned(object)));
     },
     fromObject(object) {
-        return v.to_long(v.unsigned(object));
+        return SerializerValidation.to_long(SerializerValidation.unsigned(object));
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return "0";
         }
-        return v.to_long(object).toString();
+        return SerializerValidation.to_long(object).toString();
     }
 };
 
 Types.string = {
-    fromByteBuffer(b) {
+    fromByteBuffer(byteBuffer) {
         let b_copy;
-        let len = b.readVarint32();
-        b_copy = b.copy(b.offset, b.offset + len);
-        b.skip(len);
+        let len = byteBuffer.readVarint32();
+        b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + len);
+        byteBuffer.skip(len);
         return new Buffer(b_copy.toBinary(), 'binary');
     },
-    appendByteBuffer(b, object) {
-        v.required(object);
-        b.writeVarint32(object.length);
-        b.append(object.toString('binary'), 'binary');
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.required(object);
+        byteBuffer.writeVarint32(object.length);
+        byteBuffer.append(object.toString('binary'), 'binary');
     },
     fromObject(object) {
-        v.required(object);
+        SerializerValidation.required(object);
         return new Buffer(object);
     },
     toObject(object, debug = {}) {
@@ -214,31 +214,31 @@ Types.string = {
 
 Types.bytes = function (size) {
     return {
-        fromByteBuffer(b) {
+        fromByteBuffer(byteBuffer) {
             if (size === undefined) {
                 let b_copy;
-                let len = b.readVarint32();
-                b_copy = b.copy(b.offset, b.offset + len);
-                b.skip(len);
+                let len = byteBuffer.readVarint32();
+                b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + len);
+                byteBuffer.skip(len);
                 return new Buffer(b_copy.toBinary(), 'binary');
             } else {
-                b_copy = b.copy(b.offset, b.offset + size);
-                b.skip(size);
+                b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + size);
+                byteBuffer.skip(size);
                 return new Buffer(b_copy.toBinary(), 'binary');
             }
         },
-        appendByteBuffer(b, object) {
-            v.required(object);
+        appendByteBuffer(byteBuffer, object) {
+            SerializerValidation.required(object);
             if (typeof object === "string") {
                 object = new Buffer(object, "hex");
             }
             if (size === undefined) {
-                b.writeVarint32(object.length);
+                byteBuffer.writeVarint32(object.length);
             }
-            b.append(object.toString('binary'), 'binary');
+            byteBuffer.append(object.toString('binary'), 'binary');
         },
         fromObject(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             if (Buffer.isBuffer(object)) {
                 return object;
             }
@@ -251,19 +251,19 @@ Types.bytes = function (size) {
                 };
                 return zeros(size);
             }
-            v.required(object);
+            SerializerValidation.required(object);
             return object.toString('hex');
         }
     };
 };
 
 Types.bool = {
-    fromByteBuffer(b) {
-        return b.readUint8() === 1
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint8() === 1
     },
-    appendByteBuffer(b, object) {
+    appendByteBuffer(byteBuffer, object) {
         // supports boolean or integer
-        b.writeUint8(JSON.parse(object) ? 1 : 0);
+        byteBuffer.writeUint8(JSON.parse(object) ? 1 : 0);
     },
     fromObject(object) {
         return !!JSON.parse(object)
@@ -277,10 +277,10 @@ Types.bool = {
 };
 
 Types.void = {
-    fromByteBuffer(b) {
+    fromByteBuffer(byteBuffer) {
         throw new Error("(void) undefined type");
     },
-    appendByteBuffer(b, object) {
+    appendByteBuffer(byteBuffer, object) {
         throw new Error("(void) undefined type");
     },
     fromObject(object) {
@@ -296,8 +296,8 @@ Types.void = {
 
 Types.array = function (st_operation) {
     return {
-        fromByteBuffer(b) {
-            let size = b.readVarint32();
+        fromByteBuffer(byteBuffer) {
+            let size = byteBuffer.readVarint32();
             if (HEX_DUMP) {
                 console.log("varint32 size = " + size.toString(16));
             }
@@ -307,17 +307,17 @@ Types.array = function (st_operation) {
             }
             return sortOperation(result, st_operation);
         },
-        appendByteBuffer(b, object) {
-            v.required(object);
+        appendByteBuffer(byteBuffer, object) {
+            SerializerValidation.required(object);
             object = sortOperation(object, st_operation);
-            b.writeVarint32(object.length);
+            byteBuffer.writeVarint32(object.length);
             for (let i = 0, o; i < object.length; i++) {
                 o = object[i];
-                st_operation.appendByteBuffer(b, o);
+                st_operation.appendByteBuffer(byteBuffer, o);
             }
         },
         fromObject(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             object = sortOperation(object, st_operation);
             let result = [];
             for (let i = 0, o; i < object.length; i++) {
@@ -330,7 +330,7 @@ Types.array = function (st_operation) {
             if (debug.use_default && object === undefined) {
                 return [st_operation.toObject(object, debug)];
             }
-            v.required(object);
+            SerializerValidation.required(object);
             object = sortOperation(object, st_operation);
 
             let result = [];
@@ -344,17 +344,17 @@ Types.array = function (st_operation) {
 };
 
 Types.time_point_sec = {
-    fromByteBuffer(b) {
-        return b.readUint32();
+    fromByteBuffer(byteBuffer) {
+        return byteBuffer.readUint32();
     },
-    appendByteBuffer(b, object) {
+    appendByteBuffer(byteBuffer, object) {
         if (typeof object !== "number") {
             object = Types.time_point_sec.fromObject(object);
         }
-        b.writeUint32(object);
+        byteBuffer.writeUint32(object);
     },
     fromObject(object) {
-        v.required(object);
+        SerializerValidation.required(object);
 
         if (typeof object === "number") {
             return object;
@@ -377,7 +377,7 @@ Types.time_point_sec = {
         if (debug.use_default && object === undefined) {
             return (new Date(0)).toISOString().split('.')[0];
         }
-        v.required(object);
+        SerializerValidation.required(object);
 
         if (typeof object === "string") {
             return object;
@@ -388,7 +388,7 @@ Types.time_point_sec = {
         }
 
         let int = parseInt(object);
-        v.require_range(0, 0xFFFFFFFF, int, `uint32 ${object}`);
+        SerializerValidation.require_range(0, 0xFFFFFFFF, int, `uint32 ${object}`);
         return (new Date(int * 1000)).toISOString().split('.')[0];
     }
 };
@@ -409,28 +409,28 @@ Types.set = function (st_operation) {
             }
             return sortOperation(array, st_operation);
         },
-        fromByteBuffer(b) {
-            let size = b.readVarint32();
+        fromByteBuffer(byteBuffer) {
+            let size = byteBuffer.readVarint32();
             if (HEX_DUMP) {
                 console.log("varint32 size = " + size.toString(16));
             }
             return this.validate(((() => {
                 let result = [];
                 for (let i = 0; 0 < size ? i < size : i > size; 0 < size ? i++ : i++) {
-                    result.push(st_operation.fromByteBuffer(b));
+                    result.push(st_operation.fromByteBuffer(byteBuffer));
                 }
                 return result;
             })()));
         },
-        appendByteBuffer(b, object) {
+        appendByteBuffer(byteBuffer, object) {
             if (!object) {
                 object = [];
             }
-            b.writeVarint32(object.length);
+            byteBuffer.writeVarint32(object.length);
             let iterable = this.validate(object);
             for (let i = 0, o; i < iterable.length; i++) {
                 o = iterable[i];
-                st_operation.appendByteBuffer(b, o);
+                st_operation.appendByteBuffer(byteBuffer, o);
             }
         },
         fromObject(object) {
@@ -468,28 +468,28 @@ Types.set = function (st_operation) {
 // global_parameters_update_operation current_fees
 Types.fixed_array = function (count, st_operation) {
     return {
-        fromByteBuffer: function (b) {
+        fromByteBuffer: function (byteBuffer) {
             let i, j, ref, results;
             results = [];
             for (i = j = 0, ref = count; j < ref; i = j += 1) {
-                results.push(st_operation.fromByteBuffer(b));
+                results.push(st_operation.fromByteBuffer(byteBuffer));
             }
             return sortOperation(results, st_operation);
         },
-        appendByteBuffer: function (b, object) {
+        appendByteBuffer: function (byteBuffer, object) {
             let i, j, ref;
             if (count !== 0) {
-                v.required(object);
+                SerializerValidation.required(object);
                 object = sortOperation(object, st_operation)
             }
             for (i = j = 0, ref = count; j < ref; i = j += 1) {
-                st_operation.appendByteBuffer(b, object[i]);
+                st_operation.appendByteBuffer(byteBuffer, object[i]);
             }
         },
         fromObject: function (object) {
             let i, j, ref, results;
             if (count !== 0) {
-                v.required(object);
+                SerializerValidation.required(object);
             }
             results = [];
             for (i = j = 0, ref = count; j < ref; i = j += 1) {
@@ -510,7 +510,7 @@ Types.fixed_array = function (count, st_operation) {
                 return results;
             }
             if (count !== 0) {
-                v.required(object);
+                SerializerValidation.required(object);
             }
             results1 = [];
             for (i = k = 0, ref1 = count; k < ref1; i = k += 1) {
@@ -524,32 +524,40 @@ Types.fixed_array = function (count, st_operation) {
 /* Supports instance numbers (11) or object types (1.2.11).  Object type
 Validation is enforced when an object type is used. */
 let id_type = function (reserved_spaces, object_type) {
-    v.required(reserved_spaces, "reserved_spaces");
-    v.required(object_type, "object_type");
+    SerializerValidation.required(reserved_spaces, "reserved_spaces");
+    SerializerValidation.required(object_type, "object_type");
     return {
-        fromByteBuffer(b) {
-            return b.readVarint32();
+        fromByteBuffer(byteBuffer) {
+            return byteBuffer.readVarint32();
         },
-        appendByteBuffer(b, object) {
-            v.required(object);
+        appendByteBuffer(byteBuffer, object) {
+            SerializerValidation.required(object);
             if (object.resolve !== undefined) {
                 object = object.resolve;
             }
-            // convert 1.2.n into just n
-            if (/^[0-9]+\.[0-9]+\.[0-9]+$/.test(object)) {
-                object = v.get_instance(reserved_spaces, object_type, object);
+            try {
+                // convert 1.2.n into just n
+                if (/^[0-9]+\.[0-9]+\.[0-9]+$/.test(object)) {
+                    object = SerializerValidation.get_instance(reserved_spaces, object_type, object);
+                }
+                byteBuffer.writeVarint32(SerializerValidation.to_number(object));
+            } catch (exception) {
+                throw new Error(exception);
             }
-            b.writeVarint32(v.to_number(object));
         },
         fromObject(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             if (object.resolve !== undefined) {
                 object = object.resolve;
             }
-            if (v.is_digits(object)) {
-                return v.to_number(object);
+            try {
+                if (SerializerValidation.is_digits(object)) {
+                    return SerializerValidation.to_number(object);
+                }
+                return SerializerValidation.get_instance(reserved_spaces, object_type, object);
+            } catch (exception) {
+                throw new Error(exception);
             }
-            return v.get_instance(reserved_spaces, object_type, object);
         },
         toObject(object, debug = {}) {
             let object_type_id;
@@ -561,26 +569,29 @@ let id_type = function (reserved_spaces, object_type) {
             if (debug.use_default && object === undefined) {
                 return `${reserved_spaces}.${object_type_id}.0`;
             }
-            v.required(object);
+            SerializerValidation.required(object);
             if (object.resolve !== undefined) {
                 object = object.resolve;
             }
-            if (/^[0-9]+\.[0-9]+\.[0-9]+$/.test(object)) {
-                object = v.get_instance(reserved_spaces, object_type, object);
+            try {
+                if (/^[0-9]+\.[0-9]+\.[0-9]+$/.test(object)) {
+                    object = SerializerValidation.get_instance(reserved_spaces, object_type, object);
+                }
+                return `${reserved_spaces}.${object_type_id}.` + object;
+            } catch (exception) {
+                throw new Error(exception);
             }
-
-            return `${reserved_spaces}.${object_type_id}.` + object;
         },
     };
 };
 
 Types.protocol_id_type = function (name) {
-    v.required(name, "name");
+    SerializerValidation.required(name, "name");
     return id_type(ChainTypes.reserved_spaces.protocol_ids, name);
 };
 
 Types.implementation_id_type = function (name) {
-    v.required(name, "name");
+    SerializerValidation.required(name, "name");
     return id_type(ChainTypes.reserved_spaces.implementation_ids, name);
 };
 
@@ -589,7 +600,7 @@ Types.object_id_type = {
         return ObjectId.fromByteBuffer(b);
     },
     appendByteBuffer(b, object) {
-        v.required(object);
+        SerializerValidation.required(object);
         if (object.resolve !== undefined) {
             object = object.resolve;
         }
@@ -597,7 +608,7 @@ Types.object_id_type = {
         object.appendByteBuffer(b);
     },
     fromObject(object) {
-        v.required(object);
+        SerializerValidation.required(object);
         if (object.resolve !== undefined) {
             object = object.resolve;
         }
@@ -607,7 +618,7 @@ Types.object_id_type = {
         if (debug.use_default && object === undefined) {
             return "0.0.0";
         }
-        v.required(object);
+        SerializerValidation.required(object);
         if (object.resolve !== undefined) {
             object = object.resolve;
         }
@@ -619,39 +630,39 @@ Types.object_id_type = {
 Types.vote_id = {
     TYPE: 0x000000FF,
     ID: 0xFFFFFF00,
-    fromByteBuffer(b) {
-        let value = b.readUint32();
+    fromByteBuffer(byteBuffer) {
+        let value = byteBuffer.readUint32();
         return {
             type: value & this.TYPE,
             id: value & this.ID
         };
     },
-    appendByteBuffer(b, object) {
-        v.required(object);
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.required(object);
         if (object === "string") {
             object = Types.vote_id.fromObject(object);
         }
         let value = object.id << 8 | object.type;
-        b.writeUint32(value);
+        byteBuffer.writeUint32(value);
     },
     fromObject(object) {
-        v.required(object, "(type vote_id)");
+        SerializerValidation.required(object, "(type vote_id)");
         if (typeof object === "object") {
-            v.required(object.type, "type");
-            v.required(object.id, "id");
+            SerializerValidation.required(object.type, "type");
+            SerializerValidation.required(object.id, "id");
             return object;
         }
-        v.require_test(/^[0-9]+:[0-9]+$/, object, `vote_id format ${object}`);
+        SerializerValidation.require_test(/^[0-9]+:[0-9]+$/, object, `vote_id format ${object}`);
         let [type, id] = object.split(':');
-        v.require_range(0, 0xff, type, `vote type ${object}`);
-        v.require_range(0, 0xffffff, id, `vote id ${object}`);
+        SerializerValidation.require_range(0, 0xff, type, `vote type ${object}`);
+        SerializerValidation.require_range(0, 0xffffff, id, `vote id ${object}`);
         return {type, id};
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
             return "0:0";
         }
-        v.required(object);
+        SerializerValidation.required(object);
         if (typeof object === "string") {
             object = Types.vote_id.fromObject(object);
         }
@@ -669,20 +680,20 @@ Types.vote_id = {
 };
 
 Types.optional = function (st_operation) {
-    v.required(st_operation, "st_operation");
+    SerializerValidation.required(st_operation, "st_operation");
     return {
-        fromByteBuffer(b) {
-            if (!(b.readUint8() === 1)) {
+        fromByteBuffer(byteBuffer) {
+            if (!(byteBuffer.readUint8() === 1)) {
                 return undefined;
             }
-            return st_operation.fromByteBuffer(b);
+            return st_operation.fromByteBuffer(byteBuffer);
         },
-        appendByteBuffer(b, object) {
+        appendByteBuffer(byteBuffer, object) {
             if (object !== null && object !== undefined) {
-                b.writeUint8(1);
-                st_operation.appendByteBuffer(b, object);
+                byteBuffer.writeUint8(1);
+                st_operation.appendByteBuffer(byteBuffer, object);
             } else {
-                b.writeUint8(0);
+                byteBuffer.writeUint8(0);
             }
         },
         fromObject(object) {
@@ -717,31 +728,31 @@ Types.static_variant = function (_st_operations) {
     return {
         nosort: true,
         st_operations: _st_operations,
-        fromByteBuffer(b) {
-            let type_id = b.readVarint32();
+        fromByteBuffer(byteBuffer) {
+            let type_id = byteBuffer.readVarint32();
             let st_operation = this.st_operations[type_id];
             if (HEX_DUMP) {
                 console.error(`static_variant id 0x${type_id.toString(16)} (${type_id})`);
             }
-            v.required(st_operation, `operation ${type_id}`);
+            SerializerValidation.required(st_operation, `operation ${type_id}`);
             return [
                 type_id,
-                st_operation.fromByteBuffer(b)
+                st_operation.fromByteBuffer(byteBuffer)
             ];
         },
-        appendByteBuffer(b, object) {
-            v.required(object);
+        appendByteBuffer(byteBuffer, object) {
+            SerializerValidation.required(object);
             let type_id = object[0];
             let st_operation = this.st_operations[type_id];
-            v.required(st_operation, `operation ${type_id}`);
-            b.writeVarint32(type_id);
-            st_operation.appendByteBuffer(b, object[1]);
+            SerializerValidation.required(st_operation, `operation ${type_id}`);
+            byteBuffer.writeVarint32(type_id);
+            st_operation.appendByteBuffer(byteBuffer, object[1]);
         },
         fromObject(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             let type_id = object[0];
             let st_operation = this.st_operations[type_id];
-            v.required(st_operation, `operation ${type_id}`);
+            SerializerValidation.required(st_operation, `operation ${type_id}`);
             return [
                 type_id,
                 st_operation.fromObject(object[1])
@@ -751,10 +762,10 @@ Types.static_variant = function (_st_operations) {
             if (debug.use_default && object === undefined) {
                 return [0, this.st_operations[0].toObject(undefined, debug)];
             }
-            v.required(object);
+            SerializerValidation.required(object);
             let type_id = object[0];
             let st_operation = this.st_operations[type_id];
-            v.required(st_operation, `operation ${type_id}`);
+            SerializerValidation.required(st_operation, `operation ${type_id}`);
             return [
                 type_id,
                 st_operation.toObject(object[1], debug)
@@ -786,29 +797,29 @@ Types.map = function (key_st_operation, value_st_operation) {
             return sortOperation(array, key_st_operation);
         },
 
-        fromByteBuffer(b) {
+        fromByteBuffer(byteBuffer) {
             let result = [];
-            let end = b.readVarint32();
+            let end = byteBuffer.readVarint32();
             for (let i = 0; 0 < end ? i < end : i > end; 0 < end ? i++ : i++) {
                 result.push([
-                    key_st_operation.fromByteBuffer(b),
-                    value_st_operation.fromByteBuffer(b)
+                    key_st_operation.fromByteBuffer(byteBuffer),
+                    value_st_operation.fromByteBuffer(byteBuffer)
                 ]);
             }
             return this.validate(result);
         },
 
-        appendByteBuffer(b, object) {
+        appendByteBuffer(byteBuffer, object) {
             this.validate(object);
-            b.writeVarint32(object.length);
+            byteBuffer.writeVarint32(object.length);
             for (let i = 0, o; i < object.length; i++) {
                 o = object[i];
-                key_st_operation.appendByteBuffer(b, o[0]);
-                value_st_operation.appendByteBuffer(b, o[1]);
+                key_st_operation.appendByteBuffer(byteBuffer, o[0]);
+                value_st_operation.appendByteBuffer(byteBuffer, o[1]);
             }
         },
         fromObject(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             let result = [];
             for (let i = 0, o; i < object.length; i++) {
                 o = object[i];
@@ -828,7 +839,7 @@ Types.map = function (key_st_operation, value_st_operation) {
                     ]
                 ];
             }
-            v.required(object);
+            SerializerValidation.required(object);
             object = this.validate(object);
             let result = [];
             for (let i = 0, o; i < object.length; i++) {
@@ -851,15 +862,15 @@ Types.public_key = {
         return object == null ? object :
             object.Q ? object : PublicKey.fromStringOrThrow(object)
     },
-    fromByteBuffer(b) {
-        return fp.public_key(b);
+    fromByteBuffer(byteBuffer) {
+        return FastParser.public_key(byteBuffer);
     },
-    appendByteBuffer(b, object) {
-        v.required(object);
-        fp.public_key(b, Types.public_key.toPublic(object));
+    appendByteBuffer(byteBuffer, object) {
+        SerializerValidation.required(object);
+        FastParser.public_key(byteBuffer, Types.public_key.toPublic(object));
     },
     fromObject(object) {
-        v.required(object);
+        SerializerValidation.required(object);
         if (object.Q) {
             return object;
         }
@@ -869,7 +880,7 @@ Types.public_key = {
         if (debug.use_default && object === undefined) {
             return ChainConfig.address_prefix + "859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM";
         }
-        v.required(object);
+        SerializerValidation.required(object);
         return object.toString()
     },
     compare(a, b) {
@@ -880,17 +891,17 @@ Types.public_key = {
 Types.address =
     {
         _to_address(object) {
-            v.required(object);
+            SerializerValidation.required(object);
             if (object.addy) {
                 return object;
             }
             return Address.fromString(object);
         },
-        fromByteBuffer(b) {
-            return new Address(fp.ripemd160(b));
+        fromByteBuffer(byteBuffer) {
+            return new Address(FastParser.ripemd160(byteBuffer));
         },
-        appendByteBuffer(b, object) {
-            fp.ripemd160(b, Types.address._to_address(object).toBuffer());
+        appendByteBuffer(byteBuffer, object) {
+            FastParser.ripemd160(byteBuffer, Types.address._to_address(object).toBuffer());
         },
         fromObject(object) {
             return Types.address._to_address(object);

@@ -16,7 +16,6 @@ class TransactionBuilder {
         this.operations = [];
         this.signatures = [];
         this.signer_private_keys = [];
-
         // semi-private method bindings
         this._broadcast = _broadcast.bind(this)
     }
@@ -26,7 +25,12 @@ class TransactionBuilder {
      @arg {object} operation - JSON matchching the operation's format
      */
     add_type_operation(name, operation) {
-        this.add_operation(this.get_type_operation(name, operation));
+        try {
+            const operationType = this.get_type_operation(name, operation);
+            this.add_operation(operationType);
+        } catch (exception) {
+            throw new Error(exception);
+        }
     }
 
     /**
@@ -169,7 +173,7 @@ class TransactionBuilder {
             */
             let requiresReview = false, extraReview = 0;
             operation.proposed_ops.forEach(op => {
-                const COMMITTE_ACCOUNT = 0;
+                const COMMITTEE_ACCOUNT = 0;
                 let key;
 
                 switch (op.op[0]) {
@@ -211,7 +215,7 @@ class TransactionBuilder {
                         extraReview = 60 * 60 * 24 * 13; // Make the review period 2 weeks total
                         break;
                 }
-                if (key in op.op[1] && op.op[1][key] === COMMITTE_ACCOUNT) {
+                if (key in op.op[1] && op.op[1][key] === COMMITTEE_ACCOUNT) {
                     requiresReview = true;
                 }
             });
