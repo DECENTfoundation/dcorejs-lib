@@ -264,7 +264,6 @@ class ChainStore {
             console.error("Subscribe callback already exists", callback);
         }
         this.subscribers.add(callback);
-        console.log()
     }
 
     subscribePendingTransaction(callback) {
