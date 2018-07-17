@@ -186,7 +186,7 @@ class ChainStore {
             this.timeout = setTimeout(() => {
                 this.dispatchedBlockApplied = false;
                 this.blockSubscribers.forEach((callback) => {
-                    callback(data);
+                    callback(parseHexToDecimal(data[0]));
                 })
             }, this.dispatchFrequency);
         }
@@ -1339,6 +1339,10 @@ function timeStringToDate(time_string) {
         time_string = time_string + "Z";
     }
     return new Date(time_string);
+}
+
+function parseHexToDecimal(hex) {
+    return parseInt(hex.substr(0, 8), 16);
 }
 
 export default chain_store;
