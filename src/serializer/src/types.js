@@ -298,7 +298,7 @@ Types.array = function (st_operation) {
     return {
         fromByteBuffer(byteBuffer) {
             let size = byteBuffer.readVarint32();
-            if (HEX_DUMP) {
+            if (HEX_DUMP && process.env.ENVIRONMENT === 'DEV') {
                 console.log("varint32 size = " + size.toString(16));
             }
             let result = [];
@@ -411,7 +411,7 @@ Types.set = function (st_operation) {
         },
         fromByteBuffer(byteBuffer) {
             let size = byteBuffer.readVarint32();
-            if (HEX_DUMP) {
+            if (HEX_DUMP && process.env.ENVIRONMENT === 'DEV') {
                 console.log("varint32 size = " + size.toString(16));
             }
             return this.validate(((() => {

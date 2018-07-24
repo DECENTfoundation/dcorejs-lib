@@ -22,7 +22,6 @@ class Aes {
         }
         let _hash = sha512(seed);
         _hash = _hash.toString('hex');
-        // DEBUG console.log('... fromSeed _hash',_hash)
         return Aes.fromSha512(_hash);
     };
 
@@ -59,15 +58,6 @@ class Aes {
         }
 
         let S = private_key.get_shared_secret(public_key, legacy);
-        // D E B U G
-        // console.log('decrypt_with_checksum', {
-        //     priv_to_pub: private_key.toPublicKey().toString(),
-        //     pub: public_key.toPublicKeyString(),
-        //     nonce: nonce,
-        //     message: message.length,
-        //     S: S.toString('hex')
-        // })
-
         let aes = Aes.fromSeed(Buffer.concat([
             // A null or empty string nonce will not effect the hash
             new Buffer("" + nonce),
@@ -79,13 +69,8 @@ class Aes {
             throw new Error("Invalid key, could not decrypt message(1)");
         }
 
-        // DEBUG console.log('... planebuffer',planebuffer)
         let checksum = planebuffer.slice(0, 4);
         let plaintext = planebuffer.slice(4);
-
-        // console.log('... checksum',checksum.toString('hex'))
-        // console.log('... plaintext',plaintext.toString())
-
         let new_checksum = sha256(plaintext);
         new_checksum = new_checksum.slice(0, 4);
         new_checksum = new_checksum.toString('hex');
@@ -114,24 +99,13 @@ class Aes {
 
         let S = private_key.get_shared_secret(public_key);
 
-        // D E B U G
-        // console.log('encrypt_with_checksum', {
-        //     priv_to_pub: private_key.toPublicKey().toString()
-        //     pub: public_key.toPublicKeyString()
-        //     nonce: nonce
-        //     message: message.length
-        //     S: S.toString('hex')
-        // })
-
         let aes = Aes.fromSeed(Buffer.concat([
             // A null or empty string nonce will not effect the hash
             new Buffer("" + nonce),
             new Buffer(S.toString('hex'))
         ]));
-        // DEBUG console.log('... S',S.toString('hex'))
         let checksum = sha256(message).slice(0, 4);
         let payload = Buffer.concat([checksum, message]);
-        // DEBUG console.log('... payload',payload.toString())
         return aes.encrypt(payload);
     };
 

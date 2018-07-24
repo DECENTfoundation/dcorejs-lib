@@ -28,7 +28,9 @@ let ChainWebSocket = function () {
         try {
             this.ws = new WebSocketClient(ws_server);
         } catch (error) {
-            console.error("invalid websocket URL:", error);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("invalid websocket URL:", error);
+            }
             this.ws = new WebSocketClient("wss://127.0.0.1:8080");
         }
         this.ws.timeoutInterval = 5000;
@@ -65,10 +67,6 @@ let ChainWebSocket = function () {
         const _this2 = this;
 
         const method = params[1];
-        if (SOCKET_DEBUG) {
-            console.log("[ChainWebSocket] >---- call ----->  \"id\":" + (this.cbId + 1), JSON.stringify(params));
-        }
-
         this.cbId += 1;
 
         if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback" || method === "set_block_applied_callback") {
@@ -110,7 +108,9 @@ let ChainWebSocket = function () {
                 reject: reject
             };
             _this2.ws.onerror = function (error) {
-                console.log("!!! ChainWebSocket Error ", error);
+                if (process.env.ENVIRONMENT === 'DEV') {
+                    console.log("!!! ChainWebSocket Error ", error);
+                }
                 reject(error);
             };
             _this2.ws.send(JSON.stringify(request));
@@ -118,10 +118,6 @@ let ChainWebSocket = function () {
     };
 
     ChainWebSocket.prototype.listener = function listener(response) {
-        if (SOCKET_DEBUG) {
-            console.log("[ChainWebSocket] <---- reply ----<", JSON.stringify(response));
-        }
-
         let sub = false, callback = null;
 
         if (response.method === "notice") {
@@ -150,7 +146,9 @@ let ChainWebSocket = function () {
         } else if (callback && sub) {
             callback(response.params[1]);
         } else {
-            console.log("Warning: unknown websocket response: ", response);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("Warning: unknown websocket response: ", response);
+            }
         }
     };
 

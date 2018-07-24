@@ -101,10 +101,5 @@ describe("Serializer", function() {
             assert(toObject({}, {use_default: true, annotate: true}));
         })
 
-        // keep last
-        // it("visual check", function() {
-        //     console.log(toObject(fromObject(allTypes)))
-        // })
-
     })
 });

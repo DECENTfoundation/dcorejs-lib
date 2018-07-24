@@ -68,13 +68,5 @@ describe("ChainStore", () => {
 
 
     })
-        //     ChainStore.getAccount("not found")
-        //
-        //     ChainStore.unsubscribe(cb)
-        //     // return FetchChain("getAccount", "notfound")
-        //     let cb = res => console.log('res',res)
-        //     // })
-        // })
-
 
 });

@@ -113,7 +113,6 @@ class TransactionBuilder {
                 }
                 this.ref_block_num = r[0].head_block_number & 0xFFFF;
                 this.ref_block_prefix = new Buffer(r[0].head_block_id, 'hex').readUInt32LE(4);
-                //DEBUG console.log("ref_block",@ref_block_num,@ref_block_prefix,r)
 
                 let iterable = this.operations;
                 for (let i = 0, op; i < iterable.length; i++) {
@@ -368,9 +367,7 @@ class TransactionBuilder {
                             || (operation.fee.amount.toString && operation.fee.amount.toString() === "0")// Long
                         ) {
                             operation.fee = flat_assets[asset_index]
-                            // console.log("new operation.fee", operation.fee)
                         } else {
-                            // console.log("old operation.fee", operation.fee)
                         }
                         asset_index++;
                         if (operation.proposed_ops) {
@@ -384,10 +381,11 @@ class TransactionBuilder {
                         set_fee(this.operations[i][1]);
                     }
                 });
-                //DEBUG console.log('... get_required_fees',operations,asset_id,flat_assets)
             })
             .catch(err => {
-                console.log(err);
+                if (process.env.ENVIRONMENT === 'DEV') {
+                    console.log(err);
+                }
             });
     }
 
@@ -407,9 +405,7 @@ class TransactionBuilder {
             return Promise.resolve([]);
         }
         let tr_object = ops.signed_transaction.toObject(this);
-        //DEBUG console.log('... tr_object',tr_object)
         return Apis.instance().db_api().exec("get_required_signatures", [tr_object, available_keys]).then(function (required_public_keys) {
-            //DEBUG console.log('... get_required_signatures',required_public_keys)
             return required_public_keys;
         });
     }
@@ -506,30 +502,20 @@ function _broadcast(was_broadcast_callback) {
         }
 
         let tr_object = ops.signed_transaction.toObject(this);
-        // console.log('... broadcast_transaction_with_callback !!!')
         Apis.instance().network_api().exec("broadcast_transaction_with_callback", [function (res) {
             return resolve(res);
         }, tr_object]).then(function () {
-                //console.log('... broadcast success, waiting for callback')
                 if (was_broadcast_callback) was_broadcast_callback();
             }
         ).catch((error) => {
-                // console.log may be redundant for network errors, other errors could occur
+            if (process.env.ENVIRONMENT === 'DEV') {
                 console.log(error);
-                let message = error.message;
-                if (!message) {
-                    message = "";
-                }
-                reject(new Error(message));
-                /*
-                            reject( new Error((
-                                message + "\n" +
-                                'graphene-crypto ' +
-                                ' digest ' + hash.sha256(this.tr_buffer).toString('hex') +
-                                ' transaction ' + this.tr_buffer.toString('hex') +
-                                ' ' + JSON.stringify(tr_object) ))
-                            );
-                */
+            }
+            let message = error.message;
+            if (!message) {
+                message = "";
+            }
+            reject(new Error(message));
             }
         );
     });

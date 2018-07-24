@@ -81,9 +81,13 @@ class ChainStore {
         this.clearCache();
         this.head_block_time_string = null;
         this.init().then(result => {
-            console.log("resetCache init success");
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("resetCache init success");
+            }
         }).catch(err => {
-            console.log("resetCache init error:", err);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("resetCache init error:", err);
+            }
         });
     }
 
@@ -99,7 +103,6 @@ class ChainStore {
                 return reject(new Error("Api not found, please initialize the api instance before calling the ChainStore"));
             }
             return db_api.exec("get_objects", [["2.1.0"]]).then(optional_objects => {
-                //if(DEBUG) console.log('... optional_objects',optional_objects ? optional_objects[0].id : null)
                 for (let i = 0; i < optional_objects.length; i++) {
                     let optional_object = optional_objects[i];
                     if (optional_object) {
@@ -118,7 +121,9 @@ class ChainStore {
                         if (delta < 60) {
                             Apis.instance().db_api().exec("set_subscribe_callback", [this.onUpdate.bind(this), true])
                                 .then(v => {
-                                    console.log("synced and subscribed, chainstore ready");
+                                    if (process.env.ENVIRONMENT === 'DEV') {
+                                        console.log("synced and subscribed, chainstore ready");
+                                    }
                                     this.subscribed = true;
                                     Apis.instance().db_api().exec("set_pending_transaction_callback", [this.onPendingTransaction.bind(this), true])
                                         .then(res => {
@@ -128,21 +133,29 @@ class ChainStore {
                                                 })
                                                 .catch(error => {
                                                     reject(error);
-                                                    console.log("Error: ", error);
+                                                    if (process.env.ENVIRONMENT === 'DEV') {
+                                                        console.log("Error: ", error);
+                                                    }
                                                 });
 
                                         })
                                         .catch(err => {
                                             reject(err);
-                                            console.log("Error: ", error);
+                                            if (process.env.ENVIRONMENT === 'DEV') {
+                                                console.log("Error: ", error);
+                                            }
                                         });
                                 })
                                 .catch(error => {
                                     reject(error);
-                                    console.log("Error: ", error)
+                                    if (process.env.ENVIRONMENT === 'DEV') {
+                                        console.log("Error: ", error)
+                                    }
                                 });
                         } else {
-                            console.log("not yet synced, retrying in 1s");
+                            if (process.env.ENVIRONMENT === 'DEV') {
+                                console.log("not yet synced, retrying in 1s");
+                            }
                             reconnectCounter++;
                             if (reconnectCounter > 10) {
                                 throw new Error("ChainStore sync error, please check your system clock");
@@ -154,7 +167,9 @@ class ChainStore {
                     }
                 }
             }).catch(error => { // in the event of an error clear the pending state for id
-                console.log('!!! Chain API error', error);
+                if (process.env.ENVIRONMENT === 'DEV') {
+                    console.log('!!! Chain API error', error);
+                }
                 this.objects_by_id = this.objects_by_id.delete("2.1.0");
                 reject(error);
             });
@@ -261,21 +276,27 @@ class ChainStore {
      */
     subscribe(callback) {
         if (this.subscribers.has(callback)) {
-            console.error("Subscribe callback already exists", callback);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Subscribe callback already exists", callback);
+            }
         }
         this.subscribers.add(callback);
     }
 
     subscribePendingTransaction(callback) {
         if (this.pendingTransactionSubscribers.has(callback)) {
-            console.error("Pending trans subscribe callback already exists", callback)
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Pending trans subscribe callback already exists", callback)
+            }
         }
         this.pendingTransactionSubscribers.add(callback);
     }
 
     subscribeBlockApplied(callback) {
         if (this.blockSubscribers.has(callback)) {
-            console.error("Block subscribers callback already exists", callback)
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Block subscribers callback already exists", callback)
+            }
         }
         this.blockSubscribers.add(callback);
     }
@@ -285,21 +306,27 @@ class ChainStore {
      */
     unsubscribe(callback) {
         if (!this.subscribers.has(callback)) {
-            console.error("Unsubscribe callback does not exists", callback);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Unsubscribe callback does not exists", callback);
+            }
         }
         this.subscribers.delete(callback);
     }
 
     unsubscribePendingTransaction(callback) {
         if (!this.pendingTransactionSubscribers.has(callback)) {
-            console.error("Unsubscribe pending transaction callback does not exists", callback);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Unsubscribe pending transaction callback does not exists", callback);
+            }
         }
         this.pendingTransactionSubscribers.delete(callback);
     }
 
     unsubscribeBlockApplied(callback) {
         if (!this.blockSubscribers.has(callback)) {
-            console.error("Unsubscribe block callback does not exists", callback);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("Unsubscribe block callback does not exists", callback);
+            }
         }
         this.blockSubscribers.delete(callback);
     }
@@ -375,7 +402,6 @@ class ChainStore {
 
         Apis.instance().db_api().exec("lookup_asset_symbols", [[id_or_symbol]])
             .then(asset_objects => {
-                // console.log( "lookup symbol ", id_or_symbol )
                 if (asset_objects.length && asset_objects[0]) {
                     this._updateObject(asset_objects[0], true);
                 }
@@ -384,7 +410,9 @@ class ChainStore {
                     this.notifySubscribers()
                 }
             }).catch(error => {
-            console.log("Error: ", error);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("Error: ", error);
+            }
             this.assets_by_symbol = this.assets_by_symbol.delete(id_or_symbol);
         });
         return undefined;
@@ -477,16 +505,10 @@ class ChainStore {
             return result;
         }
 
-        if (DEBUG) {
-            console.log("!!! fetchObject: ", id, this.subscribed, !this.subscribed && !force);
-        }
         if (!this.subscribed && !force) {
             return undefined;
         }
 
-        if (DEBUG) {
-            console.log("maybe fetch object: ", id);
-        }
         if (!ChainValidation.is_object_id(id)) {
             throw Error("argument is not an object id: " + id);
         }
@@ -497,12 +519,8 @@ class ChainStore {
 
         let result = this.objects_by_id.get(id);
         if (result === undefined) { // the fetch
-            if (DEBUG) {
-                console.log("fetching object: ", id);
-            }
             this.objects_by_id = this.objects_by_id.set(id, true);
             Apis.instance().db_api().exec("get_objects", [[id]]).then(optional_objects => {
-                //if(DEBUG) console.log('... optional_objects',optional_objects ? optional_objects[0].id : null)
                 for (let i = 0; i < optional_objects.length; i++) {
                     let optional_object = optional_objects[i];
                     if (optional_object) {
@@ -514,7 +532,9 @@ class ChainStore {
                     }
                 }
             }).catch(error => { // in the event of an error clear the pending state for id
-                console.log('!!! Chain API error', error);
+                if (process.env.ENVIRONMENT === 'DEV') {
+                    console.log('!!! Chain API error', error);
+                }
                 this.objects_by_id = this.objects_by_id.delete(id);
             })
         }
@@ -721,10 +741,6 @@ class ChainStore {
      *  @return null if the object has been queried and was not found
      */
     fetchFullAccount(name_or_id) {
-        if (DEBUG) {
-            console.log("Fetch full account: ", name_or_id);
-        }
-
         let fetch_account = false;
         if (ChainValidation.is_object_id(name_or_id)) {
             let current = this.objects_by_id.get(name_or_id);
@@ -747,7 +763,6 @@ class ChainStore {
         /// only fetch once every 5 seconds if it wasn't found
         if (!this.fetching_get_full_accounts.has(name_or_id) || (Date.now() - this.fetching_get_full_accounts.get(name_or_id)) > 5000) {
             this.fetching_get_full_accounts.set(name_or_id, Date.now());
-            //console.log( "FETCHING FULL ACCOUNT: ", name_or_id )
             Apis.instance().db_api().exec("get_full_accounts", [[name_or_id], true])
                 .then(results => {
                     if (results.length === 0) {
@@ -758,10 +773,6 @@ class ChainStore {
                         return;
                     }
                     let full_account = results[0][1];
-                    if (DEBUG) {
-                        console.log("full_account: ", full_account);
-                    }
-
                     let {
                         account,
                         vesting_balances,
@@ -825,7 +836,9 @@ class ChainStore {
                     this.fetchRecentHistory(updated_account);
                     this.notifySubscribers();
                 }, error => {
-                    console.log("Error: ", error);
+                    if (process.env.ENVIRONMENT === 'DEV') {
+                        console.log("Error: ", error);
+                    }
                     if (ChainValidation.is_object_id(name_or_id)) {
                         this.objects_by_id = this.objects_by_id.delete(name_or_id);
                     }
@@ -881,9 +894,6 @@ class ChainStore {
      *  @return a promise with the account history
      */
     fetchRecentHistory(account, limit = 100) {
-        // console.log( "get account history: ", account )
-        /// TODO: make sure we do not submit a query if there is already one
-        /// in flight...
         let account_id = account;
         if (!ChainValidation.is_object_id(account_id) && account.toJS) {
             account_id = account.get('id');
@@ -1028,16 +1038,15 @@ class ChainStore {
     _updateObject(object, notify_subscribers = false, emit = true) {
 
         if (!("id" in object)) {
-            console.log("object with no id:", object);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("object with no id:", object);
+            }
             if ("balance" in object && "owner" in object && "settlement_date" in object) {
                 // Settle order object
                 emitter.emit("settle-order-update", object);
             }
             return;
         }
-        // if (!(object.id.split(".")[0] == 2) && !(object.id.split(".")[1] == 6)) {
-        //   console.log( "update: ", object )
-        // }
 
         // DYNAMIC GLOBAL OBJECT
         if (object.id === "2.1.0") {
@@ -1083,7 +1092,6 @@ class ChainStore {
         }
         // ACCOUNT STATS OBJECT
         else if (object.id.substring(0, account_stats_prefix.length) === account_stats_prefix) {
-            // console.log( "HISTORY CHANGED" )
             let prior_most_recent_op = prior ? prior.get('most_recent_op') : "2.9.0";
             if (prior_most_recent_op !== object.most_recent_op) {
                 this.fetchRecentHistory(object.owner);
@@ -1228,14 +1236,20 @@ class ChainStore {
             // we may need to fetch some objects
             Apis.instance().db_api().exec("lookup_vote_ids", [missing])
                 .then(vote_obj_array => {
-                    console.log("missing ===========> ", missing);
-                    console.log("vote objects ===========> ", vote_obj_array);
+                    if (process.env.ENVIRONMENT === 'DEV') {
+                        console.log("missing ===========> ", missing);
+                        console.log("vote objects ===========> ", vote_obj_array);
+                    }
                     for (let i = 0; i < vote_obj_array.length; ++i) {
                         if (vote_obj_array[i]) {
                             this._updateObject(vote_obj_array[i]);
                         }
                     }
-                }, error => console.log("Error looking up vote ids: ", error));
+                }, error => {
+                    if (process.env.ENVIRONMENT === 'DEV') {
+                        console.log("Error looking up vote ids: ", error)
+                    }
+                });
         }
         return result;
     }
@@ -1256,7 +1270,6 @@ class ChainStore {
         // This will fix itself if the user changes their clock
         let median_offset = Immutable.List(this.chain_time_offset)
             .sort().get(Math.floor((this.chain_time_offset.length - 1) / 2));
-        // console.log("median_offset", median_offset)
         return median_offset;
     }
 

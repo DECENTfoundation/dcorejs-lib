@@ -25,7 +25,6 @@ class AccountLogin {
     }
 
     generateKeys(accountName, password, roles, prefix) {
-        var start = new Date().getTime();
         if (!accountName || !password) {
             throw new Error("Account name or password required");
         }
@@ -83,7 +82,6 @@ class AccountLogin {
             let myKey = this.get(role);
             if (myKey) {
                 hasKey = true;
-                console.log("adding signer:", myKey.pub);
                 tr.add_signer(myKey.priv, myKey.pub);
             }
         });
