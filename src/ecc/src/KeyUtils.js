@@ -156,7 +156,9 @@ const key = {
                 mimeType = navigator.mimeTypes[i];
                 entropyStr += mimeType.description + " " + mimeType.type + " " + mimeType.suffixes + " ";
             }
-            console.log("INFO\tbrowserEntropy gathered")
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("INFO\tbrowserEntropy gathered")
+            }
         } catch (error) {
             //nodejs:ReferenceError: window is not defined
             entropyStr = sha256((new Date()).toString());

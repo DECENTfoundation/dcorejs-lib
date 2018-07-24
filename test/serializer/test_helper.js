@@ -1,7 +1,7 @@
 module.exports = {
 
     print_result(tr_object){
-        if (tr_object) {
+        if (tr_object && process.env.ENVIRONMENT === 'DEV') {
             console.log('print_result', JSON.stringify(tr_object));
         }
         try {
@@ -16,14 +16,20 @@ module.exports = {
     },
 
     print_hex(hex){
-        console.log('print_hex');
+        if (process.env.ENVIRONMENT === 'DEV') {
+            console.log('print_hex');
+        }
         ByteBuffer.fromHex(hex).printDebug();
         try {
             const tr = signed_transaction_type.fromHex(hex);
             const tr_object = signed_transaction_type.toObject(tr);
-            return console.log(JSON.stringify(tr_object));
+            if (process.env.ENVIRONMENT === 'DEV') {
+                return console.log(JSON.stringify(tr_object));
+            }
         } catch (e) {
-            return console.log("print_hex: unparsed or non-transactoin object",e,e.stack);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                return console.log("print_hex: unparsed or non-transactoin object", e, e.stack);
+            }
         }
     },
 

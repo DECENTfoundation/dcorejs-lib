@@ -24,7 +24,7 @@ class Serializer {
                 let type = this.types[field];
                 try {
                     if (HEX_DUMP) {
-                        if (type.operation_name) {
+                        if (type.operation_name && process.env.ENVIRONMENT === 'DEV') {
                             console.error(type.operation_name);
                         } else {
                             let o1 = b.offset;
@@ -33,15 +33,14 @@ class Serializer {
                             b.offset = o1;
                             //b.reset()
                             let _b = b.copy(o1, o2);
-                            console.error(
-                                `${this.operation_name}.${field}\t`,
-                                _b.toHex()
-                            );
+                            if (process.env.ENVIRONMENT === 'DEV') {
+                                console.error(`${this.operation_name}.${field}\t`, _b.toHex());
+                            }
                         }
                     }
                     object[field] = type.fromByteBuffer(b);
                 } catch (e) {
-                    if (Serializer.printDebug) {
+                    if (Serializer.printDebug && process.env.ENVIRONMENT === 'DEV') {
                         console.error(`Error reading ${this.operation_name}.${field} in data:`);
                         b.printDebug();
                     }
@@ -82,8 +81,6 @@ class Serializer {
                 field = iterable[i];
                 let type = this.types[field];
                 let value = serialized_object[field];
-                //DEBUG value = value.resolve if value.resolve
-                //DEBUG console.log('... value',field,value)
                 result[field] = type.fromObject(value);
             }
         } catch (error) {
@@ -112,10 +109,9 @@ class Serializer {
                     let b = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN);
                     type.appendByteBuffer(b, ((typeof serialized_object !== "undefined" && serialized_object !== null) ? serialized_object[field] : undefined));
                     b = b.copy(0, b.offset);
-                    console.error(
-                        this.operation_name + '.' + field,
-                        b.toHex()
-                    );
+                    if (process.env.ENVIRONMENT === 'DEV') {
+                        console.error(this.operation_name + '.' + field, b.toHex());
+                    }
                 }
             }
         } catch (error) {

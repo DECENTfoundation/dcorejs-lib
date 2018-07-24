@@ -66,7 +66,7 @@ class Signature {
                 i += 27; // compact  //  24 or 27 :( forcing odd-y 2nd key candidate)
                 break;
             }
-            if (nonce % 10 === 0) {
+            if (nonce % 10 === 0 && process.env.ENVIRONMENT === 'DEV') {
                 console.log("WARN: " + nonce + " attempts to find canonical signature");
             }
         }

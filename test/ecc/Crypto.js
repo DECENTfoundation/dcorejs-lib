@@ -107,14 +107,12 @@ describe("ECC", function() {
                 return done();
             });
         });
-            // DEBUG console.log('... key_checksum',key_checksum)
 
         it("wrong password", function() {
             this.timeout(2500);
             const key_checksum = min_time_elapsed(function () {
                 return key.aes_checksum("password").checksum;
             });
-            // DEBUG console.log('... key_checksum',key_checksum)
             assert.throws(()=>
                 min_time_elapsed(function(){
                     key.aes_private("bad password", key_checksum);

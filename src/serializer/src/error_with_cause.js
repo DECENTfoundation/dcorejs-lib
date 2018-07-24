@@ -7,7 +7,7 @@ class ErrorWithCause {
             this.message = `cause\t${cause.message}\t` + this.message;
         }
 
-        let stack = "";//(new Error).stack
+        let stack = ""; //(new Error).stack
         if ((typeof cause !== "undefined" && cause !== null) ? cause.stack : undefined) {
             stack = `caused by\n\t${cause.stack}\t` + stack;
         }

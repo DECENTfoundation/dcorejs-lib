@@ -11,9 +11,7 @@ import {Apis} from "../../ws/cjs";
 helper.unique_nonce_entropy = null;
 helper.unique_nonce_uint64 = function () {
     let entropy = helper.unique_nonce_entropy = ((() => {
-
             if (helper.unique_nonce_entropy === null) {
-                //console.log('... secureRandom.randomUint8Array(1)[0]',secureRandom.randomUint8Array(1)[0])
                 return parseInt(secureRandom.randomUint8Array(1)[0]);
             } else {
                 return ++helper.unique_nonce_entropy % 256;
@@ -21,10 +19,7 @@ helper.unique_nonce_uint64 = function () {
         })()
     );
     let long = Long.fromNumber(Date.now());
-    //console.log('unique_nonce_uint64 date\t',ByteBuffer.allocate(8).writeUint64(long).toHex(0))
-    //console.log('unique_nonce_uint64 entropy\t',ByteBuffer.allocate(8).writeUint64(Long.fromNumber(entropy)).toHex(0))
     long = long.shiftLeft(8).or(Long.fromNumber(entropy));
-    //console.log('unique_nonce_uint64 shift8\t',ByteBuffer.allocate(8).writeUint64(long).toHex(0))
     return long.toString();
 };
 
@@ -34,7 +29,9 @@ helper.to_json = function (tr, broadcast = false) {
             let tr_object = ops.signed_transaction.toObject(tr);
             if (broadcast) {
                 let net = Apis.instance().network_api();
-                console.log('... tr_object', JSON.stringify(tr_object));
+                if (process.env.ENVIRONMENT === 'DEV') {
+                    console.log('... tr_object', JSON.stringify(tr_object));
+                }
                 return net.exec("broadcast_transaction", [tr_object]);
             } else {
                 return tr_object;

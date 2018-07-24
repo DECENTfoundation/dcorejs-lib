@@ -44,10 +44,10 @@ const decentjslib = {
 
 if (typeof window !== "undefined") {
     window.decentjslib = decentjslib;
-  }
-  
-  if (typeof global !== "undefined") {
+}
+
+if (typeof global !== "undefined") {
     global.decentjslib = decentjslib;
-  }
+}
 
 module.exports = decentjslib;
