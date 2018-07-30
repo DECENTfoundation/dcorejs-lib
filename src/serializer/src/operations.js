@@ -197,7 +197,7 @@ export const subscribe_by_author_operation_fee_parameters = new Serializer(
 
 export const automatic_renewal_of_subscription_operation_fee_parameters = new Serializer(
     "automatic_renewal_of_subscription_operation_fee_parameters",
-    {fee: uint64_t}
+    {fee: uint64}
 );
 
 export const report_stats_operation_fee_parameters = new Serializer(
