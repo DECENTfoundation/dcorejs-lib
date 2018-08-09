@@ -310,7 +310,7 @@ class ChainStore {
                 console.error("Unsubscribe callback does not exists", callback);
             }
         }
-        this.subscribers.delete(callback);
+        return this.subscribers.delete(callback);
     }
 
     unsubscribePendingTransaction(callback) {
@@ -319,7 +319,7 @@ class ChainStore {
                 console.error("Unsubscribe pending transaction callback does not exists", callback);
             }
         }
-        this.pendingTransactionSubscribers.delete(callback);
+        return this.pendingTransactionSubscribers.delete(callback);
     }
 
     unsubscribeBlockApplied(callback) {
@@ -328,7 +328,7 @@ class ChainStore {
                 console.error("Unsubscribe block callback does not exists", callback);
             }
         }
-        this.blockSubscribers.delete(callback);
+        return this.blockSubscribers.delete(callback);
     }
 
     /** Clear an object from the cache to force it to be fetched again. This may
