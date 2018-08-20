@@ -45,6 +45,7 @@
     "esdoc-es7-plugin": "0.0.3",
     "event-emitter": "^0.3.4",
     "immutable": "^3.7.6",
+    "reconnecting-websocket": "4.0.0-rc5",
     "secure-random": "^1.1.1",
     "ws": "3.3.3"
   },
