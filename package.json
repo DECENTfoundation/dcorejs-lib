@@ -35,7 +35,7 @@
   "dependencies": {
     "ReconnectingWebSocket": "git+https://github.com/bitshares/reconnecting-websocket.git",
     "bigi": "^1.4.1",
-    "bs58": "^3.0.0",
+    "bs58": "^3.1.0",
     "bytebuffer": "^5.0.0",
     "create-hash": "^1.1.2",
     "create-hmac": "^1.1.4",
@@ -45,6 +45,7 @@
     "esdoc-es7-plugin": "0.0.3",
     "event-emitter": "^0.3.4",
     "immutable": "^3.7.6",
+    "reconnecting-websocket": "4.0.0-rc5",
     "secure-random": "^1.1.1",
     "ws": "3.3.3"
   },

@@ -3,8 +3,8 @@ import key from "../../ecc/src/KeyUtils";
 
 import {get, set} from "./state";
 
-var _keyCachePriv = {};
-var _keyCachePub = {};
+let _keyCachePriv = {};
+let _keyCachePub = {};
 
 class AccountLogin {
 
@@ -25,7 +25,6 @@ class AccountLogin {
     }
 
     generateKeys(accountName, password, roles, prefix) {
-        var start = new Date().getTime();
         if (!accountName || !password) {
             throw new Error("Account name or password required");
         }
@@ -38,7 +37,7 @@ class AccountLogin {
 
         (roles || this.get("roles")).forEach(role => {
             let seed = accountName + role + password;
-            let pkey = _keyCachePriv[seed] ? _keyCachePriv[seed] :  PrivateKey.fromSeed( key.normalize_brainKey(seed) );
+            let pkey = _keyCachePriv[seed] ? _keyCachePriv[seed] : PrivateKey.fromSeed(key.normalize_brainKey(seed));
             _keyCachePriv[seed] = pkey;
 
             privKeys[role] = pkey;
@@ -64,7 +63,7 @@ class AccountLogin {
                     this.set(role, {priv: privKeys[role], pub: pubKeys[role]});
                 }
             });
-        };
+        }
 
         if (hasKey) {
             this.set("name", accountName);
@@ -83,7 +82,6 @@ class AccountLogin {
             let myKey = this.get(role);
             if (myKey) {
                 hasKey = true;
-                console.log("adding signer:", myKey.pub);
                 tr.add_signer(myKey.priv, myKey.pub);
             }
         });

@@ -2,17 +2,17 @@
 
 exports.__esModule = true;
 
-var _ChainWebSocket = require("./ChainWebSocket");
+const _ChainWebSocket = require("./ChainWebSocket");
 
-var _ChainWebSocket2 = _interopRequireDefault(_ChainWebSocket);
+const _ChainWebSocket2 = _interopRequireDefault(_ChainWebSocket);
 
-var _GrapheneApi = require("./GrapheneApi");
+const _GrapheneApi = require("./GrapheneApi");
 
-var _GrapheneApi2 = _interopRequireDefault(_GrapheneApi);
+const _GrapheneApi2 = _interopRequireDefault(_GrapheneApi);
 
-var _ChainConfig = require("./ChainConfig");
+const _ChainConfig = require("./ChainConfig");
 
-var _ChainConfig2 = _interopRequireDefault(_ChainConfig);
+const _ChainConfig2 = _interopRequireDefault(_ChainConfig);
 
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -27,7 +27,7 @@ function _classCallCheck(instance, Constructor) {
 } // var { List } = require("immutable");
 
 
-var inst = void 0;
+let inst = void 0;
 
 /**
  Configure: configure as follows `Apis.instance("ws://localhost:8090").init_promise`.  This returns a promise, once resolved the connection is ready.
@@ -51,8 +51,8 @@ exports.default = {
      @return {Apis} singleton .. Check Apis.instance().init_promise to know when the connection is established
      */
     reset: function reset() {
-        var cs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "ws://localhost:8090";
-        var connect = arguments[1];
+        const cs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "ws://localhost:8090";
+        const connect = arguments[1];
 
         if (inst) {
             inst.close();
@@ -68,8 +68,8 @@ exports.default = {
         return inst;
     },
     instance: function instance() {
-        var cs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "ws://localhost:8090";
-        var connect = arguments[1];
+        const cs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "ws://localhost:8090";
+        const connect = arguments[1];
 
         if (!inst) {
             inst = new ApisInstance();
@@ -98,19 +98,15 @@ exports.default = {
     // crypto: (method, ...args) => Apis.instance().crypto_api().exec(method, toStrings(args))
 };
 
-var ApisInstance = function () {
+const ApisInstance = function () {
     function ApisInstance() {
         _classCallCheck(this, ApisInstance);
     }
 
     /** @arg {string} connection .. */
     ApisInstance.prototype.connect = function connect(cs) {
-        var _this = this;
-
-        // console.log("INFO\tApiInstances\tconnect\t", cs);
-
-        var rpc_user = "",
-            rpc_password = "";
+        const _this = this;
+        let rpc_user = "", rpc_password = "";
         if (typeof window !== "undefined" && window.location && window.location.protocol === "https:" && cs.indexOf("wss://") < 0) {
             throw new Error("Secure domains require wss connection");
         }
@@ -120,19 +116,17 @@ var ApisInstance = function () {
         this.init_promise = new Promise(function (resolve, reject) {
             _this.ws_rpc.login(rpc_user, rpc_password)
                 .then(function () {
-                    // console.log("Login done");
                     _this._db = new _GrapheneApi2.default(_this.ws_rpc, "database");
                     _this._net = new _GrapheneApi2.default(_this.ws_rpc, "network_broadcast");
                     _this._hist = new _GrapheneApi2.default(_this.ws_rpc, "history");
                     _this._crypt = new _GrapheneApi2.default(_this.ws_rpc, "crypto");
                     _this._msg = new _GrapheneApi2.default(_this.ws_rpc, "messaging");
-                    var db_promise = _this._db.init().then(function () {
+                    const db_promise = _this._db.init().then(function () {
                         //https://github.com/cryptonomex/graphene/wiki/chain-locked-tx
                         return _this._db.exec("get_chain_id", [])
                             .then(function (_chain_id) {
                                 _this.chain_id = _chain_id;
                                 return _ChainConfig2.default.setChainId(_chain_id);
-                                //DEBUG console.log("chain_id1",this.chain_id)
                             });
                     });
                     _this.ws_rpc.on_reconnect = function () {
@@ -151,7 +145,9 @@ var ApisInstance = function () {
                     Promise.all([db_promise, _this._net.init(), _this._hist.init(), _this._crypt.init(), _this._msg.init()
                             // Temporary squash crypto API error until the API is upgraded everywhere
                             .catch(function (e) {
-                                return console.error("ApiInstance\tCrypto API Error", e);
+                                if (process.env.ENVIRONMENT === 'DEV') {
+                                    console.error("ApiInstance\tCrypto API Error", e);
+                                }
                             })
                         ])
                         .then(res => {

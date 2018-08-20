@@ -1,12 +1,11 @@
 import assert from "assert";
-import {Login as login} from "../../src";
-import {Login as login2} from "../../src";
+import {Login as login, Login as login2} from "../../src";
 
-var auths = {
+let auths = {
     active: [
         ["DCT5Abm5dCdy3hJ1C5ckXkqUH2Me7dXqi9Y7yjn9ACaiSJ9h8r8mL", 1]
     ]
-}
+};
 
 describe("AccountLogin", () => {
 
@@ -17,7 +16,6 @@ describe("AccountLogin", () => {
     describe("Instance", function() {
         it ("Instantiates with default roles", function() {
             let roles = login.get("roles");
-
             assert(roles.length );
             assert(roles[0] === "active");
             assert(roles[1] === "owner");

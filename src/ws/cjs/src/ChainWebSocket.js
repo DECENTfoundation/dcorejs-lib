@@ -2,58 +2,84 @@
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+const MAX_RETRY_COUNT = 10;
 
-var WebSocketClient = void 0;
-if (typeof WebSocket === "undefined" && !process.env.browser) {
-    WebSocketClient = require("ws");
-} else if (typeof WebSocket !== "undefined" && typeof document !== "undefined") {
-    WebSocketClient = require("ReconnectingWebSocket");
-} else if (process.env.NODE_ENV === 'test') {
-    WebSocketClient = require("ws");
-} else {
-    WebSocketClient = WebSocket;
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
 }
 
-var SOCKET_DEBUG = false;
+const ReconnectingWebSocketBrowser = require("ReconnectingWebSocket");
+const ReconnectingWebSocketNode = require("reconnecting-websocket");
+if (typeof WebSocket === "undefined" && !process.env.browser) {
+    Websocket = require("ws");
+}
+let WebSocketClient = null;
+if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser) {
+    WebSocketClient = ReconnectingWebSocketNode;
+} else {
+    WebSocketClient = ReconnectingWebSocketBrowser;
+}
 
-var ChainWebSocket = function () {
+let SOCKET_DEBUG = false;
+
+let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
-        var _this = this;
+        const _this = this;
 
         _classCallCheck(this, ChainWebSocket);
 
         this.statusCb = statusCb;
 
+        const options = {
+            WebSocket: WebSocket,
+            maxRetries: MAX_RETRY_COUNT,
+            maxReconnectAttempts: MAX_RETRY_COUNT,
+            connectionTimeout: 3000,
+            timeoutInterval: 3000,
+            reconnectInterval: 1000,
+            debug: SOCKET_DEBUG
+        };
+
+        console.log('say whaaaat', ReconnectingWebSocketBrowser);
+
         try {
-            this.ws = new WebSocketClient(ws_server);
+            this.ws = new WebSocketClient(ws_server, [], options);
         } catch (error) {
             console.error("invalid websocket URL:", error);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.error("invalid websocket URL:", error);
+            }
             this.ws = new WebSocketClient("wss://127.0.0.1:8080");
         }
-        this.ws.timeoutInterval = 5000;
+
         this.current_reject = null;
         this.on_reconnect = null;
         this.connect_promise = new Promise(function (resolve, reject) {
             _this.current_reject = reject;
-            _this.ws.onopen = function () {
+            _this.ws.addEventListener('open', function () {
                 if (_this.statusCb) _this.statusCb("open");
                 if (_this.on_reconnect) _this.on_reconnect();
                 resolve();
-            };
-            _this.ws.onerror = function (error) {
+            });
+            _this.ws.addEventListener('error', function (error) {
                 if (_this.statusCb) _this.statusCb("error");
 
                 if (_this.current_reject) {
-                    _this.current_reject(error);
+                    console.log('djslib-> Error connecting ws', error);
+                    if (_this.ws.retryCount >= MAX_RETRY_COUNT) {
+                        _this.current_reject(new Error('Error connecting ws', error.stack));
+                        return;
+                    }
                 }
-            };
-            _this.ws.onmessage = function (message) {
+            })
+            _this.ws.addEventListener('message', function (message) {
                 return _this.listener(JSON.parse(message.data));
-            };
-            _this.ws.onclose = function () {
+            })
+            _this.ws.addEventListener('close', function () {
                 if (_this.statusCb) _this.statusCb("closed");
-            };
+            })
         });
         this.cbId = 0;
         this.cbs = {};
@@ -62,63 +88,64 @@ var ChainWebSocket = function () {
     }
 
     ChainWebSocket.prototype.call = function call(params) {
-        var _this2 = this;
-
-        var method = params[1];
-        if (SOCKET_DEBUG) console.log("[ChainWebSocket] >---- call ----->  \"id\":" + (this.cbId + 1), JSON.stringify(params));
-
-        this.cbId += 1;
-
-        if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback") {
-            // Store callback in subs map
-            this.subs[this.cbId] = {
-                callback: params[2][0]
-            };
-
-            // Replace callback with the callback id
-            params[2][0] = this.cbId;
-        }
-
-        if (method === "unsubscribe_from_market" || method === "unsubscribe_from_accounts") {
-            if (typeof params[2][0] !== "function") {
-                throw new Error("First parameter of unsub must be the original callback");
-            }
-
-            var unSubCb = params[2].splice(0, 1)[0];
-
-            // Find the corresponding subscription
-            for (var id in this.subs) {
-                if (this.subs[id].callback === unSubCb) {
-                    this.unsub[this.cbId] = id;
-                    break;
-                }
-            }
-        }
-
-        var request = {
-            method: "call",
-            params: params
-        };
-        request.id = this.cbId;
-
+        const _this2 = this;
         return new Promise(function (resolve, reject) {
-            _this2.cbs[_this2.cbId] = {
-                time: new Date(),
-                resolve: resolve,
-                reject: reject
-            };
-            _this2.ws.onerror = function (error) {
-                console.log("!!! ChainWebSocket Error ", error);
-                reject(error);
-            };
-            _this2.ws.send(JSON.stringify(request));
+            _this2.connect_promise
+                .then(res => {
+                    const method = params[1];
+                    _this2.cbId += 1;
+
+                    if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback" || method === "set_block_applied_callback") {
+                        // Store callback in subs map
+                        _this2.subs[this.cbId] = {
+                            callback: params[2][0]
+                        };
+
+                        // Replace callback with the callback id
+                        params[2][0] = _this2.cbId;
+                    }
+
+                    if (method === "unsubscribe_from_market" || method === "unsubscribe_from_accounts") {
+                        if (typeof params[2][0] !== "function") {
+                            throw new Error("First parameter of unsub must be the original callback");
+                        }
+
+                        const unSubCb = params[2].splice(0, 1)[0];
+
+                        // Find the corresponding subscription
+                        for (let id in _this2.subs) {
+                            if (_this2.subs[id].callback === unSubCb) {
+                                _this2.unsub[this.cbId] = id;
+                                break;
+                            }
+                        }
+                    }
+
+                    const request = {
+                        method: "call",
+                        params: params
+                    };
+                    request.id = _this2.cbId;
+
+                    _this2.cbs[_this2.cbId] = {
+                        time: new Date(),
+                        resolve: resolve,
+                        reject: reject
+                    };
+                    _this2.ws.onerror = function (error) {
+                        if (process.env.ENVIRONMENT === 'DEV') {
+                            console.log("!!! ChainWebSocket Error ", error);
+                        }
+                        reject(error);
+                    };
+                    _this2.ws.send(JSON.stringify(request));
+                })
+                .catch(err => console.log(err));
         });
     };
 
     ChainWebSocket.prototype.listener = function listener(response) {
-        if (SOCKET_DEBUG) console.log("[ChainWebSocket] <---- reply ----<", JSON.stringify(response));
-
-        var sub = false,
+        let sub = false,
             callback = null;
 
         if (response.method === "notice") {
@@ -147,12 +174,14 @@ var ChainWebSocket = function () {
         } else if (callback && sub) {
             callback(response.params[1]);
         } else {
-            console.log("Warning: unknown websocket response: ", response);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                console.log("Warning: unknown websocket response: ", response);
+            }
         }
     };
 
     ChainWebSocket.prototype.login = function login(user, password) {
-        var _this3 = this;
+        const _this3 = this;
 
         return this.connect_promise.then(function () {
             return _this3.call([1, "login", [user, password]]);

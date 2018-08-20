@@ -35,14 +35,11 @@ ChainTypes.impl_object_type = {
     buying: 12,
     content: 13,
     publisher: 14,
-    rating: 15,
-    subscription_object: 16,
-    seeding_statistics: 17,
-    transaction_detail: 18
+    subscription_object: 15,
+    seeding_statistics: 16,
+    transaction_detail: 17,
+    rating: 18,
 };
-
-
-
 
 ChainTypes.vote_type = {
     committee: 0,
@@ -50,7 +47,7 @@ ChainTypes.vote_type = {
     worker: 2
 };
 
-ChainTypes.operations= {
+ChainTypes.operations = {
     transfer: 0,
     account_create: 1,
     account_update: 2,

@@ -1,14 +1,12 @@
-import assert from 'assert';
-
 module.exports = {
 
     print_result(tr_object){
-        if (tr_object) {
+        if (tr_object && process.env.ENVIRONMENT === 'DEV') {
             console.log('print_result', JSON.stringify(tr_object));
         }
         try {
-            var tr = signed_transaction_type.fromObject(tr_object);
-            var tr_hex = signed_transaction_type.toHex(tr);
+            const tr = signed_transaction_type.fromObject(tr_object);
+            const tr_hex = signed_transaction_type.toHex(tr);
             return ByteBuffer.fromHex(tr_hex).printDebug();
         } catch (e) {
             if (tr_object && tr_object["ref_block_num"]) {
@@ -18,14 +16,20 @@ module.exports = {
     },
 
     print_hex(hex){
-        console.log('print_hex');
+        if (process.env.ENVIRONMENT === 'DEV') {
+            console.log('print_hex');
+        }
         ByteBuffer.fromHex(hex).printDebug();
         try {
-            var tr = signed_transaction_type.fromHex(hex);
-            var tr_object = signed_transaction_type.toObject(tr);
-            return console.log(JSON.stringify(tr_object));
+            const tr = signed_transaction_type.fromHex(hex);
+            const tr_object = signed_transaction_type.toObject(tr);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                return console.log(JSON.stringify(tr_object));
+            }
         } catch (e) {
-            return console.log("print_hex: unparsed or non-transactoin object",e,e.stack);
+            if (process.env.ENVIRONMENT === 'DEV') {
+                return console.log("print_hex: unparsed or non-transactoin object", e, e.stack);
+            }
         }
     },
 
@@ -38,7 +42,7 @@ module.exports = {
     },
 
     error(message_substring, f){
-        var fail = false;
+        let fail = false;
         try {
             f();
             fail = true;
@@ -51,4 +55,4 @@ module.exports = {
             throw new Error("expecting " + message_substring);
         }
     }
-}
+};
