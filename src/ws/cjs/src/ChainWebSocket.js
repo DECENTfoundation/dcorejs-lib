@@ -96,7 +96,7 @@ let ChainWebSocket = function () {
 
                     if (method === "set_subscribe_callback" || method === "subscribe_to_market" || method === "broadcast_transaction_with_callback" || method === "set_pending_transaction_callback" || method === "set_block_applied_callback") {
                         // Store callback in subs map
-                        _this2.subs[this.cbId] = {
+                        _this2.subs[_this2.cbId] = {
                             callback: params[2][0]
                         };
 
