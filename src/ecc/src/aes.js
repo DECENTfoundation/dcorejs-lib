@@ -94,7 +94,7 @@ class Aes {
         }
 
         if (!Buffer.isBuffer(message)) {
-            message = new Buffer(message, 'binary');
+            message = new Buffer(message);
         }
 
         let S = private_key.get_shared_secret(public_key);
