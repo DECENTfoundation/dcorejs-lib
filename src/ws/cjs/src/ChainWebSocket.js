@@ -10,10 +10,13 @@ function _classCallCheck(instance, Constructor) {
     }
 }
 
+let webSocket = null;
 const ReconnectingWebSocketBrowser = require("ReconnectingWebSocket");
 const ReconnectingWebSocketNode = require("reconnecting-websocket");
 if (typeof WebSocket === "undefined" && !process.env.browser) {
-    Websocket = require("ws");
+    webSocket = require("ws");
+} else {
+    webSocket = WebSocket
 }
 let WebSocketClient = null;
 if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser) {
@@ -33,7 +36,7 @@ let ChainWebSocket = function () {
         this.statusCb = statusCb;
 
         const options = {
-            WebSocket: WebSocket,
+            WebSocket: webSocket,
             maxRetries: MAX_RETRY_COUNT,
             maxReconnectAttempts: MAX_RETRY_COUNT,
             connectionTimeout: 3000,
@@ -41,8 +44,6 @@ let ChainWebSocket = function () {
             reconnectInterval: 1000,
             debug: SOCKET_DEBUG
         };
-
-        console.log('say whaaaat', ReconnectingWebSocketBrowser);
 
         try {
             this.ws = new WebSocketClient(ws_server, [], options);
@@ -65,10 +66,8 @@ let ChainWebSocket = function () {
             });
             _this.ws.addEventListener('error', function (error) {
                 if (_this.statusCb) _this.statusCb("error");
-
                 if (_this.current_reject) {
-                    console.log('djslib-> Error connecting ws', error);
-                    if (_this.ws.retryCount >= MAX_RETRY_COUNT) {
+                    if ((_this.ws.reconnectAttempts || _this.ws.retryCount) >= MAX_RETRY_COUNT) {
                         _this.current_reject(new Error('Error connecting ws', error.stack));
                         return;
                     }
