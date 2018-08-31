@@ -25,7 +25,7 @@ if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser)
     WebSocketClient = ReconnectingWebSocketBrowser;
 }
 
-let SOCKET_DEBUG = false;
+let SOCKET_DEBUG = process.env.ENVIRONMENT === 'DEV';
 
 let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
@@ -182,9 +182,10 @@ let ChainWebSocket = function () {
     ChainWebSocket.prototype.login = function login(user, password) {
         const _this3 = this;
 
-        return this.connect_promise.then(function () {
-            return _this3.call([1, "login", [user, password]]);
-        });
+        return this.connect_promise
+            .then(function () {
+                return _this3.call([1, "login", [user, password]]);
+            });
     };
 
     ChainWebSocket.prototype.close = function close() {
