@@ -160,6 +160,10 @@ const ApisInstance = function () {
         });
     };
 
+    ApisInstance.refreshConnection = function refreshConnection() {
+        this.ws_rpc.refreshConnection();
+    }
+
     ApisInstance.prototype.close = function close() {
         if (this.ws_rpc) this.ws_rpc.close();
         this.ws_rpc = null;

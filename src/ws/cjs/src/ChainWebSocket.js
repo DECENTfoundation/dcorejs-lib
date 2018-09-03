@@ -25,7 +25,7 @@ if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser)
     WebSocketClient = ReconnectingWebSocketBrowser;
 }
 
-let SOCKET_DEBUG = process.env.ENVIRONMENT === 'DEV';
+let SOCKET_DEBUG = process.env.WS_ENV === 'DEV';
 
 let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
@@ -49,7 +49,7 @@ let ChainWebSocket = function () {
             this.ws = new WebSocketClient(ws_server, [], options);
         } catch (error) {
             console.error("invalid websocket URL:", error);
-            if (process.env.ENVIRONMENT === 'DEV') {
+            if (process.env.WS_ENV === 'DEV') {
                 console.error("invalid websocket URL:", error);
             }
             this.ws = new WebSocketClient("wss://127.0.0.1:8080");
@@ -84,6 +84,14 @@ let ChainWebSocket = function () {
         this.cbs = {};
         this.subs = {};
         this.unsub = {};
+    }
+
+    ChainWebSocket.prototype.refreshConnection = function() {
+        if (typeof this.ws.refresh === undefined) { 
+            this.ws.refresh();
+        } else {
+            this.ws.reconnect()
+        }
     }
 
     ChainWebSocket.prototype.call = function call(params) {
@@ -132,14 +140,14 @@ let ChainWebSocket = function () {
                         reject: reject
                     };
                     _this2.ws.onerror = function (error) {
-                        if (process.env.ENVIRONMENT === 'DEV') {
+                        if (process.env.WS_ENV === 'DEV') {
                             console.log("!!! ChainWebSocket Error ", error);
                         }
                         reject(error);
                     };
                     _this2.ws.send(JSON.stringify(request));
                 })
-                .catch(err => console.log(err));
+                .catch(err => reject(err));
         });
     };
 
@@ -173,7 +181,7 @@ let ChainWebSocket = function () {
         } else if (callback && sub) {
             callback(response.params[1]);
         } else {
-            if (process.env.ENVIRONMENT === 'DEV') {
+            if (process.env.WS_ENV === 'DEV') {
                 console.log("Warning: unknown websocket response: ", response);
             }
         }
