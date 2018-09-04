@@ -2,7 +2,7 @@
 
 exports.__esModule = true;
 
-const MAX_RETRY_COUNT = 10;
+const MAX_RETRY_COUNT = 2;
 
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -25,12 +25,10 @@ if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser)
     WebSocketClient = ReconnectingWebSocketBrowser;
 }
 
-let SOCKET_DEBUG = process.env.WS_ENV === 'DEV';
-
 let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
         const _this = this;
-
+        this.SOCKET_DEBUG = process.env.WS_ENV === 'DEV';
         _classCallCheck(this, ChainWebSocket);
 
         this.statusCb = statusCb;
@@ -42,7 +40,7 @@ let ChainWebSocket = function () {
             connectionTimeout: 3000,
             timeoutInterval: 3000,
             reconnectInterval: 1000,
-            debug: SOCKET_DEBUG
+            debug: this.SOCKET_DEBUG
         };
 
         try {
@@ -87,6 +85,9 @@ let ChainWebSocket = function () {
     }
 
     ChainWebSocket.prototype.refreshConnection = function() {
+        if (this.SOCKET_DEBUG) {
+            console.log('debug:dcorejs-lib => refreshing connection');
+        }
         if (typeof this.ws.refresh === undefined) { 
             this.ws.refresh();
         } else {
