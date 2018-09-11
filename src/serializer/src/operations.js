@@ -435,6 +435,17 @@ export const transfer2 = new Serializer(
     }
 );
 
+export const update_user_issued_asset_precision_operation = new Serializer(
+    'update_user_issued_asset_precision_operation', {
+        fee: asset,
+        issuer: protocol_id_type('account'),
+        asset_to_update: protocol_id_type('asset'),
+        new_precision: uint8,
+        set_fixed_max_supply: bool,
+        extensions: set(future_extensions)
+    }
+);
+
 export const authority = new Serializer(
     "authority", {
         weight_threshold: uint32,
@@ -1112,7 +1123,7 @@ operation.st_operations = [
     update_monitored_asset_operation,
     ready_to_publish2,
     transfer2,
-    disallow_automatic_renewal_of_subscription, // 40
+    update_user_issued_asset_precision_operation, // 40
     return_escrow_submission,
     return_escrow_buying,
     pay_seeder,

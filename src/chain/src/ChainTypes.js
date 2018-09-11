@@ -88,12 +88,13 @@ ChainTypes.operations = {
     update_monitored_asset_operation: 37,
     ready_to_publish2: 38,
     transfer2: 39,
-    disallow_automatic_renewal_of_subscription: 40,
-    return_escrow_submission: 41,
-    return_escrow_buying: 42,
-    pay_seeder: 43,
-    finish_buying: 44,
-    renewal_of_subscription: 45
+    update_user_issued_asset_precision_operation: 40,
+    disallow_automatic_renewal_of_subscription: 41,
+    return_escrow_submission: 42,
+    return_escrow_buying: 43,
+    pay_seeder: 44,
+    finish_buying: 45,
+    renewal_of_subscription: 46
 };
 
 export default ChainTypes;
