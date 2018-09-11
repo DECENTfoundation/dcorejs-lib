@@ -1124,6 +1124,7 @@ operation.st_operations = [
     ready_to_publish2,
     transfer2,
     update_user_issued_asset_precision_operation, // 40
+    disallow_automatic_renewal_of_subscription,
     return_escrow_submission,
     return_escrow_buying,
     pay_seeder,
