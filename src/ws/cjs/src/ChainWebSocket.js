@@ -25,16 +25,16 @@ if (typeof ReconnectingWebSocketBrowser === 'undefined' && !process.env.browser)
     WebSocketClient = ReconnectingWebSocketBrowser;
 }
 
-let SOCKET_DEBUG = process.env.ENVIRONMENT === 'DEV';
+let SOCKET_DEBUG = false;
 
 let ChainWebSocket = function () {
     function ChainWebSocket(ws_server, statusCb) {
         const _this = this;
-
+        SOCKET_DEBUG = process.env.ENVIRONMENT === 'DEV';
         _classCallCheck(this, ChainWebSocket);
 
         this.statusCb = statusCb;
-
+        
         const options = {
             WebSocket: webSocket,
             maxRetries: MAX_RETRY_COUNT,
