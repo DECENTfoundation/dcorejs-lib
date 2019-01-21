@@ -7,8 +7,8 @@ The library was created as a combination of forks of graphenejs-lib and graphene
 Can be used to construct, sign and broadcast transactions in JavaScript, and to easily obtain data from the blockchain 
 via public APIs.
 
-[![npm version](https://img.shields.io/npm/v/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/dcorejs-lib)
-[![npm downloads](https://img.shields.io/npm/dm/graphenejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/graphenejs-lib)
+[![npm version](https://img.shields.io/npm/v/dcorejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/dcorejs-lib)
+[![npm downloads](https://img.shields.io/npm/dm/dcorejs-lib.svg?style=flat-square)](https://www.npmjs.com/package/dcorejs-lib)
 
 ## Setup
 
