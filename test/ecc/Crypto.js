@@ -47,7 +47,8 @@ describe("ECC", function() {
             return (() => {
                 let result = [];
                 for (let i = 0; i < 10; i++) {
-                    result.push(Signature.signBuffer((new Buffer(i)), private_key));
+
+                    result.push(Signature.signBuffer((Buffer.from(i)), private_key));
                 }
                 return result;
             })();
@@ -63,7 +64,7 @@ describe("ECC", function() {
                 sender,
                 receiver.toPublicKey(),
                 nonce,
-                new Buffer("\xff\x00", 'binary')
+                Buffer.from("\xff\x00", 'binary')
             );
             //console.log '... ciphertext',ciphertext
             const plaintext = Aes.decrypt_with_checksum(
