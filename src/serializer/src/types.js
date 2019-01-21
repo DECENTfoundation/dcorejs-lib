@@ -193,7 +193,7 @@ Types.string = {
         let len = byteBuffer.readVarint32();
         b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + len);
         byteBuffer.skip(len);
-        return new Buffer(b_copy.toBinary(), 'binary');
+        return Buffer.from(b_copy.toBinary(), 'binary');
     },
     appendByteBuffer(byteBuffer, object) {
         SerializerValidation.required(object);
@@ -202,7 +202,7 @@ Types.string = {
     },
     fromObject(object) {
         SerializerValidation.required(object);
-        return new Buffer(object);
+        return Buffer.from(object);
     },
     toObject(object, debug = {}) {
         if (debug.use_default && object === undefined) {
@@ -220,17 +220,17 @@ Types.bytes = function (size) {
                 let len = byteBuffer.readVarint32();
                 b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + len);
                 byteBuffer.skip(len);
-                return new Buffer(b_copy.toBinary(), 'binary');
+                return Buffer.from(b_copy.toBinary(), 'binary');
             } else {
                 b_copy = byteBuffer.copy(byteBuffer.offset, byteBuffer.offset + size);
                 byteBuffer.skip(size);
-                return new Buffer(b_copy.toBinary(), 'binary');
+                return Buffer.from(b_copy.toBinary(), 'binary');
             }
         },
         appendByteBuffer(byteBuffer, object) {
             SerializerValidation.required(object);
             if (typeof object === "string") {
-                object = new Buffer(object, "hex");
+                object = Buffer.from(object, "hex");
             }
             if (size === undefined) {
                 byteBuffer.writeVarint32(object.length);
@@ -242,7 +242,7 @@ Types.bytes = function (size) {
             if (Buffer.isBuffer(object)) {
                 return object;
             }
-            return new Buffer(object, 'hex');
+            return Buffer.from(object, 'hex');
         },
         toObject(object, debug = {}) {
             if (debug.use_default && object === undefined) {
@@ -303,7 +303,7 @@ Types.array = function (st_operation) {
             }
             let result = [];
             for (let i = 0; 0 < size ? i < size : i > size; 0 < size ? i++ : i++) {
-                result.push(st_operation.fromByteBuffer(b));
+                result.push(st_operation.fromByteBuffer(byteBuffer));
             }
             return sortOperation(result, st_operation);
         },

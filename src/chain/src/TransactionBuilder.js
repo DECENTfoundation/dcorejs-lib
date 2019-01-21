@@ -112,7 +112,7 @@ class TransactionBuilder {
                     this.expiration = base_expiration_sec() + ChainConfig.expire_in_secs;
                 }
                 this.ref_block_num = r[0].head_block_number & 0xFFFF;
-                this.ref_block_prefix = new Buffer(r[0].head_block_id, 'hex').readUInt32LE(4);
+                this.ref_block_prefix = Buffer.from(r[0].head_block_id, 'hex').readUInt32LE(4);
 
                 let iterable = this.operations;
                 for (let i = 0, op; i < iterable.length; i++) {
@@ -444,7 +444,7 @@ class TransactionBuilder {
         for (let i = 0; 0 < end ? i < end : i > end; 0 < end ? i++ : i++) {
             let [private_key, public_key] = this.signer_private_keys[i];
             let sig = Signature.signBuffer(
-                Buffer.concat([new Buffer(chain_id, 'hex'), this.tr_buffer]),
+                Buffer.concat([Buffer.from(chain_id, 'hex'), this.tr_buffer]),
                 private_key,
                 public_key
             );

@@ -164,7 +164,7 @@ const key = {
             entropyStr = sha256((new Date()).toString());
         }
 
-        let b = new Buffer(entropyStr);
+        let b = Buffer.from(entropyStr);
         entropyStr += b.toString('binary') + " " + (new Date()).toString();
         return entropyStr;
     },
