@@ -23,7 +23,7 @@ class Address {
         let prefix = string.slice(0, address_prefix.length);
         assert.equal(address_prefix, prefix, `Expecting key to begin with ${address_prefix}, instead got ${prefix}`);
         let addy = string.slice(address_prefix.length);
-        addy = new Buffer(decode(addy), 'binary');
+        addy = Buffer.from(decode(addy), 'binary');
         let checksum = addy.slice(-4);
         addy = addy.slice(0, -4);
         let new_checksum = ripemd160(addy);
@@ -39,7 +39,7 @@ class Address {
     static fromPublic(public_key, compressed = true, version = 56) {
         let sha2 = sha256(public_key.toBuffer(compressed));
         let rep = ripemd160(sha2);
-        let versionBuffer = new Buffer(1);
+        let versionBuffer = Buffer.alloc(1);
         versionBuffer.writeUInt8((0xFF & version), 0);
         let addr = Buffer.concat([versionBuffer, rep]);
         let check = sha256(addr);

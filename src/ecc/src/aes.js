@@ -54,14 +54,14 @@ class Aes {
             nonce = "";
 
         if (!Buffer.isBuffer(message)) {
-            message = new Buffer(message, 'hex');
+            message = Buffer.from(message, 'hex');
         }
 
         let S = private_key.get_shared_secret(public_key, legacy);
         let aes = Aes.fromSeed(Buffer.concat([
             // A null or empty string nonce will not effect the hash
-            new Buffer("" + nonce),
-            new Buffer(S.toString('hex'))
+            Buffer.from("" + nonce),
+            Buffer.from(S.toString('hex'))
         ]));
 
         let planebuffer = aes.decrypt(message);
@@ -94,15 +94,15 @@ class Aes {
         }
 
         if (!Buffer.isBuffer(message)) {
-            message = new Buffer(message);
+            message = Buffer.from(message);
         }
 
         let S = private_key.get_shared_secret(public_key);
 
         let aes = Aes.fromSeed(Buffer.concat([
             // A null or empty string nonce will not effect the hash
-            new Buffer("" + nonce),
-            new Buffer(S.toString('hex'))
+            Buffer.from("" + nonce),
+            Buffer.from(S.toString('hex'))
         ]));
         let checksum = sha256(message).slice(0, 4);
         let payload = Buffer.concat([checksum, message]);
@@ -134,7 +134,7 @@ class Aes {
      */
     decrypt(ciphertext) {
         if (typeof ciphertext === "string") {
-            ciphertext = new Buffer(ciphertext, 'binary');
+            ciphertext = Buffer.from(ciphertext, 'binary');
         }
         if (!Buffer.isBuffer(ciphertext)) {
             throw new Error("buffer required");
@@ -142,7 +142,7 @@ class Aes {
         assert(ciphertext, "Missing cipher text");
         // hex is the only common format
         let hex = this.decryptHex(ciphertext.toString('hex'));
-        return new Buffer(hex, 'hex');
+        return Buffer.from(hex, 'hex');
     }
 
     /** This method does not use a checksum, the returned data must be validated some other way.
@@ -151,7 +151,7 @@ class Aes {
      */
     encrypt(plaintext) {
         if (typeof plaintext === "string") {
-            plaintext = new Buffer(plaintext, 'binary');
+            plaintext = Buffer.from(plaintext, 'binary');
         }
         if (!Buffer.isBuffer(plaintext)) {
             throw new Error("buffer required");
@@ -159,7 +159,7 @@ class Aes {
         //assert plaintext, "Missing plain text"
         // hex is the only common format
         let hex = this.encryptHex(plaintext.toString('hex'));
-        return new Buffer(hex, 'hex');
+        return Buffer.from(hex, 'hex');
     }
 
     /** This method does not use a checksum, the returned data must be validated some other way.
@@ -168,7 +168,7 @@ class Aes {
      */
     encryptToHex(plaintext) {
         if (typeof plaintext === "string") {
-            plaintext = new Buffer(plaintext, 'binary');
+            plaintext = Buffer.from(plaintext, 'binary');
         }
         if (!Buffer.isBuffer(plaintext)) {
             throw new Error("buffer required");
@@ -200,7 +200,7 @@ class Aes {
         let cipher_array = encHex.parse(cipher);
         let plainwords = this._decrypt_word_array(cipher_array);
         let plainhex = encHex.stringify(plainwords);
-        return new Buffer(plainhex, 'hex');
+        return Buffer.from(plainhex, 'hex');
     }
 
     /** This method does not use a checksum, the returned data must be validated some other way.

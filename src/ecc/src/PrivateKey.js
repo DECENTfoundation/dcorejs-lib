@@ -42,7 +42,7 @@ class PrivateKey {
 
     /** @return {PrivateKey} Wallet Import Format (still a secret, Not encrypted) */
     static fromWif(_private_wif) {
-        let private_wif = new Buffer(decode(_private_wif));
+        let private_wif = Buffer.from(decode(_private_wif));
         let version = private_wif.readUInt8(0);
         assert.equal(0x80, version, `Expected version ${0x80}, instead got ${version}`);
         // checksum includes the version
@@ -62,7 +62,7 @@ class PrivateKey {
     toWif() {
         let private_key = this.toBuffer();
         // checksum includes the version
-        private_key = Buffer.concat([new Buffer([0x80]), private_key]);
+        private_key = Buffer.concat([Buffer.from([0x80]), private_key]);
         let checksum = sha256(private_key);
         checksum = sha256(checksum);
         checksum = checksum.slice(0, 4);
@@ -107,7 +107,7 @@ class PrivateKey {
         byte(s) is zero.  Pad it back to the full 32-bytes
         */
         if (!legacy && S.length < 32) {
-            let pad = new Buffer(32 - S.length).fill(0);
+            let pad = Buffer.alloc(32 - S.length, 0);
             S = Buffer.concat([pad, S]);
         }
 
@@ -150,7 +150,7 @@ class PrivateKey {
     }
 
     static fromHex(hex) {
-        return PrivateKey.fromBuffer(new Buffer(hex, 'hex'));
+        return PrivateKey.fromBuffer(Buffer.from(hex, 'hex'));
     }
 
     toHex() {

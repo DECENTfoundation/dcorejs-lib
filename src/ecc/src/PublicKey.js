@@ -18,7 +18,7 @@ class PublicKey {
     }
 
     static fromBinary(bin) {
-        return PublicKey.fromBuffer(new Buffer(bin, 'binary'));
+        return PublicKey.fromBuffer(Buffer.from(bin, 'binary'));
     }
 
     static fromBuffer(buffer) {
@@ -58,7 +58,7 @@ class PublicKey {
             `Expecting key to begin with ${address_prefix}, instead got ${prefix}`);
         public_key = public_key.slice(address_prefix.length);
 
-        public_key = new Buffer(decode(public_key), 'binary');
+        public_key = Buffer.from(decode(public_key), 'binary');
         let checksum = public_key.slice(-4);
         public_key = public_key.slice(0, -4);
         let new_checksum = ripemd160(public_key);
@@ -72,7 +72,7 @@ class PublicKey {
 
     toBuffer(compressed = this.Q ? this.Q.compressed : null) {
         if (this.Q === null) {
-            return new Buffer('000000000000000000000000000000000000000000000000000000000000000000', 'hex');
+            return Buffer.from('000000000000000000000000000000000000000000000000000000000000000000', 'hex');
         }
         return this.Q.getEncoded(compressed);
     }
@@ -119,7 +119,7 @@ class PublicKey {
         let pub_buf = this.toBuffer();
         let pub_sha = sha256(pub_buf);
         let addy = ripemd160(pub_sha);
-        addy = Buffer.concat([new Buffer([0x38]), addy]); //version 56(decimal)
+        addy = Buffer.concat([Buffer.from([0x38]), addy]); //version 56(decimal)
         let checksum = sha256(addy);
         checksum = sha256(checksum);
         addy = Buffer.concat([addy, checksum.slice(0, 4)]);
@@ -158,7 +158,7 @@ class PublicKey {
     }
 
     static fromHex(hex) {
-        return PublicKey.fromBuffer(new Buffer(hex, 'hex'));
+        return PublicKey.fromBuffer(Buffer.from(hex, 'hex'));
     }
 
     toHex() {
@@ -166,7 +166,7 @@ class PublicKey {
     }
 
     static fromPublicKeyStringHex(hex) {
-        return PublicKey.fromPublicKeyString(new Buffer(hex, 'hex'));
+        return PublicKey.fromPublicKeyString(Buffer.from(hex, 'hex'));
     }
 
     /* </HEX> */

@@ -19,7 +19,7 @@ export default function (type) {
         },
 
         toBuffer(object) {
-            return new Buffer(toByteBuffer(type, object).toBinary(), 'binary');
+            return Buffer.from(toByteBuffer(type, object).toBinary(), 'binary');
         },
 
         fromBinary(string) {
