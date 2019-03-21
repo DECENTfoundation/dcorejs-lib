@@ -28,7 +28,7 @@ class FastParser {
             let buffer = public_key.toBuffer();
             b.append(buffer.toString('binary'), 'binary');
         } else {
-            buffer = FastParser.fixed_data(b, 33);
+            let buffer = FastParser.fixed_data(b, 33);
             return PublicKey.fromBuffer(buffer);
         }
     }
