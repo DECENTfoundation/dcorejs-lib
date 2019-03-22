@@ -428,7 +428,7 @@ export const transfer2 = new Serializer(
     "transfer2", {
         fee: asset,
         from: protocol_id_type("account"),
-        to: protocol_id_type("account"),
+        to: object_id_type,
         amount: asset,
         memo: optional(memo_data),
         extensions: set(future_extensions)
