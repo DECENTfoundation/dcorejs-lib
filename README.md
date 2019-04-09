@@ -1,6 +1,7 @@
 # dcorejs-lib
 
-### :no_entry: [DEPRECATED] Active JavaScript / TypeScript DCore SDK can be found at:
+### :no_entry: [DEPRECATED]
+### Active JavaScript / TypeScript DCore SDK can be found at:
 https://github.com/DECENTfoundation/DCoreJS-SDK
 
 ### DCore SDKs for other platforms are available at:
